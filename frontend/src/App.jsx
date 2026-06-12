@@ -42,28 +42,28 @@ function App() {
 
   const addToCart = (product) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+      const existingItem = prevCart.find(item => item.instoreCode === product.instoreCode);
       if (existingItem) {
         return prevCart.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.instoreCode === product.instoreCode ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  const removeFromCart = (productCode) => {
+    setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = (productCode, newQuantity) => {
     if (newQuantity < 1) return;
     setCart(prevCart => prevCart.map(item => 
-      item.id === productId ? { ...item, quantity: newQuantity } : item
+      item.instoreCode === productCode ? { ...item, quantity: newQuantity } : item
     ));
   };
 
-  const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const cartTotal = cart.reduce((total, item) => total + (item.retailPrice * item.quantity), 0);
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
@@ -96,12 +96,12 @@ function App() {
           {products.length === 0 && !loading && (
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                {[
-                 { id: 1, name: "Menta Glaciale 10ml", description: "Liquido pronto all'uso", price: 5.90, category: "LIQUIDO", subCategory: "TPD", flavor: "Menta", nicotineStrength: "4mg/ml" },
-                 { id: 2, name: "Tabacco Secco Mini", description: "Aroma concentrato scomposto", price: 12.90, category: "LIQUIDO", subCategory: "MINI_SHOT_10_10", flavor: "Tabacco", nicotineStrength: null },
-                 { id: 3, name: "Aroma Fragola 10ml", description: "Aroma puro da diluire", price: 6.00, category: "LIQUIDO", subCategory: "AROMA", flavor: "Fragola", nicotineStrength: null },
-                 { id: 4, name: "Nicotina Base 10ml", description: "Shot di nicotina neutra", price: 2.50, category: "LIQUIDO", subCategory: "NICOTINE_SHOT", flavor: null, nicotineStrength: "18mg/ml" }
+                 { instoreCode: 1, barcode: "805123", name: "Menta Glaciale 10ml", description: "Liquido pronto all'uso", retailPrice: 5.90, category: "LIQUIDO", subCategory: "TPD", flavor: "Menta", nicotineStrength: "4mg/ml", milliliters: 10 },
+                 { instoreCode: 2, barcode: "805124", name: "Tabacco Secco Mini", description: "Aroma concentrato scomposto", retailPrice: 12.90, category: "LIQUIDO", subCategory: "MINI_SHOT_10_10", flavor: "Tabacco", nicotineStrength: null, milliliters: 10 },
+                 { instoreCode: 3, barcode: "805125", name: "Aroma Fragola 10ml", description: "Aroma puro da diluire", retailPrice: 6.00, category: "LIQUIDO", subCategory: "AROMA", flavor: "Fragola", nicotineStrength: null, milliliters: 10 },
+                 { instoreCode: 4, barcode: "805126", name: "Nicotina Base 10ml", description: "Shot di nicotina neutra", retailPrice: 2.50, category: "LIQUIDO", subCategory: "NICOTINE_SHOT", flavor: null, nicotineStrength: "18mg/ml", milliliters: 10 }
                ].map(product => (
-                 <div key={product.id} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col relative">
+                 <div key={product.instoreCode} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col relative">
                     <div className="absolute top-2 right-2 bg-gray-800 text-white text-xs px-2 py-1 rounded">
                       {product.subCategory?.replace(/_/g, ' ')}
                     </div>
@@ -112,13 +112,14 @@ function App() {
                     <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                     
                     <div className="bg-blue-50 rounded p-2 mb-4 flex-grow text-sm">
+                      <div className="text-gray-700"><strong>Codice:</strong> {product.barcode || product.instoreCode}</div>
+                      {product.milliliters && <div className="text-gray-700"><strong>Quantità:</strong> {product.milliliters}ml</div>}
                       {product.flavor && <div className="text-gray-700"><strong>Gusto:</strong> {product.flavor}</div>}
                       {product.nicotineStrength && <div className="text-gray-700"><strong>Nicotina:</strong> {product.nicotineStrength}</div>}
-                      {!product.flavor && !product.nicotineStrength && <div className="text-gray-500 italic">Dettagli non disponibili</div>}
                     </div>
 
                     <div className="flex justify-between items-center mt-auto">
-                      <span className="font-bold text-blue-600">€{product.price.toFixed(2)}</span>
+                      <span className="font-bold text-blue-600">€{product.retailPrice?.toFixed(2)}</span>
                       <button 
                         onClick={() => addToCart(product)}
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors text-sm"
@@ -134,7 +135,7 @@ function App() {
           {products.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {products.map(product => (
-                <div key={product.id} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col relative">
+                <div key={product.instoreCode} className="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow flex flex-col relative">
                   <div className="absolute top-2 right-2 bg-gray-800 text-white text-xs px-2 py-1 rounded">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
@@ -149,13 +150,14 @@ function App() {
                   <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                   
                   <div className="bg-blue-50 rounded p-2 mb-4 flex-grow text-sm">
+                    <div className="text-gray-700"><strong>Codice:</strong> {product.barcode || product.instoreCode}</div>
+                    {product.milliliters && <div className="text-gray-700"><strong>Quantità:</strong> {product.milliliters}ml</div>}
                     {product.flavor && <div className="text-gray-700"><strong>Gusto:</strong> {product.flavor}</div>}
                     {product.nicotineStrength && <div className="text-gray-700"><strong>Nicotina:</strong> {product.nicotineStrength}</div>}
-                    {(!product.flavor && !product.nicotineStrength && product.category === 'LIQUIDO') && <div className="text-gray-500 italic">Dettagli non disponibili</div>}
                   </div>
 
                   <div className="flex justify-between items-center mt-auto">
-                    <span className="font-bold text-blue-600">€{product.price.toFixed(2)}</span>
+                    <span className="font-bold text-blue-600">€{product.retailPrice?.toFixed(2)}</span>
                     <button 
                       onClick={() => addToCart(product)}
                       className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors text-sm"
@@ -182,31 +184,31 @@ function App() {
             ) : (
               <div className="flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-2">
                 {cart.map(item => (
-                  <div key={item.id} className="flex justify-between items-center border-b pb-2">
+                  <div key={item.instoreCode} className="flex justify-between items-center border-b pb-2">
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-800 text-sm">{item.name}</h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-600">€{item.price.toFixed(2)} cad.</span>
+                        <span className="text-xs text-gray-600">€{item.retailPrice?.toFixed(2)} cad.</span>
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
                       <div className="flex items-center border rounded">
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.instoreCode, item.quantity - 1)}
                           className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-l"
                         >
                           -
                         </button>
                         <span className="px-2 py-1 text-sm">{item.quantity}</span>
                         <button 
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.instoreCode, item.quantity + 1)}
                           className="px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-r"
                         >
                           +
                         </button>
                       </div>
                       <button 
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item.instoreCode)}
                         className="text-xs text-red-500 hover:text-red-700"
                       >
                         Rimuovi
