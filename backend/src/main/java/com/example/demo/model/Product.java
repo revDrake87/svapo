@@ -34,4 +34,10 @@ public class Product {
     // Campi specifici per liquidi
     private String flavor; // Gusto
     private String nicotineStrength; // Gradazione di nicotina (es. "4mg", "20mg", "Zero")
+
+    // Campi specifici per hardware
+    private String color; // Colore
+    private String batteryType; // Tipo batteria (es. "Integrata 1000mAh", "18650")
+    private Integer wattage; // Wattaggio massimo (es. 80)
+    private Double tankCapacity; // Capacità serbatoio in ml (es. 2.0, 5.0)
 }
