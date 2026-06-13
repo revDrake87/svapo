@@ -68,10 +68,10 @@ function CustomerView() {
   const cartTotal = cart.reduce((total, item) => total + (item.retailPrice * item.quantity), 0);
 
   return (
-    <div className="min-h-screen bg-black text-gray-200 font-sans selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen bg-black text-white font-sans">
       <header className="bg-zinc-950/80 backdrop-blur-md border-b border-white/10 text-white p-4 sticky top-0 z-10 transition-all duration-300">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-extrabold tracking-tight text-white">
             VapeStore
           </h1>
           <div className="flex items-center space-x-4">

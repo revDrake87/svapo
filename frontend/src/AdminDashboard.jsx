@@ -118,7 +118,7 @@ function AdminDashboard() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center font-sans text-gray-200">
         <form onSubmit={handleLogin} className="bg-zinc-900 p-8 rounded-2xl shadow-xl border border-white/10 w-96">
-          <h2 className="text-2xl font-bold text-center mb-6 text-white bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Area Riservata Admin</h2>
+          <h2 className="text-2xl font-bold text-center mb-6 text-white">Area Riservata Admin</h2>
           <div className="mb-4">
             <label className="block text-sm font-medium text-zinc-400 mb-2">Password</label>
             <input 
@@ -248,7 +248,7 @@ function AdminDashboard() {
 
                 {/* Specifiche Dinamiche & Immagine */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-purple-400 border-b border-white/5 pb-2">
+                  <h3 className="text-lg font-semibold text-white border-b border-white/5 pb-2">
                     {currentProduct.category === 'LIQUIDO' ? 'Specifiche Liquido' : 'Specifiche Hardware'}
                   </h3>
 
@@ -303,7 +303,7 @@ function AdminDashboard() {
                         accept="image/*"
                         onChange={handleImageUpload}
                         disabled={uploadingImage}
-                        className="w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500/10 file:text-emerald-400 hover:file:bg-emerald-500/20"
+                        className="w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500/10 file:text-emerald-400 hover:file:bg-emerald-500/20"
                       />
                       {uploadingImage && <p className="text-xs text-emerald-400 animate-pulse">Caricamento in corso...</p>}
                     </div>
