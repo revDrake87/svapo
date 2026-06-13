@@ -5,4 +5,5 @@ INSERT INTO product (barcode, name, milliliters, category, sub_category, purchas
 ('8051234567893', 'Tabacco Dolce Shot', 20, 'LIQUIDO', 'SHOT', 6.00, 18.50, 'Aroma concentrato scomposto grande', '', 'Tabacco e Vaniglia', NULL),
 ('8051234567894', 'Aroma Fragola 10ml', 10, 'LIQUIDO', 'AROMA', 2.50, 6.00, 'Aroma puro da diluire', '', 'Fragola', NULL),
 ('8051234567895', 'Nicotina Base 10ml', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.00, 2.50, 'Shot di nicotina neutra', '', NULL, '18mg/ml'),
-('8051234567896', 'Nicotina Base 10ml Salt', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.20, 2.50, 'Shot di nicotina neutra ai sali', '', NULL, '20mg/ml Salt');
+('8051234567896', 'Nicotina Base 10ml Salt', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.20, 2.50, 'Shot di nicotina neutra ai sali', '', NULL, '20mg/ml Salt'),
+('8051234567897', 'Nicotina Vaporart Full VG 20mg/ml', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.50, 3.20, 'Nicobooster VaporArt Full VG base neutra 100% glicerina vegetale', 'https://www.svapoebasta.com/33690-large_default/nicotina-vaporart-full-vg-10ml.jpg', NULL, '20mg/ml');
