@@ -7,3 +7,12 @@ INSERT INTO product (barcode, name, milliliters, category, sub_category, purchas
 ('8051234567895', 'Nicotina Base 10ml', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.00, 2.50, 'Shot di nicotina neutra', '', NULL, '18mg/ml'),
 ('8051234567896', 'Nicotina Base 10ml Salt', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.20, 2.50, 'Shot di nicotina neutra ai sali', '', NULL, '20mg/ml Salt'),
 ('8051234567897', 'Nicotina Vaporart Full VG 20mg/ml', 10, 'LIQUIDO', 'NICOTINE_SHOT', 1.50, 3.20, 'Nicobooster VaporArt Full VG base neutra 100% glicerina vegetale', 'https://www.svapoebasta.com/33690-large_default/nicotina-vaporart-full-vg-10ml.jpg', NULL, '20mg/ml');
+
+INSERT INTO product (barcode, name, category, sub_category, purchase_price, retail_price, description, color, battery_type, wattage, tank_capacity) VALUES 
+('8051234567898', 'GeekVape Aegis Legend 2', 'HARDWARE', 'BATTERY_BOX', 35.00, 55.00, 'Box mod resistente ad acqua e urti', 'Nero', 'Doppia 18650', 200, NULL),
+('8051234567899', 'Zeus X RTA', 'HARDWARE', 'ATOMIZER_RTA', 18.00, 32.00, 'Atomizzatore rigenerabile a mesh', 'Silver', NULL, NULL, 4.5),
+('8051234567900', 'Zlide Innokin', 'HARDWARE', 'ATOMIZER_NON_RTA', 12.00, 22.00, 'Atomizzatore a testine non rigenerabile', 'Gunmetal', NULL, NULL, 2.0),
+('8051234567901', 'Eleaf iStick Pico Starter Kit', 'HARDWARE', 'STARTER_KIT', 20.00, 38.00, 'Kit completo con batteria e atomizzatore', 'Rosa', 'Singola 18650', 75, 2.0),
+('8051234567902', 'Kiwi Pen Pod Mod', 'HARDWARE', 'POD_MOD', 25.00, 45.00, 'Pod mod elegante per smettere di fumare', 'Iron Gate', 'Integrata 400mAh', 13, 1.8),
+('8051234567903', 'Pod Ricambio Kiwi (3pz)', 'HARDWARE', 'POD_ACCESSORY', 5.00, 11.90, 'Cartucce di ricambio per Kiwi Pen', 'Clear', NULL, NULL, 1.8),
+('8051234567904', 'Pinzette in Ceramica Coil Master', 'HARDWARE', 'ACCESSORY', 3.00, 6.50, 'Pinzette per sistemare le resistenze', 'Nero', NULL, NULL, NULL);

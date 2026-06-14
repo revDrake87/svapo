@@ -22,8 +22,8 @@ public class Product {
     private String name;
     private Integer milliliters; // Millilitri (es. 10, 20, 60)
     
-    private String category; // es. "LIQUIDO", "HARDWARE"
-    private String subCategory; // tipologia: es. "SHOT", "MINI_SHOT_10_10", "MINI_SHOT_10_20", "TPD"
+    private String category; // "LIQUIDO" o "HARDWARE"
+    private String subCategory; // Liquidi: "TPD", "MINI_SHOT", "SHOT", "AROMA", "NICOTINE_SHOT". Hardware: "BATTERY_BOX", "ATOMIZER_RTA", "ATOMIZER_NON_RTA", "STARTER_KIT", "POD_MOD", "POD_ACCESSORY", "ACCESSORY"
     
     private Double purchasePrice; // Prezzo di acquisto
     private Double retailPrice; // Prezzo al pubblico

@@ -164,9 +164,21 @@ function CustomerView() {
                   
                   <div className="bg-black/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-white/5">
                     <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Codice:</span> <span>{product.barcode || product.instoreCode}</span></div>
-                    {product.milliliters && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Quantità:</span> <span>{product.milliliters}ml</span></div>}
-                    {product.flavor && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Gusto:</span> <span>{product.flavor}</span></div>}
-                    {product.nicotineStrength && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Nicotina:</span> <span>{product.nicotineStrength}</span></div>}
+                    
+                    {product.category === 'LIQUIDO' ? (
+                      <>
+                        {product.milliliters && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Quantità:</span> <span>{product.milliliters}ml</span></div>}
+                        {product.flavor && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Gusto:</span> <span>{product.flavor}</span></div>}
+                        {product.nicotineStrength && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Nicotina:</span> <span>{product.nicotineStrength}</span></div>}
+                      </>
+                    ) : (
+                      <>
+                        {product.color && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Colore:</span> <span>{product.color}</span></div>}
+                        {product.batteryType && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Batteria:</span> <span>{product.batteryType}</span></div>}
+                        {product.wattage > 0 && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Wattaggio Max:</span> <span>{product.wattage}W</span></div>}
+                        {product.tankCapacity > 0 && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Capacità Tank:</span> <span>{product.tankCapacity}ml</span></div>}
+                      </>
+                    )}
                   </div>
 
                   <div className="flex justify-between items-center mt-auto pt-2 border-t border-white/5">

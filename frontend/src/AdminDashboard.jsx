@@ -174,7 +174,7 @@ function AdminDashboard() {
                     <label className="block text-sm text-zinc-400 mb-1">Categoria</label>
                     <select 
                       value={currentProduct.category} 
-                      onChange={e => setCurrentProduct({...currentProduct, category: e.target.value, subCategory: e.target.value === 'LIQUIDO' ? 'TPD' : 'BOX_MOD'})}
+                      onChange={e => setCurrentProduct({...currentProduct, category: e.target.value, subCategory: e.target.value === 'LIQUIDO' ? 'TPD' : 'BATTERY_BOX'})}
                       className="w-full bg-black border border-white/20 rounded px-3 py-2 text-white focus:border-cyan-500 outline-none"
                     >
                       <option value="LIQUIDO">Liquido</option>
@@ -186,27 +186,29 @@ function AdminDashboard() {
                     <label className="block text-sm text-zinc-400 mb-1">Sotto-Categoria</label>
                     {currentProduct.category === 'LIQUIDO' ? (
                       <select 
-                        value={currentProduct.subCategory} 
+                        value={currentProduct.subCategory || 'TPD'} 
                         onChange={e => setCurrentProduct({...currentProduct, subCategory: e.target.value})}
                         className="w-full bg-black border border-white/20 rounded px-3 py-2 text-white focus:border-cyan-500 outline-none"
                       >
                         <option value="TPD">TPD 10ml</option>
                         <option value="MINI_SHOT_10_10">Mini Shot 10+10</option>
-                        <option value="SHOT">Shot 20+40</option>
+                        <option value="SHOT">Shot</option>
                         <option value="AROMA">Aroma</option>
                         <option value="NICOTINE_SHOT">Base/Nicotina 10ml</option>
                       </select>
                     ) : (
                       <select 
-                        value={currentProduct.subCategory || 'BOX_MOD'} 
+                        value={currentProduct.subCategory || 'BATTERY_BOX'} 
                         onChange={e => setCurrentProduct({...currentProduct, subCategory: e.target.value})}
                         className="w-full bg-black border border-white/20 rounded px-3 py-2 text-white focus:border-cyan-500 outline-none"
                       >
-                        <option value="BOX_MOD">Box Mod</option>
-                        <option value="POD_MOD">Pod Mod</option>
-                        <option value="ATOMIZER">Atomizzatore</option>
-                        <option value="COIL">Resistenza/Coil</option>
-                        <option value="ACCESSORY">Accessorio</option>
+                        <option value="BATTERY_BOX">Battery Box</option>
+                        <option value="ATOMIZER_RTA">Atomizzatore Rigenerabile</option>
+                        <option value="ATOMIZER_NON_RTA">Atomizzatore Non Rigenerabile</option>
+                        <option value="STARTER_KIT">Starter Kit</option>
+                        <option value="POD_MOD">PodMod Starter Kit</option>
+                        <option value="POD_ACCESSORY">Accessori Ricambio PodMod</option>
+                        <option value="ACCESSORY">Accessori Vari</option>
                       </select>
                     )}
                   </div>
