@@ -53,6 +53,7 @@ public class ProductController {
             product.setBatteryType(productDetails.getBatteryType());
             product.setWattage(productDetails.getWattage());
             product.setTankCapacity(productDetails.getTankCapacity());
+            product.setIsAvailable(productDetails.getIsAvailable() != null ? productDetails.getIsAvailable() : true);
             return ResponseEntity.ok(productRepository.save(product));
         }).orElse(ResponseEntity.notFound().build());
     }

@@ -11,6 +11,15 @@ function CustomerView({ isDarkMode, toggleTheme }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Advanced filters state
+  const [categoryFilter, setCategoryFilter] = useState(''); // 'LIQUIDO' or 'HARDWARE'
+  const [subCategoryFilter, setSubCategoryFilter] = useState('');
+  const [flavorFilter, setFlavorFilter] = useState('');
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     fetch('http://localhost:8080/api/products')
@@ -72,24 +81,51 @@ function CustomerView({ isDarkMode, toggleTheme }) {
 
   const catalogRef = useRef(null);
 
+  // Extract unique subCategories and flavors for the filters
+  const uniqueSubCategories = [...new Set(products.filter(p => p.category === categoryFilter).map(p => p.subCategory))].filter(Boolean);
+  const uniqueFlavors = [...new Set(products.filter(p => p.category === 'LIQUIDO').map(p => p.flavor))].filter(Boolean);
+
   const filteredProducts = products.filter(product => {
-    if (!searchTerm) return true;
-    const term = searchTerm.toLowerCase();
-    const nameMatch = product.name?.toLowerCase().includes(term);
-    const flavorMatch = product.flavor?.toLowerCase().includes(term);
-    const ingredientsMatch = product.ingredients?.toLowerCase().includes(term);
-    return nameMatch || flavorMatch || ingredientsMatch;
+    if (product.isAvailable === false) return false;
+    
+    // Dropdown filters
+    if (categoryFilter && product.category !== categoryFilter) return false;
+    if (subCategoryFilter && product.subCategory !== subCategoryFilter) return false;
+    if (flavorFilter && product.flavor !== flavorFilter) return false;
+
+    // Search bar filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      const nameMatch = product.name?.toLowerCase().includes(term);
+      const flavorMatch = product.flavor?.toLowerCase().includes(term);
+      const ingredientsMatch = product.ingredients?.toLowerCase().includes(term);
+      if (!nameMatch && !flavorMatch && !ingredientsMatch) return false;
+    }
+    
+    return true;
   });
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, categoryFilter, subCategoryFilter, flavorFilter]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const currentProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   // GSAP Animations
   useGSAP(() => {
-    if (products.length > 0) {
+    if (currentProducts.length > 0) {
       gsap.fromTo(".product-card", 
         { y: 50, opacity: 0 }, 
         { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all" }
       );
     }
-  }, [products]); // Re-run animation when products load
+  }, [currentProducts, currentPage]); // Re-run animation when products or page change
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white font-sans transition-colors duration-300">
@@ -113,18 +149,58 @@ function CustomerView({ isDarkMode, toggleTheme }) {
       <main className="container mx-auto p-4 flex flex-col md:flex-row gap-8 mt-6">
         {/* Catalog Section */}
         <div className="md:w-2/3" ref={catalogRef}>
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Catalogo</h2>
-            
-            <div className="relative w-full sm:w-64">
-              <input
-                type="text"
-                placeholder="Cerca ingrediente, gusto o nome..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
-              />
-              <svg className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <div className="flex flex-col justify-between items-start mb-6 gap-4">
+            <div className="flex w-full justify-between items-center">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Catalogo</h2>
+              <div className="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  placeholder="Cerca ingrediente o nome..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
+                />
+                <svg className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              </div>
+            </div>
+
+            {/* Advanced Filters */}
+            <div className="flex flex-wrap gap-3 w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/5 p-4 rounded-xl shadow-sm">
+              <select 
+                value={categoryFilter} 
+                onChange={(e) => { setCategoryFilter(e.target.value); setSubCategoryFilter(''); setFlavorFilter(''); }}
+                className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+              >
+                <option value="">Tutte le categorie</option>
+                <option value="LIQUIDO">Liquidi</option>
+                <option value="HARDWARE">Hardware</option>
+              </select>
+
+              {categoryFilter && (
+                <select 
+                  value={subCategoryFilter} 
+                  onChange={(e) => setSubCategoryFilter(e.target.value)}
+                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                >
+                  <option value="">Tutte le Sotto-categorie</option>
+                  {uniqueSubCategories.map(sub => (
+                    <option key={sub} value={sub}>{sub.replace(/_/g, ' ')}</option>
+                  ))}
+                </select>
+              )}
+
+              {categoryFilter === 'LIQUIDO' && (
+                <select 
+                  value={flavorFilter} 
+                  onChange={(e) => setFlavorFilter(e.target.value)}
+                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                >
+                  <option value="">Tutti i Gusti</option>
+                  {uniqueFlavors.map(flavor => (
+                    <option key={flavor} value={flavor}>{flavor}</option>
+                  ))}
+                </select>
+              )}
             </div>
           </div>
           
@@ -145,22 +221,27 @@ function CustomerView({ isDarkMode, toggleTheme }) {
             </div>
           )}
 
-          {filteredProducts.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map(product => (
+          {currentProducts.length > 0 && (
+            <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {currentProducts.map(product => (
                 <div key={product.instoreCode} className="product-card group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/5 p-5 rounded-2xl shadow-md hover:shadow-cyan-500/20 dark:hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col relative overflow-hidden">
                   <div className="absolute top-3 right-3 bg-gray-100 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10 transition-colors">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
-                  <div className="h-48 bg-gray-100 dark:bg-zinc-800 rounded-xl mb-5 flex items-center justify-center text-gray-400 dark:text-zinc-600 overflow-hidden mt-2 transition-transform duration-500 group-hover:scale-105">
-                    {product.imageUrl ? (
-                      <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full" />
-                    ) : (
-                      <svg className="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
-                  <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
+                  <Link to={`/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
+                    <div className="h-48 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-400 dark:text-zinc-600 transition-transform duration-500 group-hover:scale-105">
+                      {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full" />
+                      ) : (
+                        <svg className="w-12 h-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      )}
+                    </div>
+                  </Link>
+                  <Link to={`/product/${product.instoreCode}`} className="block">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
+                    <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
+                  </Link>
                   
                   <div className="bg-gray-50 dark:bg-black/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-gray-100 dark:border-white/5 transition-colors">
                     <div className="flex justify-between text-gray-700 dark:text-zinc-300"><span className="text-gray-500 dark:text-zinc-500 font-medium">Codice:</span> <span>{product.barcode || product.instoreCode}</span></div>
@@ -194,6 +275,30 @@ function CustomerView({ isDarkMode, toggleTheme }) {
                 </div>
               ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Precedente
+                </button>
+                <span className="text-sm font-medium text-gray-600 dark:text-zinc-400">
+                  Pagina {currentPage} di {totalPages}
+                </span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Successiva
+                </button>
+              </div>
+            )}
+            </>
           )}
         </div>
 

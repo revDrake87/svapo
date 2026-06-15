@@ -31,6 +31,8 @@ public class Product {
     private String description;
     private String imageUrl;
     
+    private Boolean isAvailable = true; // Visibilità manuale (in stock o no)
+    
     // Campi specifici per liquidi
     private String flavor; // Gusto principale
     private String ingredients; // Lista di ingredienti (es. "Menta, Limone, Tabacco")

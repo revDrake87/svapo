@@ -66,7 +66,8 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
       color: '',
       batteryType: '',
       wattage: '',
-      tankCapacity: ''
+      tankCapacity: '',
+      isAvailable: true
     });
     setIsEditing(true);
   };
@@ -173,6 +174,17 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-blue-600 dark:text-cyan-400 border-b border-gray-200 dark:border-white/5 pb-2">Informazioni Base</h3>
                   
+                  <div className="flex justify-between items-center bg-gray-50 dark:bg-zinc-800/50 p-3 rounded border border-gray-200 dark:border-white/10">
+                    <div>
+                      <h4 className="font-bold text-gray-900 dark:text-white">Prodotto Disponibile</h4>
+                      <p className="text-xs text-gray-500 dark:text-zinc-400">Rendi visibile questo prodotto nel catalogo pubblico</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked={currentProduct.isAvailable !== false} onChange={e => setCurrentProduct({...currentProduct, isAvailable: e.target.checked})} />
+                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-cyan-500"></div>
+                    </label>
+                  </div>
+
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Categoria</label>
                     <select 
@@ -352,13 +364,14 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Codice</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Nome</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Categoria</th>
+                        <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Stato</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Prezzo</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold text-right">Azioni</th>
                       </tr>
                     </thead>
                     <tbody>
                       {products.map(p => (
-                        <tr key={p.instoreCode} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                        <tr key={p.instoreCode} className={`border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${p.isAvailable === false ? 'opacity-60' : ''}`}>
                           <td className="p-4">
                             <div className="w-10 h-10 bg-gray-100 dark:bg-black rounded-md flex items-center justify-center overflow-hidden border border-gray-200 dark:border-transparent">
                               {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="text-gray-400 dark:text-zinc-600" />}
@@ -368,6 +381,13 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
                           <td className="p-4 font-bold text-gray-900 dark:text-white">{p.name}</td>
                           <td className="p-4">
                             <span className="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-transparent text-xs px-2 py-1 rounded text-gray-600 dark:text-zinc-300">{p.subCategory}</span>
+                          </td>
+                          <td className="p-4">
+                            {p.isAvailable !== false ? (
+                              <span className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 text-xs px-2 py-1 rounded">Disponibile</span>
+                            ) : (
+                              <span className="bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 text-xs px-2 py-1 rounded">Nascosto</span>
+                            )}
                           </td>
                           <td className="p-4 text-blue-600 dark:text-cyan-400 font-bold">€{p.retailPrice?.toFixed(2)}</td>
                           <td className="p-4 flex justify-end gap-2">
