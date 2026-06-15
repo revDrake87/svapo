@@ -32,7 +32,8 @@ public class Product {
     private String imageUrl;
     
     // Campi specifici per liquidi
-    private String flavor; // Gusto
+    private String flavor; // Gusto principale
+    private String ingredients; // Lista di ingredienti (es. "Menta, Limone, Tabacco")
     private String nicotineStrength; // Gradazione di nicotina (es. "4mg", "20mg", "Zero")
 
     // Campi specifici per hardware

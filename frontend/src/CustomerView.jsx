@@ -8,6 +8,7 @@ function CustomerView() {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetch('http://localhost:8080/api/products')
@@ -67,6 +68,15 @@ function CustomerView() {
 
   const cartTotal = cart.reduce((total, item) => total + (item.retailPrice * item.quantity), 0);
 
+  const filteredProducts = products.filter(product => {
+    if (!searchTerm) return true;
+    const term = searchTerm.toLowerCase();
+    const nameMatch = product.name?.toLowerCase().includes(term);
+    const flavorMatch = product.flavor?.toLowerCase().includes(term);
+    const ingredientsMatch = product.ingredients?.toLowerCase().includes(term);
+    return nameMatch || flavorMatch || ingredientsMatch;
+  });
+
   return (
     <div className="min-h-screen bg-black text-white font-sans">
       <header className="bg-zinc-950/80 backdrop-blur-md border-b border-white/10 text-white p-4 sticky top-0 z-10 transition-all duration-300">
@@ -86,7 +96,20 @@ function CustomerView() {
       <main className="container mx-auto p-4 flex flex-col md:flex-row gap-8 mt-6">
         {/* Catalog Section */}
         <div className="md:w-2/3">
-          <h2 className="text-3xl font-bold mb-6 text-white tracking-tight">Catalogo</h2>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h2 className="text-3xl font-bold text-white tracking-tight">Catalogo</h2>
+            
+            <div className="relative w-full sm:w-64">
+              <input
+                type="text"
+                placeholder="Cerca ingrediente, gusto o nome..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-zinc-900 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors"
+              />
+              <svg className="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+          </div>
           
           {loading && (
             <div className="flex items-center space-x-2 text-gray-400">
@@ -145,9 +168,9 @@ function CustomerView() {
              </div>
           )}
 
-          {products.length > 0 && (
+          {filteredProducts.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map(product => (
+              {filteredProducts.map(product => (
                 <div key={product.instoreCode} className="group bg-zinc-900 border border-white/5 p-5 rounded-2xl shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 ease-out hover:-translate-y-1 flex flex-col relative overflow-hidden">
                   <div className="absolute top-3 right-3 bg-white/10 backdrop-blur-md border border-white/10 text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10">
                     {product.subCategory?.replace(/_/g, ' ')}
@@ -169,6 +192,7 @@ function CustomerView() {
                       <>
                         {product.milliliters && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Quantità:</span> <span>{product.milliliters}ml</span></div>}
                         {product.flavor && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Gusto:</span> <span>{product.flavor}</span></div>}
+                        {product.ingredients && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Ingredienti:</span> <span className="text-right pl-2 truncate max-w-[150px]" title={product.ingredients}>{product.ingredients}</span></div>}
                         {product.nicotineStrength && <div className="flex justify-between text-zinc-300"><span className="text-zinc-500 font-medium">Nicotina:</span> <span>{product.nicotineStrength}</span></div>}
                       </>
                     ) : (

@@ -257,8 +257,12 @@ function AdminDashboard() {
                   {currentProduct.category === 'LIQUIDO' ? (
                     <>
                       <div>
-                        <label className="block text-sm text-zinc-400 mb-1">Gusto</label>
+                        <label className="block text-sm text-zinc-400 mb-1">Gusto Principale</label>
                         <input type="text" placeholder="es. Menta, Tabacco" value={currentProduct.flavor || ''} onChange={e => setCurrentProduct({...currentProduct, flavor: e.target.value})} className="w-full bg-black border border-white/20 rounded px-3 py-2 text-white focus:border-cyan-500 outline-none" />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-zinc-400 mb-1">Ingredienti (separati da virgola)</label>
+                        <input type="text" placeholder="es. Menta, Ghiaccio, Limone" value={currentProduct.ingredients || ''} onChange={e => setCurrentProduct({...currentProduct, ingredients: e.target.value})} className="w-full bg-black border border-white/20 rounded px-3 py-2 text-white focus:border-cyan-500 outline-none" />
                       </div>
                       <div>
                         <label className="block text-sm text-zinc-400 mb-1">Gradazione Nicotina</label>
