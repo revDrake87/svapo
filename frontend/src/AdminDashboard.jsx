@@ -404,12 +404,16 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
                       <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Carica nuova immagine</label>
                       <input 
                         type="file" 
-                        accept="image/*"
+                        accept="image/jpeg, image/png, image/webp"
                         onChange={handleImageUpload}
                         disabled={uploadingImage}
                         className="w-full text-sm text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-100 dark:file:bg-emerald-500/10 file:text-emerald-700 dark:file:text-emerald-400 hover:file:bg-emerald-200 dark:hover:file:bg-emerald-500/20 transition-colors"
                       />
-                      {uploadingImage && <p className="text-xs text-emerald-600 dark:text-emerald-400 animate-pulse">Caricamento in corso...</p>}
+                      <p className="text-xs text-gray-500 dark:text-zinc-500 mt-1">
+                        Formati supportati: JPG, PNG, WEBP. Max: 5MB.<br/>
+                        <em>Dimensioni consigliate: Quadrate (es. 500x500px).</em>
+                      </p>
+                      {uploadingImage && <p className="text-xs text-emerald-600 dark:text-emerald-400 animate-pulse mt-1">Caricamento in corso...</p>}
                     </div>
                   </div>
                 </div>
