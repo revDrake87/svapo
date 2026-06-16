@@ -14,6 +14,10 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const [newStoreName, setNewStoreName] = useState(storeName);
 
   useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      setIsAuthenticated(true);
+    }
     fetchProducts();
   }, []);
 
@@ -30,18 +34,39 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
       });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === 'admin123') { // Mock authentication
-      setIsAuthenticated(true);
-    } else {
-      alert('Password errata. Hint: admin123');
+    try {
+      const res = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'admin', password: password })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem('adminToken', data.token);
+        setIsAuthenticated(true);
+      } else {
+        alert('Password errata!');
+      }
+    } catch (err) {
+      alert('Errore di connessione al server.');
     }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setPassword('');
+    localStorage.removeItem('adminToken');
   };
 
   const handleDelete = (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
-      fetch(`http://localhost:8080/api/products/${id}`, { method: 'DELETE' })
+      const token = localStorage.getItem('adminToken');
+      fetch(`http://localhost:8080/api/products/${id}`, { 
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
         .then(() => fetchProducts())
         .catch(err => console.error("Failed to delete", err));
     }
@@ -82,8 +107,10 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
     const formData = new FormData();
     formData.append('file', file);
 
+    const token = localStorage.getItem('adminToken');
     fetch('http://localhost:8080/api/products/upload', {
       method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
     })
       .then(res => res.text())
@@ -100,10 +127,14 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
 
   const handleSettingsSave = (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('adminToken');
     fetch('http://localhost:8080/api/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ storeName: newStoreName })
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ id: 1, storeName: newStoreName })
     })
       .then(res => res.json())
       .then(data => {
@@ -120,9 +151,13 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
       ? `http://localhost:8080/api/products/${currentProduct.instoreCode}`
       : 'http://localhost:8080/api/products';
 
+    const token = localStorage.getItem('adminToken');
     fetch(url, {
       method: method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
       body: JSON.stringify(currentProduct)
     })
       .then(() => {
@@ -171,7 +206,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
             </button>
             <Link to="/" className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
-            <button onClick={() => setIsAuthenticated(false)} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
+            <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
               <LogOut size={16} /> Esci
             </button>
           </div>
