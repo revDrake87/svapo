@@ -170,7 +170,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center font-sans text-gray-900 dark:text-gray-200 transition-colors duration-300">
-        <form onSubmit={handleLogin} className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 w-96 transition-colors">
+        <form onSubmit={handleLogin} className="bg-white dark:bg-[#0A0A0A] p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 w-96 transition-colors">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Area Riservata Admin</h2>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Password</label>
@@ -182,7 +182,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
               required
             />
           </div>
-          <button type="submit" className="w-full bg-blue-600 dark:bg-cyan-500 hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold py-2 rounded-lg transition-colors">
+          <button type="submit" className="w-full bg-black dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold py-2 rounded-lg transition-colors">
             Accedi
           </button>
           <div className="mt-4 text-center">
@@ -199,11 +199,11 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">{storeName} - Admin</h1>
           <div className="flex gap-4 items-center">
-            <button onClick={() => setIsSettingsOpen(true)} className="text-sm font-medium text-blue-600 dark:text-cyan-400 hover:text-blue-800 dark:hover:text-cyan-300 transition-colors">
+            <button onClick={() => setIsSettingsOpen(true)} className="text-sm font-medium text-black dark:text-cyan-400 hover:text-blue-800 dark:hover:text-cyan-300 transition-colors">
               Impostazioni
             </button>
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
+              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
             </button>
             <Link to="/" className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
             <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
@@ -215,7 +215,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
 
       <main className="container mx-auto p-4 mt-6">
         {isSettingsOpen ? (
-          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-lg mx-auto transition-colors">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-lg mx-auto transition-colors">
             <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Impostazioni Negozio
@@ -236,14 +236,14 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
               </div>
               <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-white/10">
                 <button type="button" onClick={() => setIsSettingsOpen(false)} className="px-6 py-2 rounded-lg bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors">Annulla</button>
-                <button type="submit" className="px-6 py-2 rounded-lg bg-blue-600 dark:bg-cyan-500 text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
+                <button type="submit" className="px-6 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
                   <Save size={18} /> Salva Impostazioni
                 </button>
               </div>
             </form>
           </div>
         ) : isEditing ? (
-          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto transition-colors">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto transition-colors">
             <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {currentProduct.instoreCode ? 'Modifica Prodotto' : 'Nuovo Prodotto'}
@@ -255,7 +255,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Dati Base */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-blue-600 dark:text-cyan-400 border-b border-gray-200 dark:border-white/5 pb-2">Informazioni Base</h3>
+                  <h3 className="text-lg font-semibold text-black dark:text-cyan-400 border-b border-gray-200 dark:border-white/5 pb-2">Informazioni Base</h3>
                   
                   <div className="flex justify-between items-center bg-gray-50 dark:bg-zinc-800/50 p-3 rounded border border-gray-200 dark:border-white/10">
                     <div>
@@ -264,7 +264,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" className="sr-only peer" checked={currentProduct.isAvailable !== false} onChange={e => setCurrentProduct({...currentProduct, isAvailable: e.target.checked})} />
-                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-cyan-500"></div>
+                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black dark:peer-checked:bg-cyan-500"></div>
                     </label>
                   </div>
 
@@ -417,7 +417,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
 
               <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-white/10">
                 <button type="button" onClick={() => setIsEditing(false)} className="px-6 py-2 rounded-lg bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors">Annulla</button>
-                <button type="submit" className="px-6 py-2 rounded-lg bg-blue-600 dark:bg-cyan-500 text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
+                <button type="submit" className="px-6 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
                   <Save size={18} /> Salva Prodotto
                 </button>
               </div>
@@ -427,7 +427,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
           <>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Prodotti a Catalogo</h2>
-              <button onClick={handleAddNew} className="bg-blue-600 dark:bg-cyan-500 text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
+              <button onClick={handleAddNew} className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
                 <Plus size={18} /> Aggiungi Nuovo
               </button>
             </div>
@@ -438,7 +438,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
                  <p>Caricamento...</p>
               </div>
             ) : (
-              <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl transition-colors">
+              <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg dark:shadow-xl transition-colors">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
@@ -472,9 +472,9 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
                               <span className="bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 text-xs px-2 py-1 rounded">Nascosto</span>
                             )}
                           </td>
-                          <td className="p-4 text-blue-600 dark:text-cyan-400 font-bold">€{p.retailPrice?.toFixed(2)}</td>
+                          <td className="p-4 text-black dark:text-cyan-400 font-bold">€{p.retailPrice?.toFixed(2)}</td>
                           <td className="p-4 flex justify-end gap-2">
-                            <button onClick={() => handleEdit(p)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16} /></button>
+                            <button onClick={() => handleEdit(p)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-black dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16} /></button>
                             <button onClick={() => handleDelete(p.instoreCode)} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16} /></button>
                           </td>
                         </tr>
