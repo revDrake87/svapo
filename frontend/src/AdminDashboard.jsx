@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon } from 'lucide-react';
 
-function AdminDashboard({ isDarkMode, toggleTheme }) {
+function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -10,6 +10,8 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [newStoreName, setNewStoreName] = useState(storeName);
 
   useEffect(() => {
     fetchProducts();
@@ -96,6 +98,21 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
       });
   };
 
+  const handleSettingsSave = (e) => {
+    e.preventDefault();
+    fetch('http://localhost:8080/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ storeName: newStoreName })
+    })
+      .then(res => res.json())
+      .then(data => {
+        setStoreName(data.storeName);
+        setIsSettingsOpen(false);
+      })
+      .catch(err => console.error("Failed to save settings", err));
+  };
+
   const handleSave = (e) => {
     e.preventDefault();
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
@@ -145,8 +162,11 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300">
       <header className="bg-white dark:bg-zinc-950 border-b border-gray-200 dark:border-white/10 text-gray-900 dark:text-white p-4 sticky top-0 z-20 transition-colors">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-xl font-bold">{storeName} - Admin</h1>
           <div className="flex gap-4 items-center">
+            <button onClick={() => setIsSettingsOpen(true)} className="text-sm font-medium text-blue-600 dark:text-cyan-400 hover:text-blue-800 dark:hover:text-cyan-300 transition-colors">
+              Impostazioni
+            </button>
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
             </button>
@@ -159,7 +179,35 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
       </header>
 
       <main className="container mx-auto p-4 mt-6">
-        {isEditing ? (
+        {isSettingsOpen ? (
+          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-lg mx-auto transition-colors">
+            <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Impostazioni Negozio
+              </h2>
+              <button onClick={() => setIsSettingsOpen(false)} className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors"><X size={24} /></button>
+            </div>
+            <form onSubmit={handleSettingsSave} className="space-y-6">
+              <div>
+                <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Nome del Negozio</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={newStoreName} 
+                  onChange={e => setNewStoreName(e.target.value)} 
+                  className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
+                />
+                <p className="text-xs text-gray-500 mt-2">Questo nome verrà visualizzato nell'intestazione pubblica del catalogo.</p>
+              </div>
+              <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-white/10">
+                <button type="button" onClick={() => setIsSettingsOpen(false)} className="px-6 py-2 rounded-lg bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors">Annulla</button>
+                <button type="submit" className="px-6 py-2 rounded-lg bg-blue-600 dark:bg-cyan-500 text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
+                  <Save size={18} /> Salva Impostazioni
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : isEditing ? (
           <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto transition-colors">
             <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">

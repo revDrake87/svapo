@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Sun, Moon } from 'lucide-react';
 
-function ProductDetail({ isDarkMode, toggleTheme }) {
+function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,7 @@ function ProductDetail({ isDarkMode, toggleTheme }) {
               <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
             </Link>
             <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Dettaglio Prodotto
+              {storeName} - Dettaglio
             </h1>
           </div>
           <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">

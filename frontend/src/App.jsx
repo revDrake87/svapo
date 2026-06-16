@@ -7,8 +7,15 @@ import './index.css';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [storeName, setStoreName] = useState('VapeStore');
 
   useEffect(() => {
+    // Fetch store name
+    fetch('http://localhost:8080/api/settings')
+      .then(res => res.json())
+      .then(data => setStoreName(data.storeName))
+      .catch(err => console.error("Failed to load store settings", err));
+
     // Check local storage for theme preference
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme === 'light') {
@@ -35,9 +42,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} />} />
-      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} />} />
-      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} />} />
+      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} />} />
+      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} />} />
+      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} />} />
     </Routes>
   );
 }

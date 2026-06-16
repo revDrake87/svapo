@@ -1,3 +1,5 @@
+INSERT INTO store_settings (id, store_name) VALUES (1, 'VapeStore');
+
 INSERT INTO product (barcode, name, milliliters, category, sub_category, purchase_price, retail_price, description, image_url, flavor, ingredients, nicotine_strength) VALUES 
 ('8051234567890', 'Menta Glaciale 10ml', 10, 'LIQUIDO', 'TPD', 2.00, 5.90, 'Liquido pronto all''uso freschissimo', '', 'Menta', 'Menta, Ghiaccio', '4mg/ml'),
 ('8051234567891', 'Menta Glaciale 10ml Forte', 10, 'LIQUIDO', 'TPD', 2.00, 5.90, 'Liquido pronto all''uso freschissimo', '', 'Menta', 'Menta, Ghiaccio, Eucalipto', '8mg/ml'),

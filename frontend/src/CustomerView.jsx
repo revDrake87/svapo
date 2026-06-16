@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Sun, Moon } from 'lucide-react';
 
-function CustomerView({ isDarkMode, toggleTheme }) {
+function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -132,7 +132,7 @@ function CustomerView({ isDarkMode, toggleTheme }) {
       <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-            VapeStore
+            {storeName}
           </h1>
           <div className="flex items-center space-x-4">
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
