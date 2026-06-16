@@ -362,7 +362,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                   <span className="text-gray-500 dark:text-zinc-400 font-medium uppercase text-sm tracking-wider">Totale stimato</span>
                   <span className="text-3xl font-black text-blue-600 dark:text-cyan-400">€{cartTotal.toFixed(2)}</span>
                 </div>
-                <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-cyan-500 dark:to-blue-600 hover:from-blue-500 hover:to-indigo-500 dark:hover:from-cyan-400 dark:hover:to-blue-500 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 active:scale-95 shadow-lg dark:shadow-xl shadow-blue-500/20 dark:shadow-cyan-500/20 flex items-center justify-center gap-2">
+               <button className="w-full vercel-button-primary py-4 px-6 rounded-xl text-lg flex items-center justify-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                   Mostra in Negozio
                 </button>
