@@ -128,8 +128,8 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   }, [currentProducts, currentPage]); // Re-run animation when products or page change
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white font-sans transition-colors duration-300">
-      <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300">
+      <header className="bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             {storeName}
@@ -169,7 +169,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
               <select 
                 value={categoryFilter} 
                 onChange={(e) => { setCategoryFilter(e.target.value); setSubCategoryFilter(''); setFlavorFilter(''); }}
-                className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
               >
                 <option value="">Tutte le categorie</option>
                 <option value="LIQUIDO">Liquidi</option>
@@ -180,7 +180,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <select 
                   value={subCategoryFilter} 
                   onChange={(e) => setSubCategoryFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
                 >
                   <option value="">Tutte le Sotto-categorie</option>
                   {uniqueSubCategories.map(sub => (
@@ -193,7 +193,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <select 
                   value={flavorFilter} 
                   onChange={(e) => setFlavorFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
                 >
                   <option value="">Tutti i Gusti</option>
                   {uniqueFlavors.map(flavor => (
@@ -243,7 +243,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>
                   
-                  <div className="bg-gray-50 dark:bg-black/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-gray-100 dark:border-white/5 transition-colors">
+                  <div className="bg-gray-50 dark:bg-[#0A0A0A]/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-gray-100 dark:border-white/5 transition-colors">
                     <div className="flex justify-between text-gray-700 dark:text-zinc-300"><span className="text-gray-500 dark:text-zinc-500 font-medium">Codice:</span> <span>{product.barcode || product.instoreCode}</span></div>
                     
                     {product.category === 'LIQUIDO' ? (
@@ -267,7 +267,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                     <span className="text-2xl font-black text-gray-900 dark:text-white">€{product.retailPrice?.toFixed(2)}</span>
                     <button 
                       onClick={() => addToCart(product)}
-                      className="bg-black dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
+                      className="bg-[#0A0A0A] dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
                     >
                       Aggiungi
                     </button>
@@ -321,7 +321,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
             ) : (
               <div className="flex flex-col gap-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                 {cart.map(item => (
-                  <div key={item.instoreCode} className="cart-item flex justify-between items-center bg-gray-50 dark:bg-black/30 p-3 rounded-xl border border-gray-200 dark:border-white/5 group transition-all hover:bg-gray-100 dark:hover:bg-black/50">
+                  <div key={item.instoreCode} className="cart-item flex justify-between items-center bg-gray-50 dark:bg-[#0A0A0A]/30 p-3 rounded-xl border border-gray-200 dark:border-white/5 group transition-all hover:bg-gray-100 dark:hover:bg-[#0A0A0A]/50">
                     <div className="flex-1">
                       <h4 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">{item.name}</h4>
                       <div className="flex items-center gap-2 mt-1">
