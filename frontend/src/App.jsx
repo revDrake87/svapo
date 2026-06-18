@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CustomerView from './CustomerView';
@@ -8,12 +9,32 @@ import './index.css';
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [storeName, setStoreName] = useState('VapeStore');
+  const [settings, setSettings] = useState({
+    storeName: 'VapeStore',
+    logoUrl: '',
+    address: '',
+    instagram: '',
+    facebook: '',
+    tiktok: '',
+    whatsapp: ''
+  });
 
   useEffect(() => {
-    // Fetch store name
-    fetch('http://localhost:8080/api/settings')
+    // Fetch store settings
+    fetch(`${getApiUrl()}/settings`)
       .then(res => res.json())
-      .then(data => setStoreName(data.storeName))
+      .then(data => {
+        setStoreName(data.storeName);
+        setSettings({
+          storeName: data.storeName || 'VapeStore',
+          logoUrl: data.logoUrl || '',
+          address: data.address || '',
+          instagram: data.instagram || '',
+          facebook: data.facebook || '',
+          tiktok: data.tiktok || '',
+          whatsapp: data.whatsapp || ''
+        });
+      })
       .catch(err => console.error("Failed to load store settings", err));
 
     // Check local storage for theme preference
@@ -42,9 +63,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} />} />
-      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} />} />
-      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} />} />
+      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} />} />
+      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} />} />
+      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} settings={settings} setSettings={setSettings} />} />
     </Routes>
   );
 }

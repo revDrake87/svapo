@@ -16,4 +16,10 @@ public class StoreSettings {
     private Long id = 1L; // C'è solo una riga di impostazioni
 
     private String storeName;
+    private String logoUrl;
+    private String address;
+    private String instagram;
+    private String facebook;
+    private String tiktok;
+    private String whatsapp;
 }

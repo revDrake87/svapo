@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import { Link } from 'react-router-dom';
@@ -5,7 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Sun, Moon } from "lucide-react";
 
-function CustomerView({ isDarkMode, toggleTheme, storeName }) {
+function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/products')
+    fetch(`${getApiUrl()}/products`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -128,12 +129,17 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   }, [currentProducts, currentPage]); // Re-run animation when products or page change
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
       <header className="bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-            {storeName}
-          </h1>
+          <div className="flex items-center gap-3">
+            {settings?.logoUrl && (
+              <img src={settings.logoUrl} alt="Store Logo" className="h-10 w-auto object-contain" />
+            )}
+            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white hidden sm:block">
+              {storeName}
+            </h1>
+          </div>
           <div className="flex items-center space-x-4">
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
@@ -371,6 +377,45 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
           </div>
         </div>
       </main>
+
+      <footer className="mt-auto border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0A0A0A] py-8 transition-colors">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-zinc-400">
+          <div className="flex items-center gap-3">
+            {settings?.logoUrl && <img src={settings.logoUrl} alt="Logo Footer" className="h-6 grayscale opacity-50" />}
+            <p>&copy; {new Date().getFullYear()} {storeName}. Tutti i diritti riservati.</p>
+          </div>
+          
+          {settings?.address && (
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              {settings.address}
+            </div>
+          )}
+
+          <div className="flex items-center gap-4">
+            {settings?.instagram && (
+              <a href={settings.instagram} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
+                Instagram
+              </a>
+            )}
+            {settings?.facebook && (
+              <a href={settings.facebook} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
+                Facebook
+              </a>
+            )}
+            {settings?.tiktok && (
+              <a href={settings.tiktok} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
+                TikTok
+              </a>
+            )}
+            {settings?.whatsapp && (
+              <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-green-500 transition-colors">
+                WhatsApp
+              </a>
+            )}
+          </div>
+        </div>
+      </footer>
 
       <style jsx="true">{`
         .custom-scrollbar::-webkit-scrollbar {

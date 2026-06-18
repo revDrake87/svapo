@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Sun, Moon } from 'lucide-react';
@@ -9,7 +10,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/products`)
+    fetch(`${getApiUrl()}/products`)
       .then(res => res.json())
       .then(data => {
         const found = data.find(p => p.instoreCode.toString() === id);
