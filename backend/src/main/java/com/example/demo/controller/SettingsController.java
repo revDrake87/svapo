@@ -16,13 +16,19 @@ public class SettingsController {
 
     @GetMapping
     public StoreSettings getSettings() {
-        return storeSettingsRepository.findById(1L).orElse(new StoreSettings(1L, "VapeStore"));
+        return storeSettingsRepository.findById(1L).orElse(new StoreSettings(1L, "VapeStore", null, null, null, null, null, null));
     }
 
     @PutMapping
     public ResponseEntity<StoreSettings> updateSettings(@RequestBody StoreSettings newSettings) {
         return storeSettingsRepository.findById(1L).map(settings -> {
             settings.setStoreName(newSettings.getStoreName());
+            settings.setLogoUrl(newSettings.getLogoUrl());
+            settings.setAddress(newSettings.getAddress());
+            settings.setInstagram(newSettings.getInstagram());
+            settings.setFacebook(newSettings.getFacebook());
+            settings.setTiktok(newSettings.getTiktok());
+            settings.setWhatsapp(newSettings.getWhatsapp());
             return ResponseEntity.ok(storeSettingsRepository.save(settings));
         }).orElseGet(() -> {
             newSettings.setId(1L);

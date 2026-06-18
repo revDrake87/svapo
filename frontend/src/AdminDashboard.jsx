@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon } from 'lucide-react';
 
-function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
+function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -10,8 +10,13 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [newStoreName, setNewStoreName] = useState(storeName);
+  const [editableSettings, setEditableSettings] = useState(settings);
+
+  useEffect(() => {
+    setEditableSettings(settings);
+  }, [settings]);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -125,20 +130,47 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
       });
   };
 
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingLogo(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const token = localStorage.getItem('adminToken');
+    fetch(`${import.meta.env.VITE_API_URL}/products/upload`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData,
+    })
+      .then(res => res.text())
+      .then(url => {
+        setEditableSettings({ ...editableSettings, logoUrl: url });
+        setUploadingLogo(false);
+      })
+      .catch(err => {
+        console.error("Upload failed", err);
+        setUploadingLogo(false);
+        alert('Upload logo fallito');
+      });
+  };
+
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
     fetch(`${import.meta.env.VITE_API_URL}/settings`, {
-      method: 'POST',
+      method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ id: 1, storeName: newStoreName })
+      body: JSON.stringify({ id: 1, ...editableSettings })
     })
       .then(res => res.json())
       .then(data => {
         setStoreName(data.storeName);
+        setSettings(data);
         setIsSettingsOpen(false);
       })
       .catch(err => console.error("Failed to save settings", err));
@@ -215,7 +247,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
 
       <main className="container mx-auto p-4 mt-6">
         {isSettingsOpen ? (
-          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-lg mx-auto transition-colors">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-2xl mx-auto transition-colors">
             <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                 Impostazioni Negozio
@@ -223,17 +255,104 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
               <button onClick={() => setIsSettingsOpen(false)} className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors"><X size={24} /></button>
             </div>
             <form onSubmit={handleSettingsSave} className="space-y-6">
-              <div>
-                <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Nome del Negozio</label>
-                <input 
-                  type="text" 
-                  required 
-                  value={newStoreName} 
-                  onChange={e => setNewStoreName(e.target.value)} 
-                  className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
-                />
-                <p className="text-xs text-gray-500 mt-2">Questo nome verrà visualizzato nell'intestazione pubblica del catalogo.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Nome del Negozio</label>
+                    <input
+                      type="text"
+                      required
+                      value={editableSettings.storeName}
+                      onChange={e => setEditableSettings({...editableSettings, storeName: e.target.value})}
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Indirizzo</label>
+                    <input
+                      type="text"
+                      value={editableSettings.address}
+                      onChange={e => setEditableSettings({...editableSettings, address: e.target.value})}
+                      placeholder="es. Via Roma 1, Milano"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Logo</label>
+                    <div className="flex gap-4 items-center">
+                      <div className="w-16 h-16 bg-gray-100 dark:bg-black border border-gray-300 dark:border-white/20 rounded overflow-hidden flex items-center justify-center shrink-0">
+                        {editableSettings.logoUrl ? (
+                          <img src={editableSettings.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                        ) : (
+                          <ImageIcon className="text-gray-400 dark:text-zinc-600" size={24} />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          disabled={uploadingLogo}
+                          className="w-full text-xs text-gray-900 dark:text-white file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/20 file:text-blue-700 dark:file:text-blue-400 hover:file:bg-blue-100 dark:hover:file:bg-blue-900/30"
+                        />
+                        {uploadingLogo && <span className="text-xs text-blue-500 mt-1 block">Caricamento in corso...</span>}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-white/10 pb-1">Social & Contatti</h3>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Instagram URL</label>
+                    <input
+                      type="text"
+                      value={editableSettings.instagram}
+                      onChange={e => setEditableSettings({...editableSettings, instagram: e.target.value})}
+                      placeholder="https://instagram.com/tuoprofilo"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Facebook URL</label>
+                    <input
+                      type="text"
+                      value={editableSettings.facebook}
+                      onChange={e => setEditableSettings({...editableSettings, facebook: e.target.value})}
+                      placeholder="https://facebook.com/tuapagina"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">TikTok URL</label>
+                    <input
+                      type="text"
+                      value={editableSettings.tiktok}
+                      onChange={e => setEditableSettings({...editableSettings, tiktok: e.target.value})}
+                      placeholder="https://tiktok.com/@tuoprofilo"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">WhatsApp (Numero)</label>
+                    <input
+                      type="text"
+                      value={editableSettings.whatsapp}
+                      onChange={e => setEditableSettings({...editableSettings, whatsapp: e.target.value})}
+                      placeholder="+39 333 1234567"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+                </div>
               </div>
+
               <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-white/10">
                 <button type="button" onClick={() => setIsSettingsOpen(false)} className="px-6 py-2 rounded-lg bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-700 transition-colors">Annulla</button>
                 <button type="submit" className="px-6 py-2 rounded-lg bg-black dark:bg-white text-white dark:text-black font-bold hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors flex items-center gap-2">
