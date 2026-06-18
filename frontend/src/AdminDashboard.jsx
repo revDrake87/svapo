@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon } from 'lucide-react';
@@ -27,7 +28,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   }, []);
 
   const fetchProducts = () => {
-    fetch(`${import.meta.env.VITE_API_URL}/products`)
+    fetch(`${getApiUrl()}/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -42,7 +43,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+      const res = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: 'admin', password: password })
@@ -68,7 +69,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleDelete = (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
       const token = localStorage.getItem('adminToken');
-      fetch(`${import.meta.env.VITE_API_URL}/products/${id}`, { 
+      fetch(`${getApiUrl()}/products/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -113,7 +114,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     formData.append('file', file);
 
     const token = localStorage.getItem('adminToken');
-    fetch(`${import.meta.env.VITE_API_URL}/products/upload`, {
+    fetch(`${getApiUrl()}/products/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
@@ -139,7 +140,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     formData.append('file', file);
 
     const token = localStorage.getItem('adminToken');
-    fetch(`${import.meta.env.VITE_API_URL}/products/upload`, {
+    fetch(`${getApiUrl()}/products/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
@@ -159,7 +160,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
-    fetch(`${import.meta.env.VITE_API_URL}/settings`, {
+    fetch(`${getApiUrl()}/settings`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -180,8 +181,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     e.preventDefault();
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
-      ? `${import.meta.env.VITE_API_URL}/products/${currentProduct.instoreCode}`
-      : `${import.meta.env.VITE_API_URL}/products`;
+      ? `${getApiUrl()}/products/${currentProduct.instoreCode}`
+      : `${getApiUrl()}/products`;
 
     const token = localStorage.getItem('adminToken');
     fetch(url, {

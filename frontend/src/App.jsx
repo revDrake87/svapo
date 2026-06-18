@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CustomerView from './CustomerView';
@@ -20,7 +21,7 @@ function App() {
 
   useEffect(() => {
     // Fetch store settings
-    fetch(`${import.meta.env.VITE_API_URL}/settings`)
+    fetch(`${getApiUrl()}/settings`)
       .then(res => res.json())
       .then(data => {
         setStoreName(data.storeName);

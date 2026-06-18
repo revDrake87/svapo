@@ -1,3 +1,4 @@
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import { Link } from 'react-router-dom';
@@ -22,7 +23,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/products`)
+    fetch(`${getApiUrl()}/products`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
