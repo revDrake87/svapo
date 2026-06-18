@@ -69,7 +69,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleDelete = (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
       const token = localStorage.getItem('adminToken');
-      fetch(`${getApiUrl()}/products/${id}`, {
+      fetch(`${getApiUrl()}/products/${id}`, { 
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -256,28 +256,28 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
               <button onClick={() => setIsSettingsOpen(false)} className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors"><X size={24} /></button>
             </div>
             <form onSubmit={handleSettingsSave} className="space-y-6">
-
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Nome del Negozio</label>
-                    <input
-                      type="text"
-                      required
-                      value={editableSettings.storeName}
-                      onChange={e => setEditableSettings({...editableSettings, storeName: e.target.value})}
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    <input 
+                      type="text" 
+                      required 
+                      value={editableSettings.storeName} 
+                      onChange={e => setEditableSettings({...editableSettings, storeName: e.target.value})} 
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Indirizzo</label>
-                    <input
-                      type="text"
-                      value={editableSettings.address}
-                      onChange={e => setEditableSettings({...editableSettings, address: e.target.value})}
+                    <input 
+                      type="text" 
+                      value={editableSettings.address} 
+                      onChange={e => setEditableSettings({...editableSettings, address: e.target.value})} 
                       placeholder="es. Via Roma 1, Milano"
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
 
@@ -292,8 +292,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                         )}
                       </div>
                       <div className="flex-1">
-                        <input
-                          type="file"
+                        <input 
+                          type="file" 
                           accept="image/*"
                           onChange={handleLogoUpload}
                           disabled={uploadingLogo}
@@ -307,48 +307,48 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 border-b border-gray-200 dark:border-white/10 pb-1">Social & Contatti</h3>
-
+                  
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Instagram URL</label>
-                    <input
-                      type="text"
-                      value={editableSettings.instagram}
-                      onChange={e => setEditableSettings({...editableSettings, instagram: e.target.value})}
+                    <input 
+                      type="text" 
+                      value={editableSettings.instagram} 
+                      onChange={e => setEditableSettings({...editableSettings, instagram: e.target.value})} 
                       placeholder="https://instagram.com/tuoprofilo"
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Facebook URL</label>
-                    <input
-                      type="text"
-                      value={editableSettings.facebook}
-                      onChange={e => setEditableSettings({...editableSettings, facebook: e.target.value})}
+                    <input 
+                      type="text" 
+                      value={editableSettings.facebook} 
+                      onChange={e => setEditableSettings({...editableSettings, facebook: e.target.value})} 
                       placeholder="https://facebook.com/tuapagina"
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">TikTok URL</label>
-                    <input
-                      type="text"
-                      value={editableSettings.tiktok}
-                      onChange={e => setEditableSettings({...editableSettings, tiktok: e.target.value})}
+                    <input 
+                      type="text" 
+                      value={editableSettings.tiktok} 
+                      onChange={e => setEditableSettings({...editableSettings, tiktok: e.target.value})} 
                       placeholder="https://tiktok.com/@tuoprofilo"
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">WhatsApp (Numero)</label>
-                    <input
-                      type="text"
-                      value={editableSettings.whatsapp}
-                      onChange={e => setEditableSettings({...editableSettings, whatsapp: e.target.value})}
+                    <input 
+                      type="text" 
+                      value={editableSettings.whatsapp} 
+                      onChange={e => setEditableSettings({...editableSettings, whatsapp: e.target.value})} 
                       placeholder="+39 333 1234567"
-                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" 
                     />
                   </div>
                 </div>
