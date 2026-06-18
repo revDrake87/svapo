@@ -1,8 +1,7 @@
 Svapo Store Digital Catalog
+
 Un catalogo digitale moderno e responsivo progettato per un negozio fisico di sigarette elettroniche (svapo). L'applicazione permette ai clienti di sfogliare i prodotti (liquidi, hardware, accessori), filtrare per categoria, e creare una "Lista Acquisti" da mostrare in cassa. Include anche un pannello di amministrazione protetto per la gestione completa dell'inventario.
-
 L'interfaccia utente è stata recentemente aggiornata per seguire il pattern grafico minimalista ed elegante di Next.js / Vercel (font Inter, alto contrasto, design pulito).
-
 🌟 Funzionalità Principali
 Catalogo Clienti: Visualizzazione a griglia con filtri avanzati per categorie (Liquidi, Hardware, ecc.), ricerca testuale e impaginazione.
 Lista Acquisti: Un carrello virtuale pensato per l'esperienza in negozio (mostra al cassiere cosa vuoi acquistare).
@@ -12,14 +11,12 @@ Gestione Prodotti (CRUD): Aggiunta, modifica, eliminazione e caricamento immagin
 Impostazioni Dinamiche: Modifica del nome del negozio globalmente, direttamente dal pannello admin.
 🛠️ Stack Tecnologico
 Frontend:
-
 React 19 + Vite
 Tailwind CSS (Styling custom in stile Vercel)
 React Router (Navigazione)
 Lucide React (Icone)
 GSAP (Animazioni)
 Backend:
-
 Java 21 + Spring Boot
 Spring Security + JWT (Autenticazione e Sicurezza)
 Spring Data JPA (Hibernate)
@@ -30,23 +27,24 @@ Node.js (v18+) e npm
 Java Development Kit (JDK) 17 o superiore
 Maven
 1. Avvio del Backend
-Il backend utilizza di default un database in memoria (H2) che si resetta ad ogni avvio. I dati e i prodotti iniziali vengono popolati automaticamente dal file data.sql.
-
+Il backend utilizza di default un database in memoria (H2) che si resetta ad ogni avvio. I dati e i prodotti iniziali vengono popolati automaticamente dal file `data.sql`.
+```bash
 cd backend
 mvn spring-boot:run
-Il server backend sarà in ascolto su http://localhost:8080.
-
+```
+Il server backend sarà in ascolto su `http://localhost:8080`.
 2. Avvio del Frontend
 In una nuova finestra del terminale:
-
+```bash
 cd frontend
 npm install
 npm run dev
-Il frontend sarà accessibile all'indirizzo http://localhost:5173.
-
+```
+Il frontend sarà accessibile all'indirizzo `http://localhost:5173`.
 🔐 Accesso Admin
-Per accedere alla dashboard di amministrazione, naviga su http://localhost:5173/admin ed usa le seguenti credenziali predefinite:
-
-Username: admin
-Password: admin123
-(Nota: La password è salvata nel database criptata in formato BCrypt. È possibile modificarla aggiornando l'hash direttamente nel file backend/src/main/resources/data.sql).
+Per accedere alla dashboard di amministrazione, naviga su `http://localhost:5173/admin` ed usa le seguenti credenziali predefinite:
+Username: `admin`
+Password: `admin123`
+(Nota: La password è salvata nel database criptata in formato BCrypt. È possibile modificarla aggiornando l'hash direttamente nel file `backend/src/main/resources/data.sql`).
+🗄️ Passaggio a MySQL (Produzione)
+Il progetto è già predisposto per l'uso di un vero database MySQL. Consulta il file `mysql_setup_guide.md` presente nella root di questa repository per le istruzioni dettagliate su come configurare la connessione al tuo database server su Fedora.
