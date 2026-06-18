@@ -1,7 +1,7 @@
 import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 
 function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
   const [products, setProducts] = useState([]);
@@ -175,6 +175,21 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
         setIsSettingsOpen(false);
       })
       .catch(err => console.error("Failed to save settings", err));
+  };
+
+  const handleToggleAvailability = (product) => {
+    const updatedProduct = { ...product, isAvailable: product.isAvailable === false ? true : false };
+    const token = localStorage.getItem('adminToken');
+    fetch(`${getApiUrl()}/products/${product.instoreCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(updatedProduct)
+    })
+      .then(() => fetchProducts())
+      .catch(err => console.error("Failed to toggle availability", err));
   };
 
   const handleSave = (e) => {
@@ -377,17 +392,6 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold text-black dark:text-cyan-400 border-b border-gray-200 dark:border-white/5 pb-2">Informazioni Base</h3>
                   
-                  <div className="flex justify-between items-center bg-gray-50 dark:bg-zinc-800/50 p-3 rounded border border-gray-200 dark:border-white/10">
-                    <div>
-                      <h4 className="font-bold text-gray-900 dark:text-white">Prodotto Disponibile</h4>
-                      <p className="text-xs text-gray-500 dark:text-zinc-400">Rendi visibile questo prodotto nel catalogo pubblico</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked={currentProduct.isAvailable !== false} onChange={e => setCurrentProduct({...currentProduct, isAvailable: e.target.checked})} />
-                      <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-zinc-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-black dark:peer-checked:bg-cyan-500"></div>
-                    </label>
-                  </div>
-
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Categoria</label>
                     <select 
@@ -571,7 +575,6 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Codice</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Nome</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Categoria</th>
-                        <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Stato</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold">Prezzo</th>
                         <th className="p-4 text-xs uppercase text-gray-500 dark:text-zinc-500 font-bold text-right">Azioni</th>
                       </tr>
@@ -589,15 +592,15 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                           <td className="p-4">
                             <span className="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-transparent text-xs px-2 py-1 rounded text-gray-600 dark:text-zinc-300">{p.subCategory}</span>
                           </td>
-                          <td className="p-4">
-                            {p.isAvailable !== false ? (
-                              <span className="bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400 text-xs px-2 py-1 rounded">Disponibile</span>
-                            ) : (
-                              <span className="bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 text-xs px-2 py-1 rounded">Nascosto</span>
-                            )}
-                          </td>
                           <td className="p-4 text-black dark:text-cyan-400 font-bold">€{p.retailPrice?.toFixed(2)}</td>
                           <td className="p-4 flex justify-end gap-2">
+                            <button
+                              onClick={() => handleToggleAvailability(p)}
+                              title={p.isAvailable === false ? "Rendi visibile" : "Nascondi"}
+                              className={`p-2 rounded-lg transition-colors ${p.isAvailable === false ? 'bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30'}`}
+                            >
+                              {p.isAvailable === false ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
                             <button onClick={() => handleEdit(p)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-black dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16} /></button>
                             <button onClick={() => handleDelete(p.instoreCode)} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16} /></button>
                           </td>
