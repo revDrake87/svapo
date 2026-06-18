@@ -2,11 +2,7 @@ INSERT INTO store_settings (id, store_name) VALUES (1, 'VapeStore');
 
 INSERT INTO users (username, password) VALUES ('admin', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a');
 
-<<<<<<< HEAD
-INSERT INTO product (barcode, name, milliliters, category, sub_category, purchase_price, retail_price, description, image_url) VALUES 
-=======
 INSERT INTO product (barcode, name, milliliters, category, sub_category, purchase_price, retail_price, description, image_url) VALUES
->>>>>>> ceb11d941357beff3b7ab931a7687d9aae252ba5
 ('8051234567890', 'Outlet - Mr Yellow Lik Bar Juice', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Mr Yellow liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di banana split, crema e ghiaccio', 'https://www.svapoebasta.com/92106-thickbox_default/mr-yellow-lik-bar-juice-10-ml.jpg'),
 ('8051234567891', 'Outlet - Cotton Candy Lik Bar Juice', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Cotton Candy liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di zucchero filato e ghiaccio.', 'https://www.svapoebasta.com/92108-thickbox_default/cotton-candy-lik-bar-juice-10-ml.jpg'),
 ('8051234567892', 'Kentucky Il Distillificio', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Kentucky liquido pronto 10ml linea Il Distillificio di Suprem-e a base di vero tabacco da sigaro toscano.', 'https://www.svapoebasta.com/90972-thickbox_default/kentucky-distillificio-10-ml.jpg'),
@@ -20,11 +16,7 @@ INSERT INTO product (barcode, name, milliliters, category, sub_category, purchas
 ('8051234567900', 'Ice Club Banana Milkshake', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Ice Club Banana Milkshake Ice liquido mini shot 10ml de La Tabaccheria al gusto di banana, latte e ghiaccio.', 'https://www.svapoebasta.com/92097-thickbox_default/ice-club-banana-milkshake-ice-10-ml.jpg'),
 ('8051234567901', 'Triple Watermelon Ice Salt Effect', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Triple Watermelon Ice liquido shot 20ml linea Salt Effect di Shock Wave al gusto di anguria e ghiaccio.', 'https://www.svapoebasta.com/91750-thickbox_default/triple-watermelon-ice-salt-effect-20-ml.jpg');
 
-<<<<<<< HEAD
-INSERT INTO product (barcode, name, category, sub_category, purchase_price, retail_price, description, image_url) VALUES 
-=======
 INSERT INTO product (barcode, name, category, sub_category, purchase_price, retail_price, description, image_url) VALUES
->>>>>>> ceb11d941357beff3b7ab931a7687d9aae252ba5
 ('8051234567902', 'Tubino DNA Pod Mod Kit', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Tubino DNA sigaretta elettronica per svapo di guancia e RDL.', 'https://www.svapoebasta.com/92121-thickbox_default/tubino-dna-kit.jpg'),
 ('8051234567903', 'Cyber G Slim DTE Aspire Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Cyber G Slim DTE kit sigaretta elettronica con filtro Aspire per svapo di guancia.', 'https://www.svapoebasta.com/91863-thickbox_default/cyber-g-slim-dte-kit.jpg'),
 ('8051234567904', 'Centaurus Q200 Pro Lost Vape', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Centaurus Q200 Pro box mod Lost Vape per sigaretta elettronica.', 'https://www.svapoebasta.com/91284-thickbox_default/centaurus-q-200-box-mod.jpg'),
