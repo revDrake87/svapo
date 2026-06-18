@@ -9,7 +9,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/products`)
+    fetch(`${import.meta.env.VITE_API_URL}/products`)
       .then(res => res.json())
       .then(data => {
         const found = data.find(p => p.instoreCode.toString() === id);

@@ -22,7 +22,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   }, []);
 
   const fetchProducts = () => {
-    fetch('http://localhost:8080/api/products')
+    fetch(`${import.meta.env.VITE_API_URL}/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -37,7 +37,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:8080/api/auth/login', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: 'admin', password: password })
@@ -63,7 +63,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const handleDelete = (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
       const token = localStorage.getItem('adminToken');
-      fetch(`http://localhost:8080/api/products/${id}`, { 
+      fetch(`${import.meta.env.VITE_API_URL}/products/${id}`, { 
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -108,7 +108,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
     formData.append('file', file);
 
     const token = localStorage.getItem('adminToken');
-    fetch('http://localhost:8080/api/products/upload', {
+    fetch(`${import.meta.env.VITE_API_URL}/products/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
@@ -128,7 +128,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
-    fetch('http://localhost:8080/api/settings', {
+    fetch(`${import.meta.env.VITE_API_URL}/settings`, {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -148,8 +148,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName }) {
     e.preventDefault();
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
-      ? `http://localhost:8080/api/products/${currentProduct.instoreCode}`
-      : 'http://localhost:8080/api/products';
+      ? `${import.meta.env.VITE_API_URL}/products/${currentProduct.instoreCode}`
+      : `${import.meta.env.VITE_API_URL}/products`;
 
     const token = localStorage.getItem('adminToken');
     fetch(url, {

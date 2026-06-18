@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     // Fetch store name
-    fetch('http://localhost:8080/api/settings')
+    fetch(`${import.meta.env.VITE_API_URL}/settings`)
       .then(res => res.json())
       .then(data => setStoreName(data.storeName))
       .catch(err => console.error("Failed to load store settings", err));

@@ -3,7 +3,7 @@ import './index.css';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon } from "lucide-react";
 
 function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   const [products, setProducts] = useState([]);
@@ -22,7 +22,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/products')
+    fetch(`${import.meta.env.VITE_API_URL}/products`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -128,15 +128,15 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
   }, [currentProducts, currentPage]); // Re-run animation when products or page change
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white font-sans transition-colors duration-300">
-      <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300">
+      <header className="bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             {storeName}
           </h1>
           <div className="flex items-center space-x-4">
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
+              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
             </button>
             <Link to="/admin" className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors">Admin Area</Link>
             <span className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-white/20 px-4 py-1.5 rounded-full text-sm font-semibold text-gray-800 dark:text-white transition-all">
@@ -158,18 +158,18 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                   placeholder="Cerca ingrediente o nome..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white dark:bg-zinc-900 border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
+                  className="w-full bg-white dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
                 />
                 <svg className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               </div>
             </div>
 
             {/* Advanced Filters */}
-            <div className="flex flex-wrap gap-3 w-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/5 p-4 rounded-xl shadow-sm">
+            <div className="flex flex-wrap gap-3 w-full bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 p-4 rounded-xl shadow-sm">
               <select 
                 value={categoryFilter} 
                 onChange={(e) => { setCategoryFilter(e.target.value); setSubCategoryFilter(''); setFlavorFilter(''); }}
-                className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
               >
                 <option value="">Tutte le categorie</option>
                 <option value="LIQUIDO">Liquidi</option>
@@ -180,7 +180,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <select 
                   value={subCategoryFilter} 
                   onChange={(e) => setSubCategoryFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
                 >
                   <option value="">Tutte le Sotto-categorie</option>
                   {uniqueSubCategories.map(sub => (
@@ -193,7 +193,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <select 
                   value={flavorFilter} 
                   onChange={(e) => setFlavorFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
                 >
                   <option value="">Tutti i Gusti</option>
                   {uniqueFlavors.map(flavor => (
@@ -225,7 +225,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
             <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {currentProducts.map(product => (
-                <div key={product.instoreCode} className="product-card group bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/5 p-5 rounded-2xl shadow-md hover:shadow-cyan-500/20 dark:hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col relative overflow-hidden">
+                <div key={product.instoreCode} className="product-card group bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 p-5 rounded-2xl shadow-md hover:shadow-cyan-500/20 dark:hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col relative overflow-hidden">
                   <div className="absolute top-3 right-3 bg-gray-100 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10 transition-colors">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
@@ -239,11 +239,11 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                     </div>
                   </Link>
                   <Link to={`/product/${product.instoreCode}`} className="block">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>
                   
-                  <div className="bg-gray-50 dark:bg-black/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-gray-100 dark:border-white/5 transition-colors">
+                  <div className="bg-gray-50 dark:bg-[#0A0A0A]/40 rounded-xl p-3 mb-5 flex-grow text-xs space-y-1.5 border border-gray-100 dark:border-white/5 transition-colors">
                     <div className="flex justify-between text-gray-700 dark:text-zinc-300"><span className="text-gray-500 dark:text-zinc-500 font-medium">Codice:</span> <span>{product.barcode || product.instoreCode}</span></div>
                     
                     {product.category === 'LIQUIDO' ? (
@@ -267,7 +267,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                     <span className="text-2xl font-black text-gray-900 dark:text-white">€{product.retailPrice?.toFixed(2)}</span>
                     <button 
                       onClick={() => addToCart(product)}
-                      className="bg-blue-600 dark:bg-cyan-500 hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
+                      className="bg-[#0A0A0A] dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
                     >
                       Aggiungi
                     </button>
@@ -282,7 +282,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <button 
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Precedente
                 </button>
@@ -292,7 +292,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Successiva
                 </button>
@@ -304,9 +304,9 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
 
         {/* Cart Section */}
         <div className="md:w-1/3">
-          <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-xl dark:shadow-2xl sticky top-28 transition-colors duration-300">
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-xl dark:shadow-2xl sticky top-28 transition-colors duration-300">
             <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
-              <svg className="w-6 h-6 text-blue-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+              <svg className="w-6 h-6 text-black dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
               Lista Acquisto
             </h2>
             <p className="text-sm text-gray-500 dark:text-zinc-400 mb-6 pb-4 border-b border-gray-200 dark:border-white/10 transition-colors">
@@ -321,7 +321,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
             ) : (
               <div className="flex flex-col gap-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
                 {cart.map(item => (
-                  <div key={item.instoreCode} className="cart-item flex justify-between items-center bg-gray-50 dark:bg-black/30 p-3 rounded-xl border border-gray-200 dark:border-white/5 group transition-all hover:bg-gray-100 dark:hover:bg-black/50">
+                  <div key={item.instoreCode} className="cart-item flex justify-between items-center bg-gray-50 dark:bg-[#0A0A0A]/30 p-3 rounded-xl border border-gray-200 dark:border-white/5 group transition-all hover:bg-gray-100 dark:hover:bg-[#0A0A0A]/50">
                     <div className="flex-1">
                       <h4 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">{item.name}</h4>
                       <div className="flex items-center gap-2 mt-1">
@@ -360,9 +360,9 @@ function CustomerView({ isDarkMode, toggleTheme, storeName }) {
               <div className="mt-6 pt-5 border-t border-gray-200 dark:border-white/10 transition-colors">
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-gray-500 dark:text-zinc-400 font-medium uppercase text-sm tracking-wider">Totale stimato</span>
-                  <span className="text-3xl font-black text-blue-600 dark:text-cyan-400">€{cartTotal.toFixed(2)}</span>
+                  <span className="text-3xl font-black text-black dark:text-cyan-400">€{cartTotal.toFixed(2)}</span>
                 </div>
-               <button className="w-full vercel-button-primary py-4 px-6 rounded-xl text-lg flex items-center justify-center gap-2">
+                <button className="w-full vercel-button-primary py-4 px-6 rounded-xl text-lg flex items-center justify-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
                   Mostra in Negozio
                 </button>
