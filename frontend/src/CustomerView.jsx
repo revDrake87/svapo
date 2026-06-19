@@ -4,11 +4,10 @@ import './index.css';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Sun, Moon } from "lucide-react";
+import Header from './Header';
 
-function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
+function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -38,22 +37,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
         setError(err.message);
         setLoading(false);
       });
-      
-    // Load cart from local storage if available
-    const savedCart = localStorage.getItem('vapeCart');
-    if (savedCart) {
-      try {
-        setCart(JSON.parse(savedCart));
-      } catch (e) {
-        console.error("Could not parse saved cart", e);
-      }
-    }
   }, []);
-
-  useEffect(() => {
-    // Save cart to local storage whenever it changes
-    localStorage.setItem('vapeCart', JSON.stringify(cart));
-  }, [cart]);
 
   const addToCart = (product) => {
     setCart(prevCart => {
@@ -70,15 +54,6 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
   const removeFromCart = (productCode) => {
     setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
   };
-
-  const updateQuantity = (productCode, newQuantity) => {
-    if (newQuantity < 1) return;
-    setCart(prevCart => prevCart.map(item => 
-      item.instoreCode === productCode ? { ...item, quantity: newQuantity } : item
-    ));
-  };
-
-  const cartTotal = cart.reduce((total, item) => total + (item.retailPrice * item.quantity), 0);
 
   const catalogRef = useRef(null);
 
@@ -130,32 +105,18 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
-      <header className="bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            {settings?.logoUrl && (
-              <img src={settings.logoUrl} alt="Store Logo" className="h-10 w-auto object-contain" />
-            )}
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white hidden sm:block">
-              {storeName}
-            </h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
-            </button>
-            <Link to="/admin" className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors">Admin Area</Link>
-            <span className="bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-white/20 px-4 py-1.5 rounded-full text-sm font-semibold text-gray-800 dark:text-white transition-all">
-              Lista Acquisto: {cart.length}
-            </span>
-          </div>
-        </div>
-      </header>
+      <Header 
+        isDarkMode={isDarkMode} 
+        toggleTheme={toggleTheme} 
+        storeName={storeName} 
+        settings={settings} 
+        cartItemCount={cart.length} 
+      />
 
-      <main className="container mx-auto p-4 flex flex-col md:flex-row gap-8 mt-6">
+      <main className="container mx-auto p-4 flex flex-col gap-8 mt-6 flex-grow">
         {/* Catalog Section */}
-        <div className="md:w-2/3" ref={catalogRef}>
-          <div className="flex flex-col justify-between items-start mb-6 gap-4">
+        <div className="w-full" ref={catalogRef}>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div className="flex w-full justify-between items-center">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Catalogo</h2>
               <div className="relative w-full sm:w-64">
@@ -307,132 +268,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings }) {
             </>
           )}
         </div>
-
-        {/* Cart Section */}
-        <div className="md:w-1/3">
-          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 p-6 rounded-2xl shadow-xl dark:shadow-2xl sticky top-28 transition-colors duration-300">
-            <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
-              <svg className="w-6 h-6 text-black dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-              Lista Acquisto
-            </h2>
-            <p className="text-sm text-gray-500 dark:text-zinc-400 mb-6 pb-4 border-b border-gray-200 dark:border-white/10 transition-colors">
-              Mostra questa schermata in negozio.
-            </p>
-
-            {cart.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 opacity-50">
-                <svg className="w-16 h-16 text-gray-400 dark:text-zinc-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                <p className="text-gray-500 dark:text-zinc-500 text-center text-sm">La lista è vuota.<br/>Aggiungi dei prodotti dal catalogo.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-                {cart.map(item => (
-                  <div key={item.instoreCode} className="cart-item flex justify-between items-center bg-gray-50 dark:bg-[#0A0A0A]/30 p-3 rounded-xl border border-gray-200 dark:border-white/5 group transition-all hover:bg-gray-100 dark:hover:bg-[#0A0A0A]/50">
-                    <div className="flex-1">
-                      <h4 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">{item.name}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-500 dark:text-zinc-400 font-mono">€{item.retailPrice?.toFixed(2)} cad.</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2 ml-4">
-                      <div className="flex items-center bg-white dark:bg-zinc-800 rounded-lg p-0.5 border border-gray-200 dark:border-white/5 transition-colors">
-                        <button 
-                          onClick={() => updateQuantity(item.instoreCode, item.quantity - 1)}
-                          className="w-7 h-7 flex items-center justify-center bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-zinc-300 rounded-md transition-colors"
-                        >
-                          -
-                        </button>
-                        <span className="w-6 text-center text-sm font-bold text-gray-900 dark:text-white">{item.quantity}</span>
-                        <button 
-                          onClick={() => updateQuantity(item.instoreCode, item.quantity + 1)}
-                          className="w-7 h-7 flex items-center justify-center bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-zinc-300 rounded-md transition-colors"
-                        >
-                          +
-                        </button>
-                      </div>
-                      <button 
-                        onClick={() => removeFromCart(item.instoreCode)}
-                        className="text-[10px] uppercase font-bold text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        Rimuovi
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {cart.length > 0 && (
-              <div className="mt-6 pt-5 border-t border-gray-200 dark:border-white/10 transition-colors">
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-gray-500 dark:text-zinc-400 font-medium uppercase text-sm tracking-wider">Totale stimato</span>
-                  <span className="text-3xl font-black text-black dark:text-cyan-400">€{cartTotal.toFixed(2)}</span>
-                </div>
-                <button className="w-full vercel-button-primary py-4 px-6 rounded-xl text-lg flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                  Mostra in Negozio
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
       </main>
-
-      <footer className="mt-auto border-t border-gray-200 dark:border-white/10 bg-white dark:bg-[#0A0A0A] py-8 transition-colors">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-zinc-400">
-          <div className="flex items-center gap-3">
-            {settings?.logoUrl && <img src={settings.logoUrl} alt="Logo Footer" className="h-6 grayscale opacity-50" />}
-            <p>&copy; {new Date().getFullYear()} {storeName}. Tutti i diritti riservati.</p>
-          </div>
-          
-          {settings?.address && (
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              {settings.address}
-            </div>
-          )}
-
-          <div className="flex items-center gap-4">
-            {settings?.instagram && (
-              <a href={settings.instagram} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                Instagram
-              </a>
-            )}
-            {settings?.facebook && (
-              <a href={settings.facebook} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                Facebook
-              </a>
-            )}
-            {settings?.tiktok && (
-              <a href={settings.tiktok} target="_blank" rel="noreferrer" className="hover:text-black dark:hover:text-white transition-colors">
-                TikTok
-              </a>
-            )}
-            {settings?.whatsapp && (
-              <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-green-500 transition-colors">
-                WhatsApp
-              </a>
-            )}
-          </div>
-        </div>
-      </footer>
-
-      <style jsx="true">{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-      `}</style>
     </div>
   );
 }

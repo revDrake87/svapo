@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import CustomerView from './CustomerView';
 import AdminDashboard from './AdminDashboard';
 import ProductDetail from './ProductDetail';
+import CartView from './CartView';
 import './index.css';
 
 function App() {
@@ -18,8 +19,20 @@ function App() {
     tiktok: '',
     whatsapp: ''
   });
+  
+  const [cart, setCart] = useState([]);
 
   useEffect(() => {
+    // Load cart from local storage if available
+    const savedCart = localStorage.getItem('vapeCart');
+    if (savedCart) {
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (e) {
+        console.error("Could not parse saved cart", e);
+      }
+    }
+
     // Fetch store settings
     fetch(`${getApiUrl()}/settings`)
       .then(res => res.json())
@@ -61,10 +74,16 @@ function App() {
     localStorage.setItem('theme', newTheme);
   };
 
+  useEffect(() => {
+    // Save cart to local storage whenever it changes
+    localStorage.setItem('vapeCart', JSON.stringify(cart));
+  }, [cart]);
+
   return (
     <Routes>
-      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} />} />
-      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} />} />
+      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
+      <Route path="/cart" element={<CartView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
+      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
       <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} settings={settings} setSettings={setSettings} />} />
     </Routes>
   );
