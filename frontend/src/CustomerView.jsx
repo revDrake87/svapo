@@ -20,6 +20,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+  const loaderRef = useRef(null);
 
   useEffect(() => {
     fetch(`${getApiUrl()}/products`)
@@ -89,19 +90,42 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   // Pagination logic
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
+    0,
     currentPage * itemsPerPage
   );
+
+  // Infinite Scroll Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const target = entries[0];
+      if (target.isIntersecting && currentPage < totalPages) {
+        setCurrentPage(prev => prev + 1);
+      }
+    }, { threshold: 0.1 });
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [loaderRef, currentPage, totalPages]);
 
   // GSAP Animations
   useGSAP(() => {
     if (currentProducts.length > 0) {
-      gsap.fromTo(".product-card", 
+      // Only animate elements that haven't been animated yet
+      gsap.fromTo(".product-card:not(.animated)",
         { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all" }
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all", onComplete: function() {
+            this.targets().forEach(t => t.classList.add("animated"));
+        }}
       );
     }
-  }, [currentProducts, currentPage]); // Re-run animation when products or page change
+  }, [currentProducts.length]); // Re-run animation only when the number of products changes
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
@@ -243,26 +267,17 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8">
-                <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Precedente
-                </button>
-                <span className="text-sm font-medium text-gray-600 dark:text-zinc-400">
-                  Pagina {currentPage} di {totalPages}
-                </span>
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Successiva
-                </button>
+            {/* Infinite Scroll Loader */}
+            {currentPage < totalPages && (
+              <div ref={loaderRef} className="flex justify-center items-center py-8">
+                <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                <span className="ml-3 text-sm text-gray-500 dark:text-zinc-400">Caricamento altri prodotti...</span>
+              </div>
+            )}
+
+            {currentPage >= totalPages && filteredProducts.length > 0 && (
+              <div className="text-center py-8 text-sm text-gray-500 dark:text-zinc-500">
+                Hai raggiunto la fine del catalogo.
               </div>
             )}
             </>
