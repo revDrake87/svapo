@@ -8,7 +8,7 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
         {/* Top Row: Logo, Name, Settings & Actions */}
         <div className="flex justify-between items-start md:items-center">
           <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
-            <Link to="/" className="flex items-center gap-3 group">
+            <Link to={`/${settings?.slug || ''}`} className="flex items-center gap-3 group">
               {settings?.logoUrl && (
                 <img src={settings.logoUrl} alt="Store Logo" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
               )}
@@ -49,7 +49,7 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
             </button>
             <Link to="/admin" className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors hidden sm:block">Admin Area</Link>
             {!hideCartButton && (
-              <Link to="/cart" className="flex items-center gap-2 bg-black dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black px-4 py-2 rounded-full text-sm font-bold transition-colors">
+              <Link to={`/${settings?.slug || ''}/cart`} className="flex items-center gap-2 bg-black dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black px-4 py-2 rounded-full text-sm font-bold transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 Lista Acquisti <span className="bg-white/20 dark:bg-black/10 px-2 py-0.5 rounded-full text-xs">{cartItemCount}</span>
               </Link>

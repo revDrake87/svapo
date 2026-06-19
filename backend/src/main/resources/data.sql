@@ -1,29 +1,25 @@
-INSERT INTO store_settings (id, store_name) VALUES (1, 'VapeStore');
+INSERT INTO store (id, admin_store_id, slug, store_name) VALUES
+(1, 1, 'store1a', 'VapeStore Roma'),
+(2, 1, 'store1b', 'VapeStore Milano');
 
-INSERT INTO users (username, password) VALUES ('admin', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a');
+INSERT INTO users (username, password, role, admin_store_id, store_id) VALUES
+('master', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a', 'MASTER', NULL, NULL),
+('admin', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a', 'ADMIN_STORE', 1, NULL),
+('store_roma', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a', 'STORE', 1, 1),
+('store_milano', '$2b$10$PaBJEcYVA6/DcNoSEc7GKO/Fq0SXPEOi7A3CUizMBCdurImbd3L7a', 'STORE', 1, 2);
 
-INSERT INTO product (barcode, name, milliliters, category, sub_category, purchase_price, retail_price, description, image_url) VALUES
-('8051234567890', 'Outlet - Mr Yellow Lik Bar Juice', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Mr Yellow liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di banana split, crema e ghiaccio', 'https://www.svapoebasta.com/92106-thickbox_default/mr-yellow-lik-bar-juice-10-ml.jpg'),
-('8051234567891', 'Outlet - Cotton Candy Lik Bar Juice', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Cotton Candy liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di zucchero filato e ghiaccio.', 'https://www.svapoebasta.com/92108-thickbox_default/cotton-candy-lik-bar-juice-10-ml.jpg'),
-('8051234567892', 'Kentucky Il Distillificio', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Kentucky liquido pronto 10ml linea Il Distillificio di Suprem-e a base di vero tabacco da sigaro toscano.', 'https://www.svapoebasta.com/90972-thickbox_default/kentucky-distillificio-10-ml.jpg'),
-('8051234567893', 'Latakia Il Distillificio', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Latakia liquido pronto 10ml linea Il Distillificio di Suprem-e a base di vero tabacco affumicato.', 'https://www.svapoebasta.com/90973-thickbox_default/latakia-distillificio-10-ml.jpg'),
-('8051234567894', 'Outlet - Pane e Cioccolata Tale e Quale', 10, 'LIQUIDO', 'SHOT', 3.54, 5.9, 'Pane e Cioccolata liquido mix and vape da 10ml linea Tale e Quale di King Liquid.', 'https://www.svapoebasta.com/92200-thickbox_default/pane-cioccolata-tale-e-quale-10-ml.jpg'),
-('8051234567895', 'Outlet - Mr. Blue Ice Fruity', 10, 'LIQUIDO', 'SHOT', 3.54, 5.9, 'Mr. Blue Ice liquido mix and vape 10ml linea Fruity di TNT Vape al gusto di frutti di bosco blu, mirtillo, lampone blu e ghiaccio.', 'https://www.svapoebasta.com/92102-thickbox_default/mr-blue-ice-fruity-10-ml.jpg'),
-('8051234567896', 'Outlet - Kong Ice Fruity TNT Vape', 10, 'LIQUIDO', 'SHOT', 3.54, 5.9, 'Kong Ice liquido mix and vape 10ml linea Fruity di TNT Vape al gusto di banana, fragola e ghiaccio.', 'https://www.svapoebasta.com/92099-thickbox_default/kong-ice-fruity-10-ml.jpg'),
-('8051234567897', 'Menta & Limone Granitika', 10, 'LIQUIDO', 'SHOT', 3.54, 5.9, 'Menta & Limone liquido mix and vape da 20ml linea Granitika di King Liquid dal gusto ghiacciato.', 'https://www.svapoebasta.com/91811-thickbox_default/menta-limone-granitika-20-ml.jpg'),
-('8051234567898', 'Outlet - Drive Creamy Nuts BLAQ', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Drive Creamy Nuts liquido shot 20ml di BLAQ al gusto di milkshake al pistacchio e caramello.', 'https://www.svapoebasta.com/92197-thickbox_default/creamy-nuts-20-ml.jpg'),
-('8051234567899', 'Outlet - Coconut Magic Ice Reload', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Coconut liquido mini shot 10ml linea Magic Ice di Reload Vape al sapore di cocco e ghiaccio.', 'https://www.svapoebasta.com/92199-thickbox_default/coconut-magic-ice-10-ml.jpg'),
-('8051234567900', 'Ice Club Banana Milkshake', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Ice Club Banana Milkshake Ice liquido mini shot 10ml de La Tabaccheria al gusto di banana, latte e ghiaccio.', 'https://www.svapoebasta.com/92097-thickbox_default/ice-club-banana-milkshake-ice-10-ml.jpg'),
-('8051234567901', 'Triple Watermelon Ice Salt Effect', 10, 'LIQUIDO', 'MINI_SHOT_10_10', 3.54, 5.9, 'Triple Watermelon Ice liquido shot 20ml linea Salt Effect di Shock Wave al gusto di anguria e ghiaccio.', 'https://www.svapoebasta.com/91750-thickbox_default/triple-watermelon-ice-salt-effect-20-ml.jpg');
+INSERT INTO product (barcode, name, milliliters, category, sub_category, purchase_price, default_price, description, image_url, admin_store_id) VALUES
+('8051234567890', 'Mr Yellow Lik Bar Juice Suprem-e Liquido Pronto 10ml Banana Crema Ghiaccio', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Mr Yellow liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di banana split, crema e ghiaccio. Liquido per sigaretta elettronica disponibile con sali di nicotina 2% (20mg/ml) o senza nicotina (0mg/ml): selezionare dal menu a tendina la ...', 'https://www.svapoebasta.com/92106-thickbox_default/mr-yellow-lik-bar-juice-10-ml.jpg', 1),
+('8051234567891', 'Cotton Candy Lik Bar Juice Suprem-e Liquido Pronto 10ml Zucchero Filato Ghiaccio', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Cotton Candy liquido pronto 10ml linea Lik Bar Juice di Suprem-e al gusto di zucchero filato e ghiaccio. Liquido per sigaretta elettronica disponibile con sali di nicotina 2% (20mg/ml) o senza nicotina (0mg/ml): selezionare dal menu a tendina la v...', 'https://www.svapoebasta.com/92108-thickbox_default/cotton-candy-lik-bar-juice-10-ml.jpg', 1),
+('8051234567892', 'Kentucky Il Distillificio Suprem-e Liquido Pronto 10ml Tabacco Sigaro', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Kentucky liquido pronto 10ml linea Il Distillificio di Suprem-e a base di vero tabacco da sigaro toscano. Prodotto organico distillato trasparente che garantisce lunga durata delle coil: ideale su pod mod e sistemi non rigenerabili. Liquido per si...', 'https://www.svapoebasta.com/90972-thickbox_default/kentucky-distillificio-10-ml.jpg', 1),
+('8051234567893', 'Latakia Il Distillificio Suprem-e Liquido Pronto 10ml Tabacco', 10, 'LIQUIDO', 'TPD', 3.54, 5.9, 'Latakia liquido pronto 10ml linea Il Distillificio di Suprem-e a base di vero tabacco affumicato. Prodotto organico distillato trasparente che garantisce lunga durata delle coil: ideale su pod mod e sistemi non rigenerabili. Liquido per sigaretta ...', 'https://www.svapoebasta.com/90973-thickbox_default/latakia-distillificio-10-ml.jpg', 1);
 
-INSERT INTO product (barcode, name, category, sub_category, purchase_price, retail_price, description, image_url) VALUES
-('8051234567902', 'Tubino DNA Pod Mod Kit', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Tubino DNA sigaretta elettronica per svapo di guancia e RDL.', 'https://www.svapoebasta.com/92121-thickbox_default/tubino-dna-kit.jpg'),
-('8051234567903', 'Cyber G Slim DTE Aspire Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Cyber G Slim DTE kit sigaretta elettronica con filtro Aspire per svapo di guancia.', 'https://www.svapoebasta.com/91863-thickbox_default/cyber-g-slim-dte-kit.jpg'),
-('8051234567904', 'Centaurus Q200 Pro Lost Vape', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Centaurus Q200 Pro box mod Lost Vape per sigaretta elettronica.', 'https://www.svapoebasta.com/91284-thickbox_default/centaurus-q-200-box-mod.jpg'),
-('8051234567905', 'Thelema Solo 100W Pro Kit Completo', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Thelema Solo 100W Pro kit sigaretta elettronica Lost Vape per svapo polmonare.', 'https://www.svapoebasta.com/91302-thickbox_default/thelema-solo-100-w-pro-kit.jpg'),
-('8051234567906', 'Thelema Solo 100W Pro Box Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Thelema Solo 100W Pro box mod Lost Vape per sigaretta elettronica.', 'https://www.svapoebasta.com/91316-thickbox_default/thelema-solo-100-w-pro-box-mod.jpg'),
-('8051234567907', 'Argus G4 Mini Voopoo Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Argus G4 Mini kit sigaretta elettronica Voopoo per svapo di guancia e RDL.', 'https://www.svapoebasta.com/91197-thickbox_default/argus-g4-mini-kit.jpg'),
-('8051234567908', 'Xros 6 Vaporesso Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'XROS 6 sigaretta elettronica Vaporesso per svapo di guancia e RDL.', 'https://www.svapoebasta.com/91219-thickbox_default/xros-6-kit.jpg'),
-('8051234567909', 'Xros 6 Mini Vaporesso Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'XROS 6 Mini sigaretta elettronica Vaporesso per svapo di guancia e RDL.', 'https://www.svapoebasta.com/91245-thickbox_default/xros-6-mini-kit.jpg'),
-('8051234567910', 'Centaurus Q200 Pro Kit Completo', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Centaurus Q200 Pro kit sigaretta elettronica Lost Vape per svapo polmonare.', 'https://www.svapoebasta.com/91268-thickbox_default/centaurus-q-200-pro-kit.jpg'),
-('8051234567911', 'Argus G4 Voopoo Pod Mod', 'HARDWARE', 'STARTER_KIT', 3.54, 5.9, 'Argus G4 kit sigaretta elettronica Voopoo per svapo di guancia e RDL.', 'https://www.svapoebasta.com/91167-thickbox_default/argus-g4-kit.jpg');
+INSERT INTO store_product (store_id, product_id, is_available, custom_price) VALUES
+(1, 1, true, NULL),
+(2, 1, true, 6.50),
+(1, 2, true, NULL),
+(2, 2, false, NULL),
+(1, 3, false, NULL),
+(2, 3, true, 5.50),
+(1, 4, true, NULL),
+(2, 4, true, NULL);

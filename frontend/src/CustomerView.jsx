@@ -1,12 +1,15 @@
 import { getApiUrl } from "./apiConfig";
 import { useState, useEffect, useRef } from 'react';
 import './index.css';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Header from './Header';
 
-function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CustomerView({ isDarkMode, toggleTheme, cart, setCart }) {
+  const { storeSlug } = useParams();
+  const [storeName, setStoreName] = useState('VapeStore');
+  const [settings, setSettings] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,13 +26,22 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   const loaderRef = useRef(null);
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+    if (!storeSlug) return;
+
+    // Fetch store info
+    fetch(`${getApiUrl()}/public/stores/${storeSlug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Store non trovato');
+        return res.json();
       })
+      .then(data => {
+        setStoreName(data.storeName);
+        setSettings(data);
+
+        // Fetch products for this store
+        return fetch(`${getApiUrl()}/public/stores/${storeSlug}/products`);
+      })
+      .then(res => res.json())
       .then(data => {
         setProducts(data);
         setLoading(false);
@@ -38,7 +50,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
         setError(err.message);
         setLoading(false);
       });
-  }, []);
+  }, [storeSlug]);
 
   const addToCart = (product) => {
     setCart(prevCart => {
@@ -220,7 +232,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                   <div className="absolute top-3 right-3 bg-gray-100 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10 transition-colors">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
-                  <Link to={`/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
+                  <Link to={`/${storeSlug}/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
                     <div className="h-48 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-400 dark:text-zinc-600 transition-transform duration-500 group-hover:scale-105">
                       {product.imageUrl ? (
                         <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full" />
@@ -229,7 +241,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                       )}
                     </div>
                   </Link>
-                  <Link to={`/product/${product.instoreCode}`} className="block">
+                  <Link to={`/${storeSlug}/product/${product.instoreCode}`} className="block">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>
@@ -255,7 +267,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                   </div>
 
                   <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-200 dark:border-white/5 transition-colors">
-                    <span className="text-2xl font-black text-gray-900 dark:text-white">€{product.retailPrice?.toFixed(2)}</span>
+                    <span className="text-2xl font-black text-gray-900 dark:text-white">€{product.defaultPrice?.toFixed(2)}</span>
                     <button 
                       onClick={() => addToCart(product)}
                       className="bg-[#0A0A0A] dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"

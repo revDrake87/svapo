@@ -3,32 +3,43 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 
-function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
+function AdminDashboard({ isDarkMode, toggleTheme }) {
   const [products, setProducts] = useState([]);
+  const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingLocalPrice, setIsEditingLocalPrice] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Auth state
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [userRole, setUserRole] = useState(null);
+
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [editableSettings, setEditableSettings] = useState(settings);
 
-  useEffect(() => {
-    setEditableSettings(settings);
-  }, [settings]);
+  // Selected store for editing settings (if ADMIN_STORE) or self (if STORE)
+  const [selectedStore, setSelectedStore] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
-    if (token) {
-      setIsAuthenticated(true);
+    const role = localStorage.getItem('userRole');
+    if (token && role) {
+      setUserRole(role);
+      fetchProducts();
+      if (role !== 'MASTER') fetchStores();
+    } else {
+      setLoading(false);
     }
-    fetchProducts();
   }, []);
 
   const fetchProducts = () => {
-    fetch(`${getApiUrl()}/products`)
+    const token = localStorage.getItem('adminToken');
+    fetch(`${getApiUrl()}/products`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -40,20 +51,36 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
       });
   };
 
+  const fetchStores = () => {
+    const token = localStorage.getItem('adminToken');
+    fetch(`${getApiUrl()}/stores`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setStores(data);
+        if (data.length > 0) setSelectedStore(data[0]);
+      })
+      .catch(err => console.error("Failed to fetch stores", err));
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'admin', password: password })
+        body: JSON.stringify({ username, password })
       });
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('adminToken', data.token);
-        setIsAuthenticated(true);
+        localStorage.setItem('userRole', data.role);
+        setUserRole(data.role);
+        fetchProducts();
+        if (data.role !== 'MASTER') fetchStores();
       } else {
-        alert('Password errata!');
+        alert('Credenziali errate!');
       }
     } catch (err) {
       alert('Errore di connessione al server.');
@@ -61,9 +88,11 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    setUserRole(null);
     setPassword('');
+    setUsername('');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('userRole');
   };
 
   const handleDelete = (id) => {
@@ -80,7 +109,11 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleEdit = (product) => {
     setCurrentProduct(product);
-    setIsEditing(true);
+    if (userRole === 'STORE') {
+        setIsEditingLocalPrice(true);
+    } else {
+        setIsEditing(true);
+    }
   };
 
   const handleAddNew = () => {
@@ -90,7 +123,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
       name: '',
       barcode: '',
       description: '',
-      retailPrice: 0,
+      defaultPrice: 0,
       purchasePrice: 0,
       milliliters: 10,
       flavor: '',
@@ -99,9 +132,9 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
       color: '',
       batteryType: '',
       wattage: '',
-      tankCapacity: '',
-      isAvailable: true
+      tankCapacity: ''
     });
+    setIsEditingLocalPrice(false);
     setIsEditing(true);
   };
 
@@ -147,7 +180,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     })
       .then(res => res.text())
       .then(url => {
-        setEditableSettings({ ...editableSettings, logoUrl: url });
+        setSelectedStore({ ...selectedStore, logoUrl: url });
         setUploadingLogo(false);
       })
       .catch(err => {
@@ -159,37 +192,55 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleSettingsSave = (e) => {
     e.preventDefault();
+    if (!selectedStore) return;
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/settings`, {
+    fetch(`${getApiUrl()}/stores/${selectedStore.id}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ id: 1, ...editableSettings })
+      body: JSON.stringify(selectedStore)
     })
       .then(res => res.json())
       .then(data => {
-        setStoreName(data.storeName);
-        setSettings(data);
+        fetchStores();
         setIsSettingsOpen(false);
       })
       .catch(err => console.error("Failed to save settings", err));
   };
 
   const handleToggleAvailability = (product) => {
-    const updatedProduct = { ...product, isAvailable: product.isAvailable === false ? true : false };
+    const updatedSp = { ...product, isAvailable: product.isAvailable === false ? true : false };
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/products/${product.instoreCode}`, {
+    fetch(`${getApiUrl()}/products/store-product/${product.product.instoreCode}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(updatedProduct)
+      body: JSON.stringify(updatedSp)
     })
       .then(() => fetchProducts())
       .catch(err => console.error("Failed to toggle availability", err));
+  };
+
+  const handleUpdateStorePrice = (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem('adminToken');
+      fetch(`${getApiUrl()}/products/store-product/${currentProduct.product.instoreCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(currentProduct)
+    })
+      .then(() => {
+          setIsEditingLocalPrice(false);
+          fetchProducts();
+      })
+      .catch(err => console.error("Failed to update custom price", err));
   };
 
   const handleSave = (e) => {
@@ -215,12 +266,22 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
       .catch(err => console.error("Failed to save", err));
   };
 
-  if (!isAuthenticated) {
+  if (!userRole) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center font-sans text-gray-900 dark:text-gray-200 transition-colors duration-300">
         <form onSubmit={handleLogin} className="bg-white dark:bg-[#0A0A0A] p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 w-96 transition-colors">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Area Riservata Admin</h2>
           <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-cyan-500 transition-colors"
+              required
+            />
+          </div>
+          <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Password</label>
             <input 
               type="password" 
@@ -241,19 +302,78 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     );
   }
 
+  if (userRole === 'MASTER') {
+      return (
+        <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300 p-8">
+            <div className="container mx-auto max-w-4xl">
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-3xl font-bold">Area Master - Gestione Utenti</h1>
+                    <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700 bg-white dark:bg-zinc-900 px-4 py-2 rounded-lg shadow"><LogOut size={16} /> Esci</button>
+                </div>
+
+                <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl mb-8">
+                    <h2 className="text-xl font-bold mb-4">Aggiungi ADMIN_STORE</h2>
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        const token = localStorage.getItem('adminToken');
+                        const data = new FormData(e.target);
+                        fetch(`${getApiUrl()}/users`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                username: data.get('username'),
+                                password: data.get('password'),
+                                role: 'ADMIN_STORE',
+                                adminStoreId: parseInt(data.get('adminStoreId'))
+                            })
+                        }).then(res => {
+                            if(res.ok) {
+                                alert("Utente creato con successo!");
+                                e.target.reset();
+                            } else {
+                                alert("Errore durante la creazione. Probabilmente l'utente esiste già.");
+                            }
+                        });
+                    }} className="space-y-4">
+                        <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <label className="block text-sm mb-1">Username</label>
+                                <input name="username" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
+                            </div>
+                            <div>
+                                <label className="block text-sm mb-1">Password</label>
+                                <input type="password" name="password" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
+                            </div>
+                            <div>
+                                <label className="block text-sm mb-1">ID Gruppo Store (AdminStore ID)</label>
+                                <input type="number" name="adminStoreId" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
+                            </div>
+                        </div>
+                        <button type="submit" className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded flex items-center gap-2">
+                            <Plus size={18} /> Crea Utente
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300">
       <header className="bg-white dark:bg-zinc-950 border-b border-gray-200 dark:border-white/10 text-gray-900 dark:text-white p-4 sticky top-0 z-20 transition-colors">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">{storeName} - Admin</h1>
+          <h1 className="text-xl font-bold">Pannello Admin - {userRole}</h1>
           <div className="flex gap-4 items-center">
             <button onClick={() => setIsSettingsOpen(true)} className="text-sm font-medium text-black dark:text-cyan-400 hover:text-blue-800 dark:hover:text-cyan-300 transition-colors">
-              Impostazioni
+              Impostazioni Store
             </button>
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
             </button>
-            <Link to="/" className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
             <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
               <LogOut size={16} /> Esci
             </button>
@@ -266,10 +386,20 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
           <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-2xl mx-auto transition-colors">
             <div className="flex justify-between items-center mb-6 border-b border-gray-200 dark:border-white/10 pb-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Impostazioni Negozio
+                Impostazioni Store
               </h2>
               <button onClick={() => setIsSettingsOpen(false)} className="text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors"><X size={24} /></button>
             </div>
+            {userRole === 'ADMIN_STORE' && (
+                <div className="mb-6">
+                    <label className="block text-sm mb-2">Seleziona Store da Modificare</label>
+                    <select className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" onChange={e => setSelectedStore(stores.find(s => s.id == e.target.value))} value={selectedStore?.id || ''}>
+                        {stores.map(s => <option key={s.id} value={s.id}>{s.storeName}</option>)}
+                    </select>
+                </div>
+            )}
+
+            {selectedStore && (
             <form onSubmit={handleSettingsSave} className="space-y-6">
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -279,8 +409,19 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <input
                       type="text"
                       required
-                      value={editableSettings.storeName}
-                      onChange={e => setEditableSettings({...editableSettings, storeName: e.target.value})}
+                      value={selectedStore.storeName || ''}
+                      onChange={e => setSelectedStore({...selectedStore, storeName: e.target.value})}
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Slug (URL)</label>
+                    <input
+                      type="text"
+                      required
+                      value={selectedStore.slug || ''}
+                      onChange={e => setSelectedStore({...selectedStore, slug: e.target.value})}
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
                   </div>
@@ -289,8 +430,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Indirizzo</label>
                     <input
                       type="text"
-                      value={editableSettings.address}
-                      onChange={e => setEditableSettings({...editableSettings, address: e.target.value})}
+                      value={selectedStore.address || ''}
+                      onChange={e => setSelectedStore({...selectedStore, address: e.target.value})}
                       placeholder="es. Via Roma 1, Milano"
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
@@ -300,8 +441,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Logo</label>
                     <div className="flex gap-4 items-center">
                       <div className="w-16 h-16 bg-gray-100 dark:bg-black border border-gray-300 dark:border-white/20 rounded overflow-hidden flex items-center justify-center shrink-0">
-                        {editableSettings.logoUrl ? (
-                          <img src={editableSettings.logoUrl} alt="Logo" className="w-full h-full object-contain" />
+                        {selectedStore.logoUrl ? (
+                          <img src={selectedStore.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                         ) : (
                           <ImageIcon className="text-gray-400 dark:text-zinc-600" size={24} />
                         )}
@@ -327,8 +468,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Instagram URL</label>
                     <input
                       type="text"
-                      value={editableSettings.instagram}
-                      onChange={e => setEditableSettings({...editableSettings, instagram: e.target.value})}
+                      value={selectedStore.instagram || ''}
+                      onChange={e => setSelectedStore({...selectedStore, instagram: e.target.value})}
                       placeholder="https://instagram.com/tuoprofilo"
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
@@ -338,8 +479,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Facebook URL</label>
                     <input
                       type="text"
-                      value={editableSettings.facebook}
-                      onChange={e => setEditableSettings({...editableSettings, facebook: e.target.value})}
+                      value={selectedStore.facebook || ''}
+                      onChange={e => setSelectedStore({...selectedStore, facebook: e.target.value})}
                       placeholder="https://facebook.com/tuapagina"
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
@@ -349,8 +490,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">TikTok URL</label>
                     <input
                       type="text"
-                      value={editableSettings.tiktok}
-                      onChange={e => setEditableSettings({...editableSettings, tiktok: e.target.value})}
+                      value={selectedStore.tiktok || ''}
+                      onChange={e => setSelectedStore({...selectedStore, tiktok: e.target.value})}
                       placeholder="https://tiktok.com/@tuoprofilo"
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
@@ -360,8 +501,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">WhatsApp (Numero)</label>
                     <input
                       type="text"
-                      value={editableSettings.whatsapp}
-                      onChange={e => setEditableSettings({...editableSettings, whatsapp: e.target.value})}
+                      value={selectedStore.whatsapp || ''}
+                      onChange={e => setSelectedStore({...selectedStore, whatsapp: e.target.value})}
                       placeholder="+39 333 1234567"
                       className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
                     />
@@ -375,6 +516,21 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                   <Save size={18} /> Salva Impostazioni
                 </button>
               </div>
+            </form>
+            )}
+          </div>
+        ) : isEditingLocalPrice ? (
+          <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl max-w-lg mx-auto transition-colors">
+            <h2 className="text-2xl font-bold mb-4">Modifica Prezzo Locale</h2>
+            <form onSubmit={handleUpdateStorePrice}>
+                <div className="mb-4">
+                    <label className="block text-sm mb-1">Prezzo Custom per questo Store (€)</label>
+                    <input type="number" step="0.01" value={currentProduct.customPrice || currentProduct.product?.defaultPrice || ''} onChange={e => setCurrentProduct({...currentProduct, customPrice: parseFloat(e.target.value)})} className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
+                </div>
+                <div className="flex justify-end gap-4">
+                    <button type="button" onClick={() => setIsEditingLocalPrice(false)} className="px-4 py-2 bg-gray-200 dark:bg-zinc-800 rounded">Annulla</button>
+                    <button type="submit" className="px-4 py-2 bg-black dark:bg-white text-white dark:text-black font-bold rounded">Salva Prezzo</button>
+                </div>
             </form>
           </div>
         ) : isEditing ? (
@@ -459,8 +615,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                       <input type="number" step="0.01" value={currentProduct.purchasePrice || 0} onChange={e => setCurrentProduct({...currentProduct, purchasePrice: parseFloat(e.target.value)})} className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Prezzo Pubblico (€)</label>
-                      <input type="number" step="0.01" required value={currentProduct.retailPrice || 0} onChange={e => setCurrentProduct({...currentProduct, retailPrice: parseFloat(e.target.value)})} className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" />
+                      <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Prezzo Base Pubblico (€)</label>
+                      <input type="number" step="0.01" required value={currentProduct.defaultPrice || 0} onChange={e => setCurrentProduct({...currentProduct, defaultPrice: parseFloat(e.target.value)})} className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors" />
                     </div>
                   </div>
                   
@@ -554,9 +710,9 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
         ) : (
           <>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Prodotti a Catalogo</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{userRole === 'STORE' ? 'Catalogo Locale' : 'Prodotti Globali'}</h2>
               <button onClick={handleAddNew} className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
-                <Plus size={18} /> Aggiungi Nuovo
+                <Plus size={18} /> Aggiungi Nuovo Prodotto
               </button>
             </div>
 
@@ -580,32 +736,44 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map(p => (
-                        <tr key={p.instoreCode} className={`border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${p.isAvailable === false ? 'opacity-60' : ''}`}>
+                      {products.map(p => {
+                          // Handle unified object view based on role
+                          const isStoreRole = userRole === 'STORE';
+                          const displayProduct = isStoreRole ? p.product : p;
+                          const displayPrice = isStoreRole ? (p.customPrice || p.product.defaultPrice) : p.defaultPrice;
+                          const isAvailable = isStoreRole ? p.isAvailable : true;
+                          const code = isStoreRole ? p.product.instoreCode : p.instoreCode;
+
+                          return (
+                        <tr key={code} className={`border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${!isAvailable ? 'opacity-60' : ''}`}>
                           <td className="p-4">
                             <div className="w-10 h-10 bg-gray-100 dark:bg-black rounded-md flex items-center justify-center overflow-hidden border border-gray-200 dark:border-transparent">
-                              {p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="text-gray-400 dark:text-zinc-600" />}
+                              {displayProduct.imageUrl ? <img src={displayProduct.imageUrl} alt={displayProduct.name} className="w-full h-full object-cover" /> : <ImageIcon size={16} className="text-gray-400 dark:text-zinc-600" />}
                             </div>
                           </td>
-                          <td className="p-4 text-sm font-mono text-gray-600 dark:text-zinc-400">{p.instoreCode}</td>
-                          <td className="p-4 font-bold text-gray-900 dark:text-white">{p.name}</td>
+                          <td className="p-4 text-sm font-mono text-gray-600 dark:text-zinc-400">{code}</td>
+                          <td className="p-4 font-bold text-gray-900 dark:text-white">{displayProduct.name}</td>
                           <td className="p-4">
-                            <span className="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-transparent text-xs px-2 py-1 rounded text-gray-600 dark:text-zinc-300">{p.subCategory}</span>
+                            <span className="bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-transparent text-xs px-2 py-1 rounded text-gray-600 dark:text-zinc-300">{displayProduct.subCategory}</span>
                           </td>
-                          <td className="p-4 text-black dark:text-cyan-400 font-bold">€{p.retailPrice?.toFixed(2)}</td>
+                          <td className="p-4 text-black dark:text-cyan-400 font-bold">€{displayPrice?.toFixed(2)}</td>
                           <td className="p-4 flex justify-end gap-2">
-                            <button
-                              onClick={() => handleToggleAvailability(p)}
-                              title={p.isAvailable === false ? "Rendi visibile" : "Nascondi"}
-                              className={`p-2 rounded-lg transition-colors ${p.isAvailable === false ? 'bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30'}`}
-                            >
-                              {p.isAvailable === false ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </button>
+                            {isStoreRole && (
+                                <button
+                                  onClick={() => handleToggleAvailability(p)}
+                                  title={!isAvailable ? "Rendi visibile" : "Nascondi"}
+                                  className={`p-2 rounded-lg transition-colors ${!isAvailable ? 'bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-400 dark:hover:bg-emerald-500/30'}`}
+                                >
+                                  {!isAvailable ? <EyeOff size={16} /> : <Eye size={16} />}
+                                </button>
+                            )}
                             <button onClick={() => handleEdit(p)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-black dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16} /></button>
-                            <button onClick={() => handleDelete(p.instoreCode)} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                            {userRole === 'ADMIN_STORE' && (
+                                <button onClick={() => handleDelete(code)} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                            )}
                           </td>
                         </tr>
-                      ))}
+                      )})}
                     </tbody>
                   </table>
                 </div>

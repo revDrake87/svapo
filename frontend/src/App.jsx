@@ -33,23 +33,6 @@ function App() {
       }
     }
 
-    // Fetch store settings
-    fetch(`${getApiUrl()}/settings`)
-      .then(res => res.json())
-      .then(data => {
-        setStoreName(data.storeName);
-        setSettings({
-          storeName: data.storeName || 'VapeStore',
-          logoUrl: data.logoUrl || '',
-          address: data.address || '',
-          instagram: data.instagram || '',
-          facebook: data.facebook || '',
-          tiktok: data.tiktok || '',
-          whatsapp: data.whatsapp || ''
-        });
-      })
-      .catch(err => console.error("Failed to load store settings", err));
-
     // Check local storage for theme preference
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme === 'light') {
@@ -81,10 +64,17 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="/cart" element={<CartView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} settings={settings} setSettings={setSettings} />} />
+      <Route path="/" element={
+        <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white flex flex-col items-center justify-center">
+            <h1 className="text-4xl font-bold mb-4">Svapo Store Digital Catalog</h1>
+            <p className="text-gray-500 mb-8">Benvenuto. Per favore, naviga verso l'URL specifico del tuo negozio.</p>
+            <a href="/admin" className="text-blue-500 hover:underline">Accedi all'Area Admin</a>
+        </div>
+      } />
+      <Route path="/:storeSlug" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} cart={cart} setCart={setCart} />} />
+      <Route path="/:storeSlug/cart" element={<CartView isDarkMode={isDarkMode} toggleTheme={toggleTheme} cart={cart} setCart={setCart} />} />
+      <Route path="/:storeSlug/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} cart={cart} setCart={setCart} />} />
+      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} />} />
     </Routes>
   );
 }

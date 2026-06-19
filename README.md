@@ -58,3 +58,15 @@ Password: `admin123`
 🗄️ Passaggio a MySQL (Produzione)
 
 Il progetto è già predisposto per l'uso di un vero database MySQL. Consulta il file `mysql_setup_guide.md` presente nella root di questa repository per le istruzioni dettagliate su come configurare la connessione al tuo database server su Fedora.
+
+## Test Credentials & Endpoints
+
+**Fictitious Store Endpoints**
+* Store Roma: `http://localhost:5173/store1a`
+* Store Milano: `http://localhost:5173/store1b`
+
+**Admin Users**
+* `username: master` / `password: admin123` -> Master (can manage all networks and Admin Stores)
+* `username: admin` / `password: admin123` -> Admin Store (can manage products across all their stores and update global store settings)
+* `username: store_roma` / `password: admin123` -> Store Clerk for Roma (can view local catalog, modify local prices/availability, and add new products to the global catalog)
+* `username: store_milano` / `password: admin123` -> Store Clerk for Milano (can view local catalog, modify local prices/availability, and add new products to the global catalog)

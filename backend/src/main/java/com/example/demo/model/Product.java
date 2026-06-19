@@ -18,6 +18,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long instoreCode; // Codice instore, chiave primaria autogenerata progressiva
 
+    private Long adminStoreId; // To group products under an admin_store
+
     private String barcode; // Codice a barre
     private String name;
     private Integer milliliters; // Millilitri (es. 10, 20, 60)
@@ -26,12 +28,10 @@ public class Product {
     private String subCategory; // Liquidi: "TPD", "MINI_SHOT", "SHOT", "AROMA", "NICOTINE_SHOT". Hardware: "BATTERY_BOX", "ATOMIZER_RTA", "ATOMIZER_NON_RTA", "STARTER_KIT", "POD_MOD", "POD_ACCESSORY", "ACCESSORY"
     
     private Double purchasePrice; // Prezzo di acquisto
-    private Double retailPrice; // Prezzo al pubblico
+    private Double defaultPrice; // Prezzo al pubblico base
 
     private String description;
     private String imageUrl;
-    
-    private Boolean isAvailable = true; // Visibilità manuale (in stock o no)
     
     // Campi specifici per liquidi
     private String flavor; // Gusto principale

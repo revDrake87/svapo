@@ -3,21 +3,31 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Sun, Moon } from 'lucide-react';
 
-function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
-  const { id } = useParams();
+function ProductDetail({ isDarkMode, toggleTheme }) {
+  const { storeSlug, id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [storeName, setStoreName] = useState('VapeStore');
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products`)
+    // First fetch store info
+    fetch(`${getApiUrl()}/public/stores/${storeSlug}`)
+      .then(res => res.json())
+      .then(storeData => {
+        if(storeData && storeData.storeName) {
+           setStoreName(storeData.storeName);
+        }
+        // Then fetch product
+        return fetch(`${getApiUrl()}/public/stores/${storeSlug}/products`);
+      })
       .then(res => res.json())
       .then(data => {
         const found = data.find(p => p.instoreCode.toString() === id);
         if (found) {
           setProduct(found);
         } else {
-          setError("Prodotto non trovato");
+          setError("Prodotto non trovato o non disponibile in questo negozio");
         }
         setLoading(false);
       })
@@ -25,7 +35,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
         setError(err.message);
         setLoading(false);
       });
-  }, [id]);
+  }, [storeSlug, id]);
 
   if (loading) return (
     <div className="min-h-screen bg-gray-50 dark:bg-black flex justify-center items-center">
@@ -36,7 +46,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
   if (error || !product) return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-4">{error || "Errore"}</h2>
-      <Link to="/" className="text-blue-600 dark:text-cyan-400 hover:underline">Torna al catalogo</Link>
+      <Link to={`/${storeSlug || ''}`} className="text-blue-600 dark:text-cyan-400 hover:underline">Torna al catalogo</Link>
     </div>
   );
 
@@ -45,7 +55,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
       <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <Link to="/" className="p-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+            <Link to={`/${storeSlug || ''}`} className="p-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
               <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
             </Link>
             <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -87,7 +97,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
             <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">{product.name}</h1>
             
             <div className="text-3xl font-black text-blue-600 dark:text-cyan-400 mb-8 border-b border-gray-100 dark:border-white/10 pb-6">
-              €{product.retailPrice?.toFixed(2)}
+              €{product.defaultPrice?.toFixed(2)}
             </div>
 
             <div className="prose dark:prose-invert max-w-none text-gray-600 dark:text-zinc-300 mb-8 leading-relaxed">
@@ -115,7 +125,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
             </div>
 
             <div className="mt-auto">
-               <Link to="/" className="w-full flex items-center justify-center gap-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg">
+               <Link to={`/${storeSlug || ''}`} className="w-full flex items-center justify-center gap-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg">
                  <ShoppingCart size={20} />
                  Torna alla vetrina per aggiungere al carrello
                </Link>

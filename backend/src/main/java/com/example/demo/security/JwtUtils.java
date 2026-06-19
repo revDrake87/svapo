@@ -16,9 +16,12 @@ public class JwtUtils {
 
     private final int jwtExpirationMs = 86400000; // 24 hours
 
-    public String generateJwtToken(String username) {
+    public String generateJwtToken(String username, String role, Long adminStoreId, Long storeId) {
         return Jwts.builder()
                 .setSubject((username))
+                .claim("role", role)
+                .claim("adminStoreId", adminStoreId)
+                .claim("storeId", storeId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key)

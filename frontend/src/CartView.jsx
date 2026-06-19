@@ -1,8 +1,29 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Header from './Header';
 import { ArrowLeft } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getApiUrl } from './apiConfig';
 
-function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CartView({ isDarkMode, toggleTheme, cart, setCart }) {
+  const { storeSlug } = useParams();
+  const [storeName, setStoreName] = useState('VapeStore');
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    if (!storeSlug) return;
+
+    // Fetch store info
+    fetch(`${getApiUrl()}/public/stores/${storeSlug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Store non trovato');
+        return res.json();
+      })
+      .then(data => {
+        setStoreName(data.storeName);
+        setSettings(data);
+      })
+      .catch(err => console.error(err));
+  }, [storeSlug]);
 
   const removeFromCart = (productCode) => {
     setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
@@ -15,7 +36,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
     ));
   };
 
-  const cartTotal = cart.reduce((total, item) => total + (item.retailPrice * item.quantity), 0);
+  const cartTotal = cart.reduce((total, item) => total + (item.defaultPrice * item.quantity), 0);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
@@ -30,7 +51,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
 
       <main className="container mx-auto p-4 max-w-4xl mt-6 flex-grow">
         <div className="mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
+          <Link to={`/${storeSlug || ''}`} className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
             <ArrowLeft size={16} /> Torna al Catalogo
           </Link>
         </div>
@@ -48,7 +69,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
             <div className="flex flex-col items-center justify-center py-16 opacity-50">
               <svg className="w-20 h-20 text-gray-400 dark:text-zinc-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
               <p className="text-gray-500 dark:text-zinc-400 text-center text-lg font-medium">La lista è vuota.<br/>Aggiungi dei prodotti dal catalogo.</p>
-              <Link to="/" className="mt-8 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+              <Link to={`/${storeSlug || ''}`} className="mt-8 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
                 Esplora i prodotti
               </Link>
             </div>
@@ -63,7 +84,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
                     <div>
                       <h4 className="font-bold text-gray-900 dark:text-white text-lg">{item.name}</h4>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-gray-500 dark:text-zinc-400 font-mono">€{item.retailPrice?.toFixed(2)} cad.</span>
+                        <span className="text-sm text-gray-500 dark:text-zinc-400 font-mono">€{item.defaultPrice?.toFixed(2)} cad.</span>
                       </div>
                     </div>
                   </div>
@@ -85,7 +106,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
                       </button>
                     </div>
                     <div className="flex flex-col items-end gap-1 min-w-[80px]">
-                      <span className="font-bold text-lg">€{(item.retailPrice * item.quantity).toFixed(2)}</span>
+                      <span className="font-bold text-lg">€{(item.defaultPrice * item.quantity).toFixed(2)}</span>
                       <button
                         onClick={() => removeFromCart(item.instoreCode)}
                         className="text-xs uppercase font-bold text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 transition-colors"

@@ -16,4 +16,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    private String role; // MASTER, ADMIN_STORE, STORE
+
+    private Long adminStoreId; // Reference to the group they belong to
+
+    private Long storeId; // For STORE users, reference to the specific store
 }
