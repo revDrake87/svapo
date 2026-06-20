@@ -45,4 +45,36 @@ public class UserController {
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         return ResponseEntity.ok(userRepository.save(newUser));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User userDetails, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName()).orElse(null);
+        if (user == null || !"MASTER".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setUsername(userDetails.getUsername());
+            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+            }
+            existingUser.setRole(userDetails.getRole());
+            existingUser.setAdminStoreId(userDetails.getAdminStoreId());
+            existingUser.setStoreId(userDetails.getStoreId());
+            return ResponseEntity.ok(userRepository.save(existingUser));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName()).orElse(null);
+        if (user == null || !"MASTER".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return userRepository.findById(id).map(existingUser -> {
+            userRepository.delete(existingUser);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

@@ -6,6 +6,10 @@ import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Ey
 function AdminDashboard({ isDarkMode, toggleTheme }) {
   const [products, setProducts] = useState([]);
   const [stores, setStores] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [editingStore, setEditingStore] = useState(null);
+  const [activeTab, setActiveTab] = useState('users'); // users or stores
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingLocalPrice, setIsEditingLocalPrice] = useState(false);
@@ -29,7 +33,12 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
     if (token && role) {
       setUserRole(role);
       fetchProducts();
-      if (role !== 'MASTER') fetchStores();
+      if (role === 'MASTER') {
+        fetchUsers();
+        fetchStores();
+      } else {
+        fetchStores();
+      }
     } else {
       setLoading(false);
     }
@@ -49,6 +58,17 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
         console.error("Failed to fetch products", err);
         setLoading(false);
       });
+  };
+
+
+  const fetchUsers = () => {
+    const token = localStorage.getItem('adminToken');
+    fetch(`${getApiUrl()}/users`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setUsers(data))
+      .catch(err => console.error("Failed to fetch users", err));
   };
 
   const fetchStores = () => {
@@ -78,7 +98,12 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
         localStorage.setItem('userRole', data.role);
         setUserRole(data.role);
         fetchProducts();
-        if (data.role !== 'MASTER') fetchStores();
+        if (data.role === 'MASTER') {
+          fetchUsers();
+          fetchStores();
+        } else {
+          fetchStores();
+        }
       } else {
         alert('Credenziali errate!');
       }
@@ -305,58 +330,193 @@ function AdminDashboard({ isDarkMode, toggleTheme }) {
   if (userRole === 'MASTER') {
       return (
         <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300 p-8">
-            <div className="container mx-auto max-w-4xl">
+            <div className="container mx-auto max-w-6xl">
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold">Area Master - Gestione Utenti</h1>
+                    <h1 className="text-3xl font-bold">Area Master - Gestione Sistema</h1>
                     <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:text-red-700 bg-white dark:bg-zinc-900 px-4 py-2 rounded-lg shadow"><LogOut size={16} /> Esci</button>
                 </div>
 
-                <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-2xl p-6 shadow-xl mb-8">
-                    <h2 className="text-xl font-bold mb-4">Aggiungi ADMIN_STORE</h2>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        const token = localStorage.getItem('adminToken');
-                        const data = new FormData(e.target);
-                        fetch(`${getApiUrl()}/users`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                username: data.get('username'),
-                                password: data.get('password'),
-                                role: 'ADMIN_STORE',
-                                adminStoreId: parseInt(data.get('adminStoreId'))
-                            })
-                        }).then(res => {
-                            if(res.ok) {
-                                alert("Utente creato con successo!");
-                                e.target.reset();
-                            } else {
-                                alert("Errore durante la creazione. Probabilmente l'utente esiste già.");
-                            }
-                        });
-                    }} className="space-y-4">
-                        <div className="grid grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-sm mb-1">Username</label>
-                                <input name="username" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm mb-1">Password</label>
-                                <input type="password" name="password" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
-                            </div>
-                            <div>
-                                <label className="block text-sm mb-1">ID Gruppo Store (AdminStore ID)</label>
-                                <input type="number" name="adminStoreId" required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2" />
-                            </div>
-                        </div>
-                        <button type="submit" className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded flex items-center gap-2">
-                            <Plus size={18} /> Crea Utente
-                        </button>
-                    </form>
+                <div className="flex gap-4 mb-6">
+                   <button onClick={() => { setActiveTab('users'); setEditingUser(null); setEditingStore(null); }} className={`px-4 py-2 rounded-lg font-bold transition-colors ${activeTab === 'users' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-200 text-gray-800 dark:bg-zinc-800 dark:text-gray-300'}`}>Gestione Utenti</button>
+                   <button onClick={() => { setActiveTab('stores'); setEditingUser(null); setEditingStore(null); }} className={`px-4 py-2 rounded-lg font-bold transition-colors ${activeTab === 'stores' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-gray-200 text-gray-800 dark:bg-zinc-800 dark:text-gray-300'}`}>Gestione Stores</button>
                 </div>
+
+                {activeTab === 'users' ? (
+                    <div className="space-y-6">
+                      <div className="bg-white dark:bg-[#0A0A0A] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg">
+                        <div className="flex justify-between items-center mb-4">
+                           <h3 className="text-xl font-bold text-gray-900 dark:text-white">{editingUser ? 'Modifica Utente' : 'Aggiungi Utente'}</h3>
+                           {editingUser && <button onClick={() => setEditingUser(null)} className="text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1"><X size={14}/> Annulla</button>}
+                        </div>
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          const u = e.target.username.value;
+                          const p = e.target.password.value;
+                          const r = e.target.role.value;
+                          const asid = e.target.adminStoreId.value;
+                          const sid = e.target.storeId.value;
+
+                          const payload = { username: u, role: r, adminStoreId: asid ? parseInt(asid) : null, storeId: sid ? parseInt(sid) : null };
+                          if (p) payload.password = p;
+
+                          const token = localStorage.getItem('adminToken');
+                          const url = editingUser ? `${getApiUrl()}/users/${editingUser.id}` : `${getApiUrl()}/users`;
+                          const method = editingUser ? 'PUT' : 'POST';
+
+                          fetch(url, {
+                            method: method,
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify(payload)
+                          }).then(() => {
+                             e.target.reset();
+                             setEditingUser(null);
+                             fetchUsers();
+                          }).catch(err => alert('Errore salvataggio utente'));
+                        }} className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Username</label>
+                              <input name="username" defaultValue={editingUser?.username || ''} required type="text" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">{editingUser ? 'Nuova Password (opzionale)' : 'Password'}</label>
+                              <input name="password" required={!editingUser} type="text" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Ruolo</label>
+                              <select name="role" defaultValue={editingUser?.role || 'ADMIN_STORE'} required className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white">
+                                 <option value="ADMIN_STORE">ADMIN_STORE</option>
+                                 <option value="STORE">STORE</option>
+                                 <option value="MASTER">MASTER</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Admin Store ID</label>
+                              <input name="adminStoreId" defaultValue={editingUser?.adminStoreId || ''} type="number" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Store ID</label>
+                              <input name="storeId" defaultValue={editingUser?.storeId || ''} type="number" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                          </div>
+                          <button type="submit" className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded flex items-center gap-2">{editingUser ? <Save size={16} /> : <Plus size={16} />} {editingUser ? 'Salva Modifiche' : 'Crea Utente'}</button>
+                        </form>
+                      </div>
+
+                      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden">
+                        <table className="w-full text-left">
+                           <thead className="bg-gray-100 dark:bg-black/50 border-b border-gray-200 dark:border-white/10">
+                              <tr>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">ID</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Username</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Ruolo</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Admin Store ID</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Store ID</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500 text-right">Azioni</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {users.map(u => (
+                                 <tr key={u.id} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
+                                   <td className="p-4 text-gray-900 dark:text-white">{u.id}</td>
+                                   <td className="p-4 text-gray-900 dark:text-white font-bold">{u.username}</td>
+                                   <td className="p-4"><span className="bg-gray-200 dark:bg-zinc-800 text-xs px-2 py-1 rounded text-gray-700 dark:text-zinc-300">{u.role}</span></td>
+                                   <td className="p-4 text-gray-600 dark:text-white">{u.adminStoreId || '-'}</td>
+                                   <td className="p-4 text-gray-600 dark:text-white">{u.storeId || '-'}</td>
+                                   <td className="p-4 flex justify-end gap-2">
+                                      <button onClick={() => setEditingUser(u)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16}/></button>
+                                      <button onClick={() => {
+                                          if(window.confirm('Eliminare utente?')) {
+                                              fetch(`${getApiUrl()}/users/${u.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }}).then(()=>fetchUsers());
+                                          }
+                                      }} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16}/></button>
+                                   </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                      </div>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                      <div className="bg-white dark:bg-[#0A0A0A] p-6 rounded-xl border border-gray-200 dark:border-white/10 shadow-lg">
+                        <div className="flex justify-between items-center mb-4">
+                           <h3 className="text-xl font-bold text-gray-900 dark:text-white">{editingStore ? 'Modifica Store' : 'Aggiungi Store'}</h3>
+                           {editingStore && <button onClick={() => setEditingStore(null)} className="text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white flex items-center gap-1"><X size={14}/> Annulla</button>}
+                        </div>
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          const name = e.target.storeName.value;
+                          const slug = e.target.slug.value;
+                          const asid = e.target.adminStoreId.value;
+
+                          const payload = { storeName: name, slug: slug, adminStoreId: asid ? parseInt(asid) : null };
+
+                          const token = localStorage.getItem('adminToken');
+                          const url = editingStore ? `${getApiUrl()}/stores/${editingStore.id}` : `${getApiUrl()}/stores`;
+                          const method = editingStore ? 'PUT' : 'POST';
+
+                          fetch(url, {
+                            method: method,
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify(payload)
+                          }).then(() => {
+                             e.target.reset();
+                             setEditingStore(null);
+                             fetchStores();
+                          }).catch(err => alert('Errore salvataggio store'));
+                        }} className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Nome Store</label>
+                              <input name="storeName" defaultValue={editingStore?.storeName || ''} required type="text" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Slug</label>
+                              <input name="slug" defaultValue={editingStore?.slug || ''} required type="text" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                              <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Admin Store ID</label>
+                              <input name="adminStoreId" defaultValue={editingStore?.adminStoreId || ''} required type="number" className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white" />
+                            </div>
+                          </div>
+                          <button type="submit" className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded flex items-center gap-2">{editingStore ? <Save size={16} /> : <Plus size={16} />} {editingStore ? 'Salva Modifiche' : 'Crea Store'}</button>
+                        </form>
+                      </div>
+
+                      <div className="bg-white dark:bg-[#0A0A0A] rounded-xl border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden">
+                        <table className="w-full text-left">
+                           <thead className="bg-gray-100 dark:bg-black/50 border-b border-gray-200 dark:border-white/10">
+                              <tr>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">ID</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Nome</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Slug</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500">Admin Store ID</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-zinc-500 text-right">Azioni</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {stores.map(s => (
+                                 <tr key={s.id} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
+                                   <td className="p-4 text-gray-900 dark:text-white">{s.id}</td>
+                                   <td className="p-4 text-gray-900 dark:text-white font-bold">{s.storeName}</td>
+                                   <td className="p-4 text-gray-600 dark:text-white">{s.slug}</td>
+                                   <td className="p-4 text-gray-600 dark:text-white">{s.adminStoreId}</td>
+                                   <td className="p-4 flex justify-end gap-2">
+                                      <button onClick={() => setEditingStore(s)} className="p-2 bg-blue-100 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-500/20 rounded-lg transition-colors"><Edit2 size={16}/></button>
+                                      <button onClick={() => {
+                                          if(window.confirm('Eliminare store?')) {
+                                              fetch(`${getApiUrl()}/stores/${s.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }}).then(()=>fetchStores());
+                                          }
+                                      }} className="p-2 bg-red-100 dark:bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-500/20 rounded-lg transition-colors"><Trash2 size={16}/></button>
+                                   </td>
+                                 </tr>
+                              ))}
+                           </tbody>
+                        </table>
+                      </div>
+                    </div>
+                )}
             </div>
         </div>
       );
