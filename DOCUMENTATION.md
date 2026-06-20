@@ -95,3 +95,128 @@ Al boot, Spring Boot inizializza il database in-memory con un'enorme quantità d
 *   L'utente `master` (pw: admin123).
 *   L'utente `admin` (pw: admin123).
 *   L'utente `store_roma` (pw: admin123) legato allo store Roma.
+
+---
+
+## 6. Diagrammi di Progetto
+
+Di seguito sono riportati i diagrammi UML ed ER generati per la piattaforma SaaS, utilizzando la sintassi Mermaid.
+
+### 6.1 Diagramma Entità-Relazione (ER DB Schema)
+
+```mermaid
+erDiagram
+    STORE ||--o{ STORE_PRODUCT : "ha giacenza"
+    STORE ||--o{ USERS : "gestito da (ruolo STORE)"
+    STORE {
+        bigint id PK
+        varchar store_name
+        varchar slug
+        varchar logo_url
+        varchar address
+        varchar whatsapp
+        varchar facebook
+        varchar instagram
+        varchar tiktok
+        bigint admin_store_id FK "Proprietario della rete"
+    }
+
+    PRODUCT ||--o{ STORE_PRODUCT : "è associato a"
+    PRODUCT {
+        bigint instore_code PK
+        varchar barcode
+        varchar name
+        varchar category
+        varchar sub_category
+        float purchase_price
+        float default_price
+        varchar description
+        varchar image_url
+        int milliliters
+        varchar flavor
+        varchar ingredients
+        varchar nicotine_strength
+        varchar battery_type
+        int wattage
+        varchar color
+        float tank_capacity
+        bigint admin_store_id FK "Chi ha creato il prodotto"
+    }
+
+    STORE_PRODUCT {
+        bigint id PK
+        bigint store_id FK
+        bigint product_id FK
+        boolean is_available
+        float custom_price
+    }
+
+    USERS {
+        bigint id PK
+        varchar username
+        varchar password
+        varchar role "MASTER | ADMIN_STORE | STORE"
+        bigint admin_store_id FK "Se ruolo = ADMIN_STORE"
+        bigint store_id FK "Se ruolo = STORE"
+    }
+```
+
+### 6.2 UML Class Diagram (Backend Controllers)
+
+```mermaid
+classDiagram
+    class StoreController {
+        +getStores(Authentication) ResponseEntity~List~Store~~
+        +createStore(Store, Authentication) ResponseEntity~?~
+        +updateStore(Long, Store, Authentication) ResponseEntity~Store~
+        +deleteStore(Long, Authentication) ResponseEntity~?~
+    }
+
+    class UserController {
+        +getUsers(Authentication) ResponseEntity~?~
+        +createUser(User, Authentication) ResponseEntity~?~
+        +updateUser(Long, User, Authentication) ResponseEntity~?~
+        +deleteUser(Long, Authentication) ResponseEntity~?~
+    }
+
+    class ProductController {
+        +getAdminProducts(Authentication) ResponseEntity~List~Object~~
+        +getProductsForStore(String) ResponseEntity~List~Product~~
+        +createProduct(Product, Authentication) ResponseEntity~Product~
+        +updateProduct(Long, Product, Authentication) ResponseEntity~Product~
+        +deleteProduct(Long, Authentication) ResponseEntity~?~
+        +uploadImage(MultipartFile) ResponseEntity~String~
+        +toggleAvailability(Long, Authentication) ResponseEntity~?~
+        +updateCustomPrice(Long, Map, Authentication) ResponseEntity~?~
+    }
+
+    class Store {
+        -Long id
+        -String storeName
+        -String slug
+        -String logoUrl
+        -String address
+        -String whatsapp
+        -Long adminStoreId
+    }
+
+    class User {
+        -Long id
+        -String username
+        -String password
+        -String role
+        -Long adminStoreId
+        -Long storeId
+    }
+
+    class Product {
+        -Long instoreCode
+        -String name
+        -Float defaultPrice
+        -String imageUrl
+    }
+
+    StoreController ..> Store : gestisce
+    UserController ..> User : gestisce
+    ProductController ..> Product : gestisce
+```
