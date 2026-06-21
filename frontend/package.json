@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:prof": "VITE_STORE_CODE=PROFESSIONAL_VAPE vite --port 5173",
-    "dev:puff": "VITE_STORE_CODE=PUFF_STORE vite --port 5174",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

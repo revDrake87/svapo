@@ -48,14 +48,14 @@ In una nuova finestra del terminale:
 ```bash
 cd frontend
 npm install
-npm run dev:prof
-# In alternativa, per testare il secondo negozio isolato:
-# npm run dev:puff
+npm run dev
 ```
-*Il frontend principale sarà accessibile all'indirizzo `http://localhost:5173` e il secondario su `http://localhost:5174`.*
+*Il frontend base sarà accessibile all'indirizzo `http://localhost:5173/`. I due negozi configurati di default sono raggiungibili navigando ai rispettivi percorsi:*
+- *[http://localhost:5173/PROFESSIONAL_VAPE](http://localhost:5173/PROFESSIONAL_VAPE)*
+- *[http://localhost:5173/PUFF_STORE](http://localhost:5173/PUFF_STORE)*
 
 ## 🔐 Accesso Admin
-Per accedere alla dashboard di amministrazione, naviga su `http://localhost:5173/admin` ed usa le seguenti credenziali predefinite:
+Per accedere alla dashboard di amministrazione di un determinato store, naviga sul suo percorso aggiungendo `/admin` (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`) ed usa le seguenti credenziali predefinite:
 *   **Username:** `admin`
 *   **Password:** `admin123`
 

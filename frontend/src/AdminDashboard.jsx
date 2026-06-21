@@ -1,9 +1,9 @@
-import { getApiUrl, getStoreCode } from "./apiConfig";
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 
-function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
+function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -28,7 +28,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   }, []);
 
   const fetchProducts = () => {
-    const storeId = localStorage.getItem('storeId') || getStoreCode();
+    const storeId = localStorage.getItem('storeId') || storeCode;
     fetch(`${getApiUrl()}/products?storeId=${storeId}`)
       .then(res => res.json())
       .then(data => {
@@ -163,7 +163,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
-    const storeId = localStorage.getItem('storeId') || getStoreCode();
+    const storeId = localStorage.getItem('storeId') || storeCode;
     fetch(`${getApiUrl()}/settings/${storeId}`, {
       method: 'PUT',
       headers: { 
@@ -198,7 +198,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleSave = (e) => {
     e.preventDefault();
-    currentProduct.storeId = localStorage.getItem('storeId') || getStoreCode();
+    currentProduct.storeId = localStorage.getItem('storeId') || storeCode;
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
       ? `${getApiUrl()}/products/${currentProduct.instoreCode}`
@@ -239,7 +239,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
             Accedi
           </button>
           <div className="mt-4 text-center">
-            <Link to="/" className="text-gray-500 dark:text-zinc-500 text-sm hover:text-gray-900 dark:hover:text-white transition-colors">Torna al catalogo</Link>
+            <Link to={`/${storeCode}`} className="text-gray-500 dark:text-zinc-500 text-sm hover:text-gray-900 dark:hover:text-white transition-colors">Torna al catalogo</Link>
           </div>
         </form>
       </div>
@@ -258,7 +258,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
             </button>
-            <Link to="/" className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
+            <Link to={`/${storeCode}`} className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
             <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
               <LogOut size={16} /> Esci
             </button>

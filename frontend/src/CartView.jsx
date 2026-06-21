@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from './Header';
 import { ArrowLeft } from 'lucide-react';
 
-function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
 
   const removeFromCart = (productCode) => {
     setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
@@ -30,7 +30,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
 
       <main className="container mx-auto p-4 max-w-4xl mt-6 flex-grow">
         <div className="mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
+          <Link to={`/${storeCode}`} className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
             <ArrowLeft size={16} /> Torna al Catalogo
           </Link>
         </div>
@@ -48,7 +48,7 @@ function CartView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart 
             <div className="flex flex-col items-center justify-center py-16 opacity-50">
               <svg className="w-20 h-20 text-gray-400 dark:text-zinc-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
               <p className="text-gray-500 dark:text-zinc-400 text-center text-lg font-medium">La lista è vuota.<br/>Aggiungi dei prodotti dal catalogo.</p>
-              <Link to="/" className="mt-8 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+              <Link to={`/${storeCode}`} className="mt-8 bg-black dark:bg-white text-white dark:text-black font-bold px-6 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
                 Esplora i prodotti
               </Link>
             </div>

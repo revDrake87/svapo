@@ -1,4 +1,4 @@
-import { getApiUrl, getStoreCode } from "./apiConfig";
+import { getApiUrl } from "./apiConfig";
 import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import { Link } from 'react-router-dom';
@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Header from './Header';
 
-function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   const observerTarget = useRef(null);
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products?storeId=${getStoreCode()}`)
+    fetch(`${getApiUrl()}/products?storeId=${storeCode}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -213,7 +213,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                   <div className="absolute top-3 right-3 bg-gray-100 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10 transition-colors">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
-                  <Link to={`/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
+                  <Link to={`/${storeCode}/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
                     <div className="h-48 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-400 dark:text-zinc-600 transition-transform duration-500 group-hover:scale-105">
                       {product.imageUrl ? (
                         <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full" />
@@ -222,7 +222,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                       )}
                     </div>
                   </Link>
-                  <Link to={`/product/${product.instoreCode}`} className="block">
+                  <Link to={`/${storeCode}/product/${product.instoreCode}`} className="block">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>

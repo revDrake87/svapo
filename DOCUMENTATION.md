@@ -74,5 +74,5 @@ In risposta alle più recenti richieste di estensione dell'applicazione:
 1.  Il database è stato esteso introducendo il tracciamento dei Social e del Logo. 
 2.  L'UI è stata adattata per iniettare l'header personalizzato e generare dinamicamente il Footer di ogni pagina con tali informazioni.
 3.  L'uso di una combinazione Regex in JavaScript (`replace(/[^0-9]/g, '')`) permette all'amministratore di incollare i numeri di telefono con spazi e prefissi, e al software di creare un link WhatsApp API sempre perfettamente valido.
-4.  Supporto Multi-store: isolamento dei dati per negozi multipli (Professional Vape, Puff Store) tramite chiavi `storeId` ed environment variables nel frontend (`VITE_STORE_CODE`).
+4.  Supporto Multi-store: isolamento dei dati per negozi multipli (Professional Vape, Puff Store) tramite chiavi `storeId`. Nel frontend, lo store d'interesse viene estrapolato dinamicamente dall'URL grazie a `useParams` di React Router (es. `/:storeCode/`).
 5.  Introduzione dello scorrimento infinito (infinite scroll) basato su IntersectionObserver nel catalogo prodotti, in sostituzione della paginazione classica.
