@@ -1,4 +1,4 @@
-import { getApiUrl } from "./apiConfig";
+import { getApiUrl, getStoreCode } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Eye, EyeOff } from 'lucide-react';
@@ -28,7 +28,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   }, []);
 
   const fetchProducts = () => {
-    fetch(`${getApiUrl()}/products`)
+    const storeId = localStorage.getItem('storeId') || getStoreCode();
+    fetch(`${getApiUrl()}/products?storeId=${storeId}`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -51,6 +52,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('storeId', data.storeId);
         setIsAuthenticated(true);
       } else {
         alert('Password errata!');
@@ -64,6 +66,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     setIsAuthenticated(false);
     setPassword('');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('storeId');
   };
 
   const handleDelete = (id) => {
@@ -160,7 +163,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/settings`, {
+    const storeId = localStorage.getItem('storeId') || getStoreCode();
+    fetch(`${getApiUrl()}/settings/${storeId}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -194,6 +198,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleSave = (e) => {
     e.preventDefault();
+    currentProduct.storeId = localStorage.getItem('storeId') || getStoreCode();
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
       ? `${getApiUrl()}/products/${currentProduct.instoreCode}`

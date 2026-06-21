@@ -26,7 +26,10 @@ public class ProductController {
     private static final String UPLOAD_DIR = "uploads/";
 
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts(@RequestParam(required = false) String storeId) {
+        if (storeId != null && !storeId.isEmpty()) {
+            return productRepository.findByStoreId(storeId);
+        }
         return productRepository.findAll();
     }
 
@@ -38,6 +41,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         return productRepository.findById(id).map(product -> {
+            product.setStoreId(productDetails.getStoreId());
             product.setBarcode(productDetails.getBarcode());
             product.setName(productDetails.getName());
             product.setMilliliters(productDetails.getMilliliters());

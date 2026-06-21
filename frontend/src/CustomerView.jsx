@@ -1,4 +1,4 @@
-import { getApiUrl } from "./apiConfig";
+import { getApiUrl, getStoreCode } from "./apiConfig";
 import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   const itemsPerPage = 6;
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products`)
+    fetch(`${getApiUrl()}/products?storeId=${getStoreCode()}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');

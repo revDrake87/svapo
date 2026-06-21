@@ -1,4 +1,4 @@
-import { getApiUrl } from "./apiConfig";
+import { getApiUrl, getStoreCode } from "./apiConfig";
 import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CustomerView from './CustomerView';
@@ -34,7 +34,7 @@ function App() {
     }
 
     // Fetch store settings
-    fetch(`${getApiUrl()}/settings`)
+    fetch(`${getApiUrl()}/settings/${getStoreCode()}`)
       .then(res => res.json())
       .then(data => {
         setStoreName(data.storeName);
