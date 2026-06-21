@@ -6,7 +6,7 @@ L'interfaccia utente è stata recentemente aggiornata per seguire il pattern gra
 
 ## 🌟 Funzionalità Principali
 
-*   **Catalogo Clienti:** Visualizzazione a griglia con filtri avanzati per categorie (Liquidi, Hardware, ecc.), ricerca testuale e impaginazione.
+*   **Catalogo Clienti:** Visualizzazione a griglia con filtri avanzati per categorie (Liquidi, Hardware, ecc.), ricerca testuale e scorrimento infinito.
 *   **Lista Acquisti:** Un carrello virtuale pensato per l'esperienza in negozio (mostra al cassiere cosa vuoi acquistare).
 *   **Design Vercel-like:** UI moderna, transizioni fluide, font Inter, e supporto completo per Light/Dark Mode.
 *   **Pannello Admin Protetto:** Area riservata accessibile tramite autenticazione sicura JWT.
@@ -48,9 +48,11 @@ In una nuova finestra del terminale:
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev:prof
+# In alternativa, per testare il secondo negozio isolato:
+# npm run dev:puff
 ```
-*Il frontend sarà accessibile all'indirizzo `http://localhost:5173`.*
+*Il frontend principale sarà accessibile all'indirizzo `http://localhost:5173` e il secondario su `http://localhost:5174`.*
 
 ## 🔐 Accesso Admin
 Per accedere alla dashboard di amministrazione, naviga su `http://localhost:5173/admin` ed usa le seguenti credenziali predefinite:

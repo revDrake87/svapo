@@ -17,9 +17,9 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   const [subCategoryFilter, setSubCategoryFilter] = useState('');
   const [flavorFilter, setFlavorFilter] = useState('');
   
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  // Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(6);
+  const observerTarget = useRef(null);
 
   useEffect(() => {
     fetch(`${getApiUrl()}/products?storeId=${getStoreCode()}`)
@@ -81,17 +81,34 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
     return true;
   });
 
-  // Reset pagination when filters change
+  // Reset visible count when filters change
   useEffect(() => {
-    setCurrentPage(1);
+    setVisibleCount(6);
   }, [searchTerm, categoryFilter, subCategoryFilter, flavorFilter]);
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const currentProducts = filteredProducts.slice(0, visibleCount);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
+          setVisibleCount((prevCount) => prevCount + 6);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget, visibleCount, filteredProducts.length]);
 
   // GSAP Animations
   useGSAP(() => {
@@ -101,7 +118,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
         { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all" }
       );
     }
-  }, [currentProducts, currentPage]); // Re-run animation when products or page change
+  }, [currentProducts.length]); // Re-run animation when visible count changes
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
@@ -243,26 +260,10 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8">
-                <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Precedente
-                </button>
-                <span className="text-sm font-medium text-gray-600 dark:text-zinc-400">
-                  Pagina {currentPage} di {totalPages}
-                </span>
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Successiva
-                </button>
+            {/* Infinite Scroll Observer Target */}
+            {visibleCount < filteredProducts.length && (
+              <div ref={observerTarget} className="h-10 w-full mt-4 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
             </>
