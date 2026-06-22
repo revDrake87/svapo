@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Sun, Moon } from 'lucide-react';
 
-function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
+function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products`)
+    fetch(`${getApiUrl()}/products?storeId=${storeCode}`)
       .then(res => res.json())
       .then(data => {
         const found = data.find(p => p.instoreCode.toString() === id);
@@ -36,7 +36,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
   if (error || !product) return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-4">{error || "Errore"}</h2>
-      <Link to="/" className="text-blue-600 dark:text-cyan-400 hover:underline">Torna al catalogo</Link>
+      <Link to={`/${storeCode}`} className="text-blue-600 dark:text-cyan-400 hover:underline">Torna al catalogo</Link>
     </div>
   );
 
@@ -45,7 +45,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
       <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <Link to="/" className="p-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
+            <Link to={`/${storeCode}`} className="p-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
               <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
             </Link>
             <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -115,7 +115,7 @@ function ProductDetail({ isDarkMode, toggleTheme, storeName }) {
             </div>
 
             <div className="mt-auto">
-               <Link to="/" className="w-full flex items-center justify-center gap-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg">
+               <Link to={`/${storeCode}`} className="w-full flex items-center justify-center gap-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg">
                  <ShoppingCart size={20} />
                  Torna alla vetrina per aggiungere al carrello
                </Link>

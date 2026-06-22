@@ -45,7 +45,7 @@ Nel backend, il dominio applicativo è suddiviso in entità chiare:
 L'App React è divisa in tre sezioni principali:
 
 *   **CustomerView (Vetrina Pubblica):** 
-    *   Mostra la lista dei prodotti recuperata in fase di "Mount" (tramite l'hook `useEffect`).
+    *   Mostra la lista dei prodotti recuperata in fase di "Mount" (tramite l'hook `useEffect`), dotata di Intersection Observer per lo scorrimento infinito.
     *   Offre funzionalità di ricerca (Testuale) e filtraggio avanzato (Categoria, Sotto-categoria, Gusto).
     *   Include la "Lista Acquisto" (Cart): uno stato React che aggiunge e somma i prodotti scelti dall'utente, utile da mostrare fisicamente in cassa.
     *   *Scelta implementativa: Il footer è stato reso dinamico per mostrare i link ai social, all'indirizzo fisico e un pulsante WhatsApp (costruito estrapolando solo i numeri dalla stringa impostata).*
@@ -74,3 +74,5 @@ In risposta alle più recenti richieste di estensione dell'applicazione:
 1.  Il database è stato esteso introducendo il tracciamento dei Social e del Logo. 
 2.  L'UI è stata adattata per iniettare l'header personalizzato e generare dinamicamente il Footer di ogni pagina con tali informazioni.
 3.  L'uso di una combinazione Regex in JavaScript (`replace(/[^0-9]/g, '')`) permette all'amministratore di incollare i numeri di telefono con spazi e prefissi, e al software di creare un link WhatsApp API sempre perfettamente valido.
+4.  Supporto Multi-store: isolamento dei dati per negozi multipli (Professional Vape, Puff Store) tramite chiavi `storeId`. Nel frontend, lo store d'interesse viene estrapolato dinamicamente dall'URL grazie a `useParams` di React Router (es. `/:storeCode/`).
+5.  Introduzione dello scorrimento infinito (infinite scroll) basato su IntersectionObserver nel catalogo prodotti, in sostituzione della paginazione classica.

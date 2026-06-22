@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Eye, EyeOff } from 'lucide-react';
 
-function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
+function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -28,7 +29,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   }, []);
 
   const fetchProducts = () => {
-    fetch(`${getApiUrl()}/products`)
+    const storeId = localStorage.getItem('storeId') || storeCode;
+    fetch(`${getApiUrl()}/products?storeId=${storeId}`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -42,15 +44,23 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    let effectiveUsername = username;
+    if (username.toLowerCase() === 'admin') {
+      if (storeCode === 'PROFESSIONAL_VAPE') effectiveUsername = 'admin_prof';
+      else if (storeCode === 'PUFF_STORE') effectiveUsername = 'admin_puff';
+    }
+    
     try {
       const res = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'admin', password: password })
+        body: JSON.stringify({ username: effectiveUsername, password: password })
       });
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('storeId', data.storeId);
         setIsAuthenticated(true);
       } else {
         alert('Password errata!');
@@ -62,8 +72,10 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUsername('');
     setPassword('');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('storeId');
   };
 
   const handleDelete = (id) => {
@@ -160,7 +172,8 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
   const handleSettingsSave = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/settings`, {
+    const storeId = localStorage.getItem('storeId') || storeCode;
+    fetch(`${getApiUrl()}/settings/${storeId}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -194,6 +207,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
 
   const handleSave = (e) => {
     e.preventDefault();
+    currentProduct.storeId = localStorage.getItem('storeId') || storeCode;
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
       ? `${getApiUrl()}/products/${currentProduct.instoreCode}`
@@ -221,6 +235,17 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
         <form onSubmit={handleLogin} className="bg-white dark:bg-[#0A0A0A] p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 w-96 transition-colors">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Area Riservata Admin</h2>
           <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Username</label>
+            <input 
+              type="text" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-cyan-500 transition-colors"
+              required
+              placeholder="Es. admin_prof"
+            />
+          </div>
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Password</label>
             <input 
               type="password" 
@@ -234,7 +259,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
             Accedi
           </button>
           <div className="mt-4 text-center">
-            <Link to="/" className="text-gray-500 dark:text-zinc-500 text-sm hover:text-gray-900 dark:hover:text-white transition-colors">Torna al catalogo</Link>
+            <Link to={`/${storeCode}`} className="text-gray-500 dark:text-zinc-500 text-sm hover:text-gray-900 dark:hover:text-white transition-colors">Torna al catalogo</Link>
           </div>
         </form>
       </div>
@@ -253,7 +278,7 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
               {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
             </button>
-            <Link to="/" className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
+            <Link to={`/${storeCode}`} className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
             <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
               <LogOut size={16} /> Esci
             </button>

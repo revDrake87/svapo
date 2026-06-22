@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Header from './Header';
 
-function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,12 +17,12 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
   const [subCategoryFilter, setSubCategoryFilter] = useState('');
   const [flavorFilter, setFlavorFilter] = useState('');
   
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  // Infinite scroll state
+  const [visibleCount, setVisibleCount] = useState(6);
+  const observerTarget = useRef(null);
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products`)
+    fetch(`${getApiUrl()}/products?storeId=${storeCode}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -81,27 +81,54 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
     return true;
   });
 
-  // Reset pagination when filters change
+  // Reset visible count when filters change
   useEffect(() => {
-    setCurrentPage(1);
+    setVisibleCount(6);
   }, [searchTerm, categoryFilter, subCategoryFilter, flavorFilter]);
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const currentProducts = filteredProducts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const currentProducts = filteredProducts.slice(0, visibleCount);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
+          setVisibleCount((prevCount) => prevCount + 6);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [observerTarget, visibleCount, filteredProducts.length]);
 
   // GSAP Animations
   useGSAP(() => {
     if (currentProducts.length > 0) {
-      gsap.fromTo(".product-card", 
+      gsap.fromTo(".product-card:not(.gsap-animated)", 
         { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all" }
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 0.5, 
+          stagger: 0.1, 
+          ease: "power2.out", 
+          clearProps: "all",
+          onComplete: function() {
+            this.targets().forEach(el => el.classList.add('gsap-animated'));
+          }
+        }
       );
     }
-  }, [currentProducts, currentPage]); // Re-run animation when products or page change
+  }, [currentProducts.length]); // Re-run animation when visible count changes
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
@@ -196,7 +223,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                   <div className="absolute top-3 right-3 bg-gray-100 dark:bg-white/10 backdrop-blur-md border border-gray-200 dark:border-white/10 text-gray-800 dark:text-white text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-full z-10 transition-colors">
                     {product.subCategory?.replace(/_/g, ' ')}
                   </div>
-                  <Link to={`/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
+                  <Link to={`/${storeCode}/product/${product.instoreCode}`} className="block overflow-hidden rounded-xl mb-5 mt-2">
                     <div className="h-48 bg-gray-100 dark:bg-zinc-800 flex items-center justify-center text-gray-400 dark:text-zinc-600 transition-transform duration-500 group-hover:scale-105">
                       {product.imageUrl ? (
                         <img src={product.imageUrl} alt={product.name} className="object-cover h-full w-full" />
@@ -205,7 +232,7 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
                       )}
                     </div>
                   </Link>
-                  <Link to={`/product/${product.instoreCode}`} className="block">
+                  <Link to={`/${storeCode}/product/${product.instoreCode}`} className="block">
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>
@@ -243,26 +270,10 @@ function CustomerView({ isDarkMode, toggleTheme, storeName, settings, cart, setC
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8">
-                <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Precedente
-                </button>
-                <span className="text-sm font-medium text-gray-600 dark:text-zinc-400">
-                  Pagina {currentPage} di {totalPages}
-                </span>
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-lg bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Successiva
-                </button>
+            {/* Infinite Scroll Observer Target */}
+            {visibleCount < filteredProducts.length && (
+              <div ref={observerTarget} className="h-10 w-full mt-4 flex items-center justify-center">
+                <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
             </>

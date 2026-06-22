@@ -6,7 +6,7 @@ L'interfaccia utente è stata recentemente aggiornata per seguire il pattern gra
 
 ## 🌟 Funzionalità Principali
 
-*   **Catalogo Clienti:** Visualizzazione a griglia con filtri avanzati per categorie (Liquidi, Hardware, ecc.), ricerca testuale e impaginazione.
+*   **Catalogo Clienti:** Visualizzazione a griglia con filtri avanzati per categorie (Liquidi, Hardware, ecc.), ricerca testuale e scorrimento infinito.
 *   **Lista Acquisti:** Un carrello virtuale pensato per l'esperienza in negozio (mostra al cassiere cosa vuoi acquistare).
 *   **Design Vercel-like:** UI moderna, transizioni fluide, font Inter, e supporto completo per Light/Dark Mode.
 *   **Pannello Admin Protetto:** Area riservata accessibile tramite autenticazione sicura JWT.
@@ -50,11 +50,13 @@ cd frontend
 npm install
 npm run dev
 ```
-*Il frontend sarà accessibile all'indirizzo `http://localhost:5173`.*
+*Il frontend base sarà accessibile all'indirizzo `http://localhost:5173/`. I due negozi configurati di default sono raggiungibili navigando ai rispettivi percorsi:*
+- *[http://localhost:5173/PROFESSIONAL_VAPE](http://localhost:5173/PROFESSIONAL_VAPE)*
+- *[http://localhost:5173/PUFF_STORE](http://localhost:5173/PUFF_STORE)*
 
 ## 🔐 Accesso Admin
-Per accedere alla dashboard di amministrazione, naviga su `http://localhost:5173/admin` ed usa le seguenti credenziali predefinite:
-*   **Username:** `admin`
+Per accedere alla dashboard di amministrazione di un determinato store, naviga sul suo percorso aggiungendo `/admin` (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`) ed usa le seguenti credenziali predefinite:
+*   **Username:** `admin_prof` (o `admin_puff` per Puff Store)
 *   **Password:** `admin123`
 
 *(Nota: La password è salvata nel database criptata in formato BCrypt. È possibile modificarla aggiornando l'hash direttamente nel file `backend/src/main/resources/data.sql`).*
