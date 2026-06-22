@@ -29,14 +29,14 @@ function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
 
   if (loading) return (
     <div className="min-h-screen bg-gray-50 dark:bg-black flex justify-center items-center">
-       <div className="w-8 h-8 border-4 border-blue-600 dark:border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+       <div className="w-8 h-8 border-4 border-brand dark:border-brand border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 
   if (error || !product) return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white flex flex-col justify-center items-center">
       <h2 className="text-2xl font-bold mb-4">{error || "Errore"}</h2>
-      <Link to={`/${storeCode}`} className="text-blue-600 dark:text-cyan-400 hover:underline">Torna al catalogo</Link>
+      <Link to={`/${storeCode}`} className="text-brand dark:text-brand hover:underline">Torna al catalogo</Link>
     </div>
   );
 
@@ -52,9 +52,11 @@ function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
               {storeName} - Dettaglio
             </h1>
           </div>
-          <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-             {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-blue-600" />}
-          </button>
+            {!isThemeFixed && (
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
+                {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-brand" />}
+              </button>
+            )}
         </div>
       </header>
 
@@ -76,7 +78,7 @@ function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
           {/* Details Section */}
           <div className="md:w-1/2 p-8 md:p-12 flex flex-col">
             <div className="mb-2 flex items-center gap-3">
-              <span className="bg-blue-100 dark:bg-cyan-500/20 text-blue-700 dark:text-cyan-400 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-blue-200 dark:border-cyan-500/30">
+              <span className="bg-brand/10 dark:bg-brand/20 text-brand dark:text-brand text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-blue-200 dark:border-brand/30">
                 {product.category}
               </span>
               <span className="text-gray-500 dark:text-zinc-400 text-sm font-medium">
@@ -86,7 +88,7 @@ function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
             
             <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 leading-tight">{product.name}</h1>
             
-            <div className="text-3xl font-black text-blue-600 dark:text-cyan-400 mb-8 border-b border-gray-100 dark:border-white/10 pb-6">
+            <div className="text-3xl font-black text-brand dark:text-brand mb-8 border-b border-gray-100 dark:border-white/10 pb-6">
               €{product.retailPrice?.toFixed(2)}
             </div>
 

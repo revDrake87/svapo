@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --theme-primary: #1d4ed8; /* blue-700 approx */
+    --theme-hover: #1e40af; /* blue-800 approx */
+  }
+
+  .theme-puff {
+    --theme-primary: #00D6EA;
+    --theme-hover: #00b5c7;
+  }
+
   body {
     font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

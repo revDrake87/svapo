@@ -6,7 +6,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        brand: 'var(--theme-primary)',
+        'brand-hover': 'var(--theme-hover)',
+      }
+    },
   },
   plugins: [],
 }

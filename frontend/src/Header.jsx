@@ -3,7 +3,7 @@ import { Sun, Moon } from "lucide-react";
 
 import { useParams } from 'react-router-dom';
 
-function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, hideCartButton = false }) {
+function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, hideCartButton = false, isThemeFixed = false }) {
   const { storeCode } = useParams();
   return (
     <header className="bg-white/80 dark:bg-[#000000]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-20 transition-colors duration-300">
@@ -47,12 +47,14 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
 
           {/* Right Actions */}
           <div className="flex items-center space-x-3 shrink-0">
-            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-              {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
-            </button>
+            {!isThemeFixed && (
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
+                {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
+              </button>
+            )}
             <Link to={`/${storeCode}/admin`} className="text-sm font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-colors hidden sm:block">Admin Area</Link>
             {!hideCartButton && (
-              <Link to={`/${storeCode}/cart`} className="flex items-center gap-2 bg-black dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black px-4 py-2 rounded-full text-sm font-bold transition-colors">
+              <Link to={`/${storeCode}/cart`} className="flex items-center gap-2 bg-black dark:bg-white hover:bg-brand dark:hover:bg-brand text-white dark:text-black px-4 py-2 rounded-full text-sm font-bold transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 Lista Acquisti <span className="bg-white/20 dark:bg-black/10 px-2 py-0.5 rounded-full text-xs">{cartItemCount}</span>
               </Link>
