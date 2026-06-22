@@ -113,9 +113,19 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
   // GSAP Animations
   useGSAP(() => {
     if (currentProducts.length > 0) {
-      gsap.fromTo(".product-card", 
+      gsap.fromTo(".product-card:not(.gsap-animated)",
         { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: "power2.out", clearProps: "all" }
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: "power2.out",
+          clearProps: "all",
+          onComplete: function() {
+            this.targets().forEach(el => el.classList.add('gsap-animated'));
+          }
+        }
       );
     }
   }, [currentProducts.length]); // Re-run animation when visible count changes
