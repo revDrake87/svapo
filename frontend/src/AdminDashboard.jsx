@@ -45,17 +45,11 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    let effectiveUsername = username;
-    if (username.toLowerCase() === 'admin') {
-      if (storeCode === 'PROFESSIONAL_VAPE') effectiveUsername = 'admin_prof';
-      else if (storeCode === 'PUFF_STORE') effectiveUsername = 'admin_puff';
-    }
-
     try {
       const res = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: effectiveUsername, password: password })
+        body: JSON.stringify({ username: username, password: password })
       });
       if (res.ok) {
         const data = await res.json();
