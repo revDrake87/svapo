@@ -55,7 +55,7 @@ L'App React è divisa in tre sezioni principali:
 
 *   **AdminDashboard (Pannello di Amministrazione):** 
     *   **Sicurezza Frontend:** Accessibile solo dopo aver superato un form di login. Il token JWT ricevuto dal server viene salvato nel `localStorage` del browser e inviato negli header (`Authorization: Bearer <token>`) di ogni successiva richiesta "protetta" (POST/PUT/DELETE) per gestire prodotti e configurazioni.
-    *   Permette la gestione dinamica dei prodotti e l'upload di foto.
+    *   Permette la gestione dinamica dei prodotti, la creazione di sub-categorie personalizzate, l'upload di foto e la ricerca rapida tramite barra di filtro testuale.
     *   Offre un pannello dedicato alla modifica di `StoreSettings` (Nome, Logo, Indirizzo e Social).
 
 ---
@@ -76,3 +76,5 @@ In risposta alle più recenti richieste di estensione dell'applicazione:
 3.  L'uso di una combinazione Regex in JavaScript (`replace(/[^0-9]/g, '')`) permette all'amministratore di incollare i numeri di telefono con spazi e prefissi, e al software di creare un link WhatsApp API sempre perfettamente valido.
 4.  Supporto Multi-store: isolamento dei dati per negozi multipli (Professional Vape, Puff Store) tramite chiavi `storeId`. Nel frontend, lo store d'interesse viene estrapolato dinamicamente dall'URL grazie a `useParams` di React Router (es. `/:storeCode/`).
 5.  Introduzione dello scorrimento infinito (infinite scroll) basato su IntersectionObserver nel catalogo prodotti, in sostituzione della paginazione classica.
+6.  Supporto alla creazione di sub-categorie personalizzate nel pannello admin tramite interfaccia HTML5 `<datalist>`.
+7.  Integrazione di una barra di ricerca testuale reattiva nell'Admin Dashboard per filtrare rapidamente i prodotti tramite nome o codice a barre.
