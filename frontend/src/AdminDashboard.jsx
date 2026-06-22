@@ -425,33 +425,35 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
 
                   <div>
                     <label className="block text-sm text-gray-600 dark:text-zinc-400 mb-1">Sotto-Categoria</label>
-                    {currentProduct.category === 'LIQUIDO' ? (
-                      <select 
-                        value={currentProduct.subCategory || 'TPD'} 
-                        onChange={e => setCurrentProduct({...currentProduct, subCategory: e.target.value})}
-                        className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
-                      >
-                        <option value="TPD">TPD 10ml</option>
-                        <option value="MINI_SHOT_10_10">Mini Shot 10+10</option>
-                        <option value="SHOT">Shot</option>
-                        <option value="AROMA">Aroma</option>
-                        <option value="NICOTINE_SHOT">Base/Nicotina 10ml</option>
-                      </select>
-                    ) : (
-                      <select 
-                        value={currentProduct.subCategory || 'BATTERY_BOX'} 
-                        onChange={e => setCurrentProduct({...currentProduct, subCategory: e.target.value})}
-                        className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
-                      >
-                        <option value="BATTERY_BOX">Battery Box</option>
-                        <option value="ATOMIZER_RTA">Atomizzatore Rigenerabile</option>
-                        <option value="ATOMIZER_NON_RTA">Atomizzatore Non Rigenerabile</option>
-                        <option value="STARTER_KIT">Starter Kit</option>
-                        <option value="POD_MOD">PodMod Starter Kit</option>
-                        <option value="POD_ACCESSORY">Accessori Ricambio PodMod</option>
-                        <option value="ACCESSORY">Accessori Vari</option>
-                      </select>
-                    )}
+                    <input
+                      type="text"
+                      list="subCategoryList"
+                      value={currentProduct.subCategory || ''}
+                      onChange={e => setCurrentProduct({...currentProduct, subCategory: e.target.value})}
+                      className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded px-3 py-2 text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                      placeholder="Seleziona o digita una nuova sotto-categoria"
+                    />
+                    <datalist id="subCategoryList">
+                      {currentProduct.category === 'LIQUIDO' ? (
+                        <>
+                          <option value="TPD">TPD 10ml</option>
+                          <option value="MINI_SHOT_10_10">Mini Shot 10+10</option>
+                          <option value="SHOT">Shot</option>
+                          <option value="AROMA">Aroma</option>
+                          <option value="NICOTINE_SHOT">Base/Nicotina 10ml</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value="BATTERY_BOX">Battery Box</option>
+                          <option value="ATOMIZER_RTA">Atomizzatore Rigenerabile</option>
+                          <option value="ATOMIZER_NON_RTA">Atomizzatore Non Rigenerabile</option>
+                          <option value="STARTER_KIT">Starter Kit</option>
+                          <option value="POD_MOD">PodMod Starter Kit</option>
+                          <option value="POD_ACCESSORY">Accessori Ricambio PodMod</option>
+                          <option value="ACCESSORY">Accessori Vari</option>
+                        </>
+                      )}
+                    </datalist>
                   </div>
 
                   <div>
