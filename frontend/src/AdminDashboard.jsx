@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, Image as ImageIcon, Save, X, LogOut, Sun, Moon, Ey
 function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStoreName, settings, setSettings }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -222,6 +223,12 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
       })
       .catch(err => console.error("Failed to save", err));
   };
+
+  const filteredProducts = products.filter(p =>
+    p.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.barcode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.instoreCode?.toString().includes(searchTerm.toLowerCase())
+  );
 
   if (!isAuthenticated) {
     return (
@@ -574,11 +581,20 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Prodotti a Catalogo</h2>
-              <button onClick={handleAddNew} className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
-                <Plus size={18} /> Aggiungi Nuovo
-              </button>
+              <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                <input
+                  type="text"
+                  placeholder="Cerca per nome o codice..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full sm:w-64 bg-white dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 dark:focus:border-cyan-500 outline-none transition-colors"
+                />
+                <button onClick={handleAddNew} className="w-full sm:w-auto bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors shrink-0">
+                  <Plus size={18} /> Aggiungi Nuovo
+                </button>
+              </div>
             </div>
 
             {loading ? (
@@ -601,7 +617,7 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
                       </tr>
                     </thead>
                     <tbody>
-                      {products.map(p => (
+                      {filteredProducts.map(p => (
                         <tr key={p.instoreCode} className={`border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${p.isAvailable === false ? 'opacity-60' : ''}`}>
                           <td className="p-4">
                             <div className="w-10 h-10 bg-gray-100 dark:bg-black rounded-md flex items-center justify-center overflow-hidden border border-gray-200 dark:border-transparent">
