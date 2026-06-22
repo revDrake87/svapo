@@ -56,7 +56,7 @@ npm run dev
 
 ## 🔐 Accesso Admin
 Per accedere alla dashboard di amministrazione di un determinato store, naviga sul suo percorso aggiungendo `/admin` (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`) ed usa le seguenti credenziali predefinite:
-*   **Username:** `admin`
+*   **Username:** `admin_prof` (o `admin_puff` per Puff Store)
 *   **Password:** `admin123`
 
 *(Nota: La password è salvata nel database criptata in formato BCrypt. È possibile modificarla aggiornando l'hash direttamente nel file `backend/src/main/resources/data.sql`).*

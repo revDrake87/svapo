@@ -9,6 +9,7 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -47,7 +48,7 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
       const res = await fetch(`${getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'admin', password: password })
+        body: JSON.stringify({ username: username, password: password })
       });
       if (res.ok) {
         const data = await res.json();
@@ -64,6 +65,7 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setUsername('');
     setPassword('');
     localStorage.removeItem('adminToken');
     localStorage.removeItem('storeId');
@@ -225,6 +227,17 @@ function AdminDashboard({ storeCode, isDarkMode, toggleTheme, storeName, setStor
       <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center font-sans text-gray-900 dark:text-gray-200 transition-colors duration-300">
         <form onSubmit={handleLogin} className="bg-white dark:bg-[#0A0A0A] p-8 rounded-2xl shadow-xl border border-gray-200 dark:border-white/10 w-96 transition-colors">
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Area Riservata Admin</h2>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full bg-gray-50 dark:bg-black border border-gray-300 dark:border-white/20 rounded-lg px-4 py-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-cyan-500 transition-colors"
+              required
+              placeholder="Es. admin_prof"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-zinc-400 mb-2">Password</label>
             <input 
