@@ -10,7 +10,7 @@ L'interfaccia utente è stata recentemente aggiornata per seguire il pattern gra
 *   **Lista Acquisti:** Un carrello virtuale pensato per l'esperienza in negozio (mostra al cassiere cosa vuoi acquistare).
 *   **Design Vercel-like:** UI moderna, transizioni fluide, font Inter, e supporto completo per Light/Dark Mode.
 *   **Pannello Admin Protetto:** Area riservata accessibile tramite autenticazione sicura JWT.
-*   **Gestione Prodotti (CRUD):** Aggiunta, modifica, eliminazione e caricamento immagini dei prodotti. Gestione di attributi ibridi (es. wattaggio e batteria per l'hardware, nicotina e aroma per i liquidi).
+*   **Gestione Prodotti (CRUD):** Aggiunta, modifica, eliminazione e caricamento immagini dei prodotti. Gestione di attributi ibridi (es. wattaggio e batteria per l'hardware, nicotina e aroma per i liquidi). Filtro di ricerca in tempo reale e supporto a sotto-categorie personalizzate flessibili.
 *   **Impostazioni Dinamiche:** Modifica del nome del negozio globalmente, direttamente dal pannello admin.
 
 ## 🛠️ Stack Tecnologico
