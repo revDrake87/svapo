@@ -28,7 +28,7 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
               {settings?.logoUrl && (
                 <img src={settings.logoUrl} alt="Store Logo" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
               )}
-              <h1 className={`text-2xl font-extrabold tracking-tight hidden sm:block ${textClass}`}>
+              <h1 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${textClass}`}>
                 {storeName}
               </h1>
             </Link>
