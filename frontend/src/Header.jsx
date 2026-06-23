@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, ChevronDown, ChevronUp } from "lucide-react";
 
 import { useParams } from 'react-router-dom';
 
 function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, hideCartButton = false, isThemeFixed = false }) {
   const { storeCode } = useParams();
+  const [isSocialOpen, setIsSocialOpen] = useState(false);
 
   const headerBgClass = isThemeFixed
     ? "bg-[#00D6EA] border-b border-[#00b5c7]"
@@ -46,22 +48,31 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
               )}
 
               {(settings?.instagram || settings?.facebook || settings?.tiktok || settings?.whatsapp) && (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 relative">
                   <span className="font-bold uppercase tracking-wider text-[10px] opacity-70">Social</span>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    {settings?.instagram && (
-                      <a href={settings.instagram} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Instagram</a>
-                    )}
-                    {settings?.facebook && (
-                      <a href={settings.facebook} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Facebook</a>
-                    )}
-                    {settings?.tiktok && (
-                      <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>TikTok</a>
-                    )}
-                    {settings?.whatsapp && (
-                      <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-green-700 transition-colors">WhatsApp</a>
-                    )}
-                  </div>
+                  <button
+                    onClick={() => setIsSocialOpen(!isSocialOpen)}
+                    className={`flex items-center gap-1 font-medium ${isThemeFixed ? 'bg-black/10 hover:bg-black/20 text-gray-900' : 'bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-900 dark:text-white'} px-3 py-1.5 rounded-md transition-colors w-max`}
+                  >
+                    Vedi Social {isSocialOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
+
+                  {isSocialOpen && (
+                    <div className={`absolute top-full mt-2 left-0 min-w-[140px] rounded-lg shadow-xl border overflow-hidden z-50 flex flex-col ${isThemeFixed ? 'bg-white border-gray-200' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700'}`}>
+                      {settings?.instagram && (
+                        <a href={settings.instagram} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Instagram</a>
+                      )}
+                      {settings?.facebook && (
+                        <a href={settings.facebook} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Facebook</a>
+                      )}
+                      {settings?.tiktok && (
+                        <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>TikTok</a>
+                      )}
+                      {settings?.whatsapp && (
+                        <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>WhatsApp</a>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
