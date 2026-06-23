@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Header from './Header';
 
-function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CustomerView({ storeCode, isThemeFixed, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -133,6 +133,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
       <Header 
+        isThemeFixed={isThemeFixed}
         isDarkMode={isDarkMode} 
         toggleTheme={toggleTheme} 
         storeName={storeName} 

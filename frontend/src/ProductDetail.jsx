@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Sun, Moon } from 'lucide-react';
 
-function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName }) {
+function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName, isThemeFixed }) {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);

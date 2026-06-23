@@ -8,8 +8,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: 'var(--theme-primary)',
-        'brand-hover': 'var(--theme-hover)',
+        brand: 'rgb(var(--theme-primary) / <alpha-value>)',
+        'brand-hover': 'rgb(var(--theme-hover) / <alpha-value>)',
       }
     },
   },

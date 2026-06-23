@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from './Header';
 import { ArrowLeft } from 'lucide-react';
 
-function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CartView({ storeCode, isThemeFixed, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
 
   const removeFromCart = (productCode) => {
     setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
@@ -20,6 +20,7 @@ function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, car
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
       <Header 
+        isThemeFixed={isThemeFixed}
         isDarkMode={isDarkMode} 
         toggleTheme={toggleTheme} 
         storeName={storeName} 

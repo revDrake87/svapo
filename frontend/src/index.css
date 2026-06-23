@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --theme-primary: #1d4ed8; /* blue-700 approx */
-    --theme-hover: #1e40af; /* blue-800 approx */
+    --theme-primary: 29 78 216; /* blue-700 approx */
+    --theme-hover: 30 64 175; /* blue-800 approx */
   }
 
   .theme-puff {
-    --theme-primary: #00D6EA;
-    --theme-hover: #00b5c7;
+    --theme-primary: 0 214 234; /* #00D6EA */
+    --theme-hover: 0 181 199; /* #00b5c7 */
   }
 
   body {
@@ -27,15 +27,15 @@
   }
   
   .vercel-button-primary {
-    @apply bg-black dark:bg-white text-white dark:text-black font-medium rounded-md px-4 py-2 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center;
+    @apply bg-brand dark:bg-white text-white dark:text-black font-medium rounded-md px-4 py-2 hover:bg-brand-hover dark:hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center;
   }
 
   .vercel-button-secondary {
-    @apply bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-medium rounded-md px-4 py-2 hover:border-gray-400 dark:hover:border-white/30 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-200 flex items-center justify-center;
+    @apply bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white font-medium rounded-md px-4 py-2 hover:border-brand hover:text-brand dark:hover:border-white/30 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors duration-200 flex items-center justify-center;
   }
 
   .vercel-input {
-    @apply w-full bg-transparent border border-gray-200 dark:border-white/10 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-gray-400 dark:focus:border-white/30 focus:ring-1 focus:ring-gray-400 dark:focus:ring-white/30 transition-all duration-200;
+    @apply w-full bg-transparent border border-gray-200 dark:border-white/10 rounded-md px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand dark:focus:border-white/30 focus:ring-1 focus:ring-brand dark:focus:ring-white/30 transition-all duration-200;
   }
   
   .vercel-nav {
