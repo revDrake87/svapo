@@ -22,8 +22,8 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
     <header className={`${headerBgClass} p-4 sticky top-0 z-20 transition-colors duration-300`}>
       <div className="container mx-auto flex flex-col gap-4">
         {/* Top Row: Logo, Name, Settings & Actions */}
-        <div className="flex justify-between items-start md:items-center">
-          <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-3">
             <Link to={`/${storeCode}`} className="flex items-center gap-3 group">
               {settings?.logoUrl && (
                 <img src={settings.logoUrl} alt="Store Logo" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
@@ -33,28 +33,37 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
               </h1>
             </Link>
             
-            {/* Store Details (Address & Socials) inline on larger screens */}
-            <div className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs font-medium ${isThemeFixed ? 'text-gray-800' : 'text-gray-500 dark:text-zinc-400'}`}>
+            {/* Store Details (Address & Socials) stacked under the name */}
+            <div className={`flex flex-col gap-3 text-xs font-medium ${isThemeFixed ? 'text-gray-800' : 'text-gray-500 dark:text-zinc-400'}`}>
               {settings?.address && (
-                <div className="flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                  {settings.address}
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold uppercase tracking-wider text-[10px] opacity-70">Indirizzo</span>
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    {settings.address}
+                  </div>
                 </div>
               )}
-              <div className="flex items-center gap-3 flex-wrap">
-                {settings?.instagram && (
-                  <a href={settings.instagram} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Instagram</a>
-                )}
-                {settings?.facebook && (
-                  <a href={settings.facebook} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Facebook</a>
-                )}
-                {settings?.tiktok && (
-                  <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>TikTok</a>
-                )}
-                {settings?.whatsapp && (
-                  <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-green-700 transition-colors">WhatsApp</a>
-                )}
-              </div>
+
+              {(settings?.instagram || settings?.facebook || settings?.tiktok || settings?.whatsapp) && (
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold uppercase tracking-wider text-[10px] opacity-70">Social</span>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {settings?.instagram && (
+                      <a href={settings.instagram} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Instagram</a>
+                    )}
+                    {settings?.facebook && (
+                      <a href={settings.facebook} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Facebook</a>
+                    )}
+                    {settings?.tiktok && (
+                      <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>TikTok</a>
+                    )}
+                    {settings?.whatsapp && (
+                      <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className="hover:text-green-700 transition-colors">WhatsApp</a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
