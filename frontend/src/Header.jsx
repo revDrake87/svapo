@@ -42,30 +42,30 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
                 <div className="flex flex-col gap-1 relative">
                   <button
                     onClick={() => setIsSocialOpen(!isSocialOpen)}
-                    className={`flex items-center gap-1 font-medium ${isThemeFixed ? 'bg-black/10 hover:bg-black/20 text-gray-900' : 'bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-900 dark:text-white'} px-3 py-1.5 rounded-md transition-colors w-max`}
+                    className={`flex items-center gap-1 font-medium ${isThemeFixed ? 'bg-[#00c5d9] hover:bg-[#00b5c7] text-gray-900 border border-[#00b5c7]' : 'bg-gray-100 hover:bg-gray-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-gray-900 dark:text-white'} px-3 py-1.5 rounded-md transition-colors w-max`}
                   >
                     Info & Social {isSocialOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                   </button>
 
                   {isSocialOpen && (
-                    <div className={`absolute top-full mt-2 left-0 min-w-[200px] rounded-lg shadow-xl border overflow-hidden z-50 flex flex-col ${isThemeFixed ? 'bg-white border-gray-200' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700'}`}>
+                    <div className={`absolute top-full mt-2 left-0 min-w-[200px] rounded-lg shadow-xl border overflow-hidden z-50 flex flex-col ${isThemeFixed ? 'bg-[#00D6EA] border-[#00b5c7]' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700'}`}>
                       {settings?.address && (
-                        <div className={`px-4 py-3 flex items-start gap-2 border-b ${isThemeFixed ? 'border-gray-100 text-gray-800' : 'border-zinc-100 dark:border-zinc-800 text-gray-800 dark:text-gray-300'}`}>
+                        <div className={`px-4 py-3 flex items-start gap-2 border-b ${isThemeFixed ? 'border-[#00c5d9] text-gray-900' : 'border-zinc-100 dark:border-zinc-800 text-gray-800 dark:text-gray-300'}`}>
                           <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                           <span className="leading-tight">{settings.address}</span>
                         </div>
                       )}
                       {settings?.instagram && (
-                        <a href={settings.instagram} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Instagram</a>
+                        <a href={settings.instagram} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-900 hover:bg-[#00c5d9]' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Instagram</a>
                       )}
                       {settings?.facebook && (
-                        <a href={settings.facebook} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Facebook</a>
+                        <a href={settings.facebook} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-900 hover:bg-[#00c5d9]' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Facebook</a>
                       )}
                       {settings?.tiktok && (
-                        <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>TikTok</a>
+                        <a href={settings.tiktok} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-900 hover:bg-[#00c5d9]' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>TikTok</a>
                       )}
                       {settings?.whatsapp && (
-                        <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-700 hover:bg-gray-50' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>WhatsApp</a>
+                        <a href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-900 hover:bg-[#00c5d9]' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>WhatsApp</a>
                       )}
                     </div>
                   )}
