@@ -1,0 +1,1 @@
+UPDATE store_settings SET address='via roma - cosenza', instagram='https://instagram.com', facebook='https://facebook.com', tiktok='https://tiktok.com', whatsapp='1234567890' WHERE id='PUFF_STORE';

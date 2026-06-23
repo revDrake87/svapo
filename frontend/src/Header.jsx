@@ -41,7 +41,7 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
                   {settings.address}
                 </div>
               )}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 {settings?.instagram && (
                   <a href={settings.instagram} target="_blank" rel="noreferrer" className={`${iconTextClass} transition-colors`}>Instagram</a>
                 )}
