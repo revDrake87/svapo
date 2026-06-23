@@ -269,20 +269,18 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300">
-      <header className="bg-white dark:bg-zinc-950 border-b border-gray-200 dark:border-white/10 text-gray-900 dark:text-white p-4 sticky top-0 z-20 transition-colors">
+      <header className={`${isThemeFixed ? 'bg-[#00D6EA] border-[#00b5c7]' : 'bg-white dark:bg-zinc-950 border-gray-200 dark:border-white/10'} border-b p-4 sticky top-0 z-20 transition-colors`}>
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">{storeName} - Admin</h1>
+          <h1 className={`text-xl font-bold ${isThemeFixed ? 'text-gray-900' : 'text-gray-900 dark:text-white'}`}>{storeName} - Admin</h1>
           <div className="flex gap-4 items-center">
-            <button onClick={() => setIsSettingsOpen(true)} className="text-sm font-medium text-black dark:text-brand hover:text-brand-hover dark:hover:text-brand-hover transition-colors">
+            <button onClick={() => setIsSettingsOpen(true)} className={`text-sm font-medium transition-colors ${isThemeFixed ? 'text-gray-900 hover:text-black' : 'text-black dark:text-brand hover:text-brand-hover dark:hover:text-brand-hover'}`}>
               Impostazioni
             </button>
-            {!isThemeFixed && (
-              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-                {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-black" />}
-              </button>
-            )}
-            <Link to={`/${storeCode}`} className="text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white text-sm transition-colors">Vetrina Pubblica</Link>
-            <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm transition-colors">
+            <button onClick={toggleTheme} className={`p-2 rounded-full transition-colors ${isThemeFixed ? 'hover:bg-[#00b5c7]' : 'hover:bg-gray-200 dark:hover:bg-zinc-800'}`}>
+              {isDarkMode ? <Sun size={20} className={isThemeFixed ? "text-gray-900" : "text-yellow-400"} /> : <Moon size={20} className={isThemeFixed ? "text-gray-900" : "text-black"} />}
+            </button>
+            <Link to={`/${storeCode}`} className={`text-sm transition-colors ${isThemeFixed ? 'text-gray-800 hover:text-black' : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'}`}>Vetrina Pubblica</Link>
+            <button onClick={handleLogout} className={`flex items-center gap-2 text-sm transition-colors ${isThemeFixed ? 'text-red-800 hover:text-red-900' : 'text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'}`}>
               <LogOut size={16} /> Esci
             </button>
           </div>

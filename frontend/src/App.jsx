@@ -10,7 +10,9 @@ import './index.css';
 function StoreWrapper() {
   const { storeCode } = useParams();
   const isThemeFixed = storeCode === 'PUFF_STORE';
-  const [isDarkMode, setIsDarkMode] = useState(isThemeFixed ? false : true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('theme') !== 'light';
+  });
   const [storeName, setStoreName] = useState('VapeStore');
   const [settings, setSettings] = useState({
     storeName: 'VapeStore',
@@ -56,25 +58,22 @@ function StoreWrapper() {
 
     // Handle theme logic including fixed themes for specific stores
     if (isThemeFixed) {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('theme-puff');
     } else {
       document.documentElement.classList.remove('theme-puff');
-      const storedTheme = localStorage.getItem('theme');
-      if (storedTheme === 'light') {
-        setIsDarkMode(false);
-        document.documentElement.classList.remove('dark');
-      } else {
-        setIsDarkMode(true);
-        document.documentElement.classList.add('dark');
-      }
+    }
+
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'light') {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    } else {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
     }
   }, [storeCode, isThemeFixed]);
 
   const toggleTheme = () => {
-    if (isThemeFixed) return;
-
     const newTheme = !isDarkMode ? 'dark' : 'light';
     setIsDarkMode(!isDarkMode);
     

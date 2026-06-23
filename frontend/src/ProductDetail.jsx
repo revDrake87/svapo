@@ -42,21 +42,19 @@ function ProductDetail({ storeCode, isDarkMode, toggleTheme, storeName, isThemeF
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white font-sans transition-colors duration-300">
-      <header className="bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300">
+      <header className={`${isThemeFixed ? 'bg-[#00D6EA] border-[#00b5c7]' : 'bg-white/80 dark:bg-zinc-950/80'} backdrop-blur-md border-b border-gray-200 dark:border-white/10 p-4 sticky top-0 z-10 transition-colors duration-300`}>
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <Link to={`/${storeCode}`} className="p-2 bg-gray-100 dark:bg-zinc-800 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors">
-              <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
+            <Link to={`/${storeCode}`} className={`p-2 rounded-full transition-colors ${isThemeFixed ? 'bg-white/20 hover:bg-white/40' : 'bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700'}`}>
+              <ArrowLeft size={20} className={isThemeFixed ? "text-gray-900" : "text-gray-600 dark:text-gray-300"} />
             </Link>
-            <h1 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h1 className={`text-xl font-bold tracking-tight ${isThemeFixed ? 'text-gray-900' : 'text-gray-900 dark:text-white'}`}>
               {storeName} - Dettaglio
             </h1>
           </div>
-            {!isThemeFixed && (
-              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-800 transition-colors">
-                {isDarkMode ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-brand" />}
-              </button>
-            )}
+          <button onClick={toggleTheme} className={`p-2 rounded-full transition-colors ${isThemeFixed ? 'hover:bg-[#00b5c7]' : 'hover:bg-gray-200 dark:hover:bg-zinc-800'}`}>
+            {isDarkMode ? <Sun size={20} className={isThemeFixed ? "text-gray-900" : "text-yellow-400"} /> : <Moon size={20} className={isThemeFixed ? "text-gray-900" : "text-brand"} />}
+          </button>
         </div>
       </header>
 
