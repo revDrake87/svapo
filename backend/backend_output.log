@@ -135,6 +135,7 @@ Hibernate: select p1_0.instore_code,p1_0.barcode,p1_0.battery_type,p1_0.category
 Hibernate: select p1_0.instore_code,p1_0.barcode,p1_0.battery_type,p1_0.category,p1_0.color,p1_0.description,p1_0.flavor,p1_0.image_url,p1_0.ingredients,p1_0.is_available,p1_0.milliliters,p1_0.name,p1_0.nicotine_strength,p1_0.purchase_price,p1_0.retail_price,p1_0.store_id,p1_0.sub_category,p1_0.tank_capacity,p1_0.wattage from product p1_0 where p1_0.store_id=?
 Hibernate: select p1_0.instore_code,p1_0.barcode,p1_0.battery_type,p1_0.category,p1_0.color,p1_0.description,p1_0.flavor,p1_0.image_url,p1_0.ingredients,p1_0.is_available,p1_0.milliliters,p1_0.name,p1_0.nicotine_strength,p1_0.purchase_price,p1_0.retail_price,p1_0.store_id,p1_0.sub_category,p1_0.tank_capacity,p1_0.wattage from product p1_0 where p1_0.store_id=?
 Hibernate: select p1_0.instore_code,p1_0.barcode,p1_0.battery_type,p1_0.category,p1_0.color,p1_0.description,p1_0.flavor,p1_0.image_url,p1_0.ingredients,p1_0.is_available,p1_0.milliliters,p1_0.name,p1_0.nicotine_strength,p1_0.purchase_price,p1_0.retail_price,p1_0.store_id,p1_0.sub_category,p1_0.tank_capacity,p1_0.wattage from product p1_0 where p1_0.store_id=?
+<<<<<<< HEAD
 2026-06-23T19:43:12.377Z  INFO 1922447 --- [backend] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-06-23T19:43:12.457Z  INFO 1922447 --- [backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-06-23T19:43:12.510Z  INFO 1922447 --- [backend] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
@@ -151,3 +152,5 @@ Hibernate: select p1_0.instore_code,p1_0.barcode,p1_0.battery_type,p1_0.category
 [ERROR] 
 [ERROR] For more information about the errors and possible solutions, please read the following articles:
 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+=======
+>>>>>>> f66a70d71befbd37dc713ed40ff70d38d14eb003
