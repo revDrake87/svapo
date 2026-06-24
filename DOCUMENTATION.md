@@ -12,8 +12,8 @@ Il progetto segue un'architettura **Client-Server** classica, separando nettamen
 Il frontend è progettato per essere veloce, reattivo ed esteticamente in stile Vercel (minimalista, alto contrasto, font Inter).
 *   **Libreria Principale:** React 19.
 *   **Build Tool:** Vite (per un avvio rapido dell'ambiente di sviluppo e build ottimizzate).
-*   **Styling:** Tailwind CSS (permette una rapida prototipazione stilistica tramite utility-classes).
-*   **Routing:** React Router DOM (gestione della navigazione "Single Page Application" tra vetrina, prodotto e admin).
+*   **Styling:** Tailwind CSS (permette una rapida prototipazione stilistica tramite utility-classes e supporta variabili custom per temi specifici per negozio).
+*   **Routing:** React Router DOM v6 (gestione della navigazione "Single Page Application" tra vetrina, prodotto e admin con percorsi dinamici `/:storeCode`).
 *   **Animazioni:** GSAP (GreenSock Animation Platform) per transizioni fluide e professionali all'ingresso dei prodotti.
 *   **Icone:** Lucide React.
 
@@ -21,7 +21,7 @@ Il frontend è progettato per essere veloce, reattivo ed esteticamente in stile 
 Il backend funge da API RESTful che comunica in formato JSON con il frontend.
 *   **Framework Principale:** Java 21 con Spring Boot 3.2.x.
 *   **Data Access:** Spring Data JPA (Hibernate) per mappare gli oggetti Java (Entities) sulle tabelle del database.
-*   **Sicurezza:** Spring Security abbinato a JWT (JSON Web Tokens) per proteggere le rotte sensibili (Dashboard Admin).
+*   **Sicurezza:** Spring Security abbinato a JWT (JSON Web Tokens) per proteggere le rotte sensibili (Dashboard Admin) permettendo al contempo l'accesso pubblico alla cartella degli upload (`/uploads/**`).
 *   **Database:** H2 Database (in-memory, utilizzato per test e sviluppo veloce tramite il file `data.sql`), con predisposizione immediata per MySQL in produzione.
 
 ---
@@ -33,29 +33,30 @@ Il backend funge da API RESTful che comunica in formato JSON con il frontend.
 Nel backend, il dominio applicativo è suddiviso in entità chiare:
 *   `Product`: Modello ibrido. Visto che il negozio vende sia Liquidi che Hardware, l'entità è dotata di campi specifici (es. `flavor`, `milliliters` per i liquidi e `batteryType`, `wattage` per l'hardware). Il database usa una tabella unica per massimizzare le performance di lettura, filtrando poi tramite logica o query in base alla categoria.
 *   `User`: Gestisce l'accesso alla dashboard. Cripta le password in bcrypt.
-*   `StoreSettings`: Un'entità "Singleton" (avente un solo record con ID = 1) che memorizza le impostazioni globali del negozio configurabili dall'admin: Nome negozio, Logo (URL), Indirizzo, e i link ai vari canali Social/WhatsApp.
+*   `StoreSettings`: Memorizza le impostazioni globali di ogni negozio (isolate per `id` o `storeId`): Nome negozio, Logo (URL), Indirizzo, e i link ai vari canali Social/WhatsApp.
 
 **Controller (Rotta API):**
-*   `ProductController` (`/api/products`): Gestisce il CRUD (Create, Read, Update, Delete) dei prodotti. Gestisce inoltre l'upload delle immagini (salvataggio locale o storage) ritornando il relativo URL al frontend.
-*   `AuthController` (`/api/auth/login`): Verifica le credenziali utente e rilascia un Token JWT valido.
-*   `SettingsController` (`/api/settings`): Esponi e aggiorna le informazioni globali del brand.
+*   `ProductController` (`/api/products`): Gestisce il CRUD dei prodotti. Implementa una logica di "Shadow Sync": creando un prodotto per un negozio, esso viene clonato (con visibilità a `false`) in tutti gli altri negozi. Include anche l'endpoint `/upload` per il caricamento delle immagini.
+*   `AuthController` (`/api/auth/login`): Verifica le credenziali utente specifiche per negozio (`admin_prof`, `admin_puff`) e rilascia un Token JWT valido.
+*   `SettingsController` (`/api/settings`): Esponi e aggiorna le informazioni globali del singolo brand.
 
 ### 2.2 Frontend: Componenti e Flusso Utente
 
 L'App React è divisa in tre sezioni principali:
 
 *   **CustomerView (Vetrina Pubblica):** 
-    *   Mostra la lista dei prodotti recuperata in fase di "Mount" (tramite l'hook `useEffect`), dotata di Intersection Observer per lo scorrimento infinito.
+    *   Mostra la lista dei prodotti dotata di **Intersection Observer** per lo scorrimento infinito (Infinite Scroll) rimpiazzando la vecchia paginazione.
     *   Offre funzionalità di ricerca (Testuale) e filtraggio avanzato (Categoria, Sotto-categoria, Gusto).
-    *   Include la "Lista Acquisto" (Cart): uno stato React che aggiunge e somma i prodotti scelti dall'utente, utile da mostrare fisicamente in cassa.
-    *   *Scelta implementativa: Il footer è stato reso dinamico per mostrare i link ai social, all'indirizzo fisico e un pulsante WhatsApp (costruito estrapolando solo i numeri dalla stringa impostata).*
+    *   Include la "Lista Acquisto" (Cart) isolata per store tramite local storage (`vapeCart_${storeCode}`).
+    *   *Scelta implementativa: L'header è stato reso intelligente raggruppando indirizzo e social nel dropdown "Info & Social" (mobile-first) con supporto allo switch tra Light Mode e layout fissi (es. `PUFF_STORE`).*
 
 *   **ProductDetail (Dettaglio Prodotto):** 
     *   Mostra in profondità tutte le specifiche di una singola referenza in base al suo `instoreCode`.
 
 *   **AdminDashboard (Pannello di Amministrazione):** 
-    *   **Sicurezza Frontend:** Accessibile solo dopo aver superato un form di login. Il token JWT ricevuto dal server viene salvato nel `localStorage` del browser e inviato negli header (`Authorization: Bearer <token>`) di ogni successiva richiesta "protetta" (POST/PUT/DELETE) per gestire prodotti e configurazioni.
-    *   Permette la gestione dinamica dei prodotti, la creazione di sub-categorie personalizzate, l'upload di foto e la ricerca rapida tramite barra di filtro testuale.
+    *   Accessibile solo dopo aver superato un form di login. Il token JWT ricevuto dal server viene salvato nel `localStorage` del browser.
+    *   Offre una barra di ricerca reattiva per cercare rapidamente i prodotti tramite nome o codice a barre.
+    *   Supporta la creazione di sub-categorie personalizzate tramite interfaccia HTML5 `<datalist>`.
     *   Offre un pannello dedicato alla modifica di `StoreSettings` (Nome, Logo, Indirizzo e Social).
 
 ---
@@ -63,18 +64,6 @@ L'App React è divisa in tre sezioni principali:
 ## 3. Scelte Architetturali Ricorrenti e Sicurezza
 
 *   **Accessibilità in Rete Locale (Mobile Testing):** Per permettere il collaudo dell'applicazione da smartphone tramite rete Wi-Fi (fondamentale per validare l'esperienza UI Mobile-First), Vite è stato istruito (via `vite.config.js` -> `server: { host: '0.0.0.0' }`) ad esporre l'host su tutta la LAN. 
-*   **Gestione Dinamica Endpoint API (`apiConfig.js`):** Piuttosto che forzare il frontend a richiedere dati sempre a `localhost:8080` (il che non funzionerebbe se testato dallo smartphone), è stata creata la funzione `getApiUrl()`. Questa deduce automaticamente l'indirizzo del backend basandosi su `window.location.hostname`, garantendo che l'app reagisca in modo "smart" ovunque sia ospitata.
-*   **Gestione Immagini:** Il backend implementa un meccanismo di Multipart File Upload per permettere agli amministratori di caricare fisicamente sul server immagini per i prodotti e per il Logo del negozio.
-*   **Dati di Sviluppo (`data.sql`):** Al boot, Spring Boot legge il file `data.sql` ed inietta centinaia di prodotti reali presi dal mercato italiano dello svapo (grazie ad uno scraping ad-hoc) con tanto di immagini collegate a un placeholder grafico (500x500px). Ciò riduce i tempi morti dello sviluppatore.
-
----
-
-## 4. Evoluzioni e Modifiche Recenti
-In risposta alle più recenti richieste di estensione dell'applicazione:
-1.  Il database è stato esteso introducendo il tracciamento dei Social e del Logo. 
-2.  L'UI è stata adattata per iniettare l'header personalizzato e generare dinamicamente il Footer di ogni pagina con tali informazioni.
-3.  L'uso di una combinazione Regex in JavaScript (`replace(/[^0-9]/g, '')`) permette all'amministratore di incollare i numeri di telefono con spazi e prefissi, e al software di creare un link WhatsApp API sempre perfettamente valido.
-4.  Supporto Multi-store: isolamento dei dati per negozi multipli (Professional Vape, Puff Store) tramite chiavi `storeId`. Nel frontend, lo store d'interesse viene estrapolato dinamicamente dall'URL grazie a `useParams` di React Router (es. `/:storeCode/`).
-5.  Introduzione dello scorrimento infinito (infinite scroll) basato su IntersectionObserver nel catalogo prodotti, in sostituzione della paginazione classica.
-6.  Supporto alla creazione di sub-categorie personalizzate nel pannello admin tramite interfaccia HTML5 `<datalist>`.
-7.  Integrazione di una barra di ricerca testuale reattiva nell'Admin Dashboard per filtrare rapidamente i prodotti tramite nome o codice a barre.
+*   **Gestione Dinamica Endpoint API (`apiConfig.js`):** La funzione `getApiUrl()` deduce automaticamente l'indirizzo del backend basandosi su `window.location.hostname`, garantendo che l'app reagisca in modo "smart" ovunque sia ospitata.
+*   **Gestione Immagini e Security:** Il backend salva i file (loghi, foto prodotto) localmente in `backend/uploads/`. Per permettere al frontend di visualizzarli senza token (es. vetrina pubblica), `WebSecurityConfig` permette esplicitamente i comandi GET verso la rotta `/uploads/**`.
+*   **Dati di Sviluppo (`data.sql`):** Al boot, Spring Boot legge il file `data.sql` ed inietta centinaia di prodotti, gli store predefiniti e gli admin per favorire uno sviluppo rapido.
