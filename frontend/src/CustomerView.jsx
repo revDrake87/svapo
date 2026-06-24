@@ -6,7 +6,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Header from './Header';
 
-function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CustomerView({ storeCode, isThemeFixed, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -133,6 +133,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
       <Header 
+        isThemeFixed={isThemeFixed}
         isDarkMode={isDarkMode} 
         toggleTheme={toggleTheme} 
         storeName={storeName} 
@@ -152,7 +153,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
                   placeholder="Cerca ingrediente o nome..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-cyan-500 transition-colors shadow-sm"
+                  className="w-full bg-white dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/10 rounded-full py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-brand transition-colors shadow-sm"
                 />
                 <svg className="w-4 h-4 text-gray-400 dark:text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               </div>
@@ -163,7 +164,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
               <select 
                 value={categoryFilter} 
                 onChange={(e) => { setCategoryFilter(e.target.value); setSubCategoryFilter(''); setFlavorFilter(''); }}
-                className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-brand dark:focus:border-brand"
               >
                 <option value="">Tutte le categorie</option>
                 <option value="LIQUIDO">Liquidi</option>
@@ -174,7 +175,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
                 <select 
                   value={subCategoryFilter} 
                   onChange={(e) => setSubCategoryFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-brand dark:focus:border-brand"
                 >
                   <option value="">Tutte le Sotto-categorie</option>
                   {uniqueSubCategories.map(sub => (
@@ -187,7 +188,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
                 <select 
                   value={flavorFilter} 
                   onChange={(e) => setFlavorFilter(e.target.value)}
-                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-blue-500 dark:focus:border-cyan-500"
+                  className="bg-gray-50 dark:bg-[#0A0A0A] border border-gray-300 dark:border-white/20 rounded-lg px-3 py-1.5 text-sm text-gray-900 dark:text-white outline-none focus:border-brand dark:focus:border-brand"
                 >
                   <option value="">Tutti i Gusti</option>
                   {uniqueFlavors.map(flavor => (
@@ -200,7 +201,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
           
           {loading && (
             <div className="flex items-center space-x-2 text-gray-400">
-              <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
               <p>Caricamento prodotti...</p>
             </div>
           )}
@@ -233,7 +234,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
                     </div>
                   </Link>
                   <Link to={`/${storeCode}/product/${product.instoreCode}`} className="block">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-cyan-400 transition-colors">{product.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 group-hover:text-black dark:group-hover:text-brand transition-colors">{product.name}</h3>
                     <p className="text-sm text-gray-600 dark:text-zinc-400 mb-4 line-clamp-2">{product.description}</p>
                   </Link>
                   
@@ -261,7 +262,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
                     <span className="text-2xl font-black text-gray-900 dark:text-white">€{product.retailPrice?.toFixed(2)}</span>
                     <button 
                       onClick={() => addToCart(product)}
-                      className="bg-[#0A0A0A] dark:bg-white hover:bg-blue-700 dark:hover:bg-cyan-400 text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
+                      className="bg-[#0A0A0A] dark:bg-white hover:bg-brand dark:hover:bg-brand text-white dark:text-black font-bold px-5 py-2.5 rounded-xl transition-all duration-300 active:scale-95 shadow-md dark:shadow-lg shadow-blue-500/30 dark:shadow-cyan-500/20"
                     >
                       Aggiungi
                     </button>
@@ -273,7 +274,7 @@ function CustomerView({ storeCode, isDarkMode, toggleTheme, storeName, settings,
             {/* Infinite Scroll Observer Target */}
             {visibleCount < filteredProducts.length && (
               <div ref={observerTarget} className="h-10 w-full mt-4 flex items-center justify-center">
-                <div className="w-5 h-5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
               </div>
             )}
             </>

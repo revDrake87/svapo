@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Header from './Header';
 import { ArrowLeft } from 'lucide-react';
 
-function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
+function CartView({ storeCode, isThemeFixed, isDarkMode, toggleTheme, storeName, settings, cart, setCart }) {
 
   const removeFromCart = (productCode) => {
     setCart(prevCart => prevCart.filter(item => item.instoreCode !== productCode));
@@ -20,6 +20,7 @@ function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, car
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-white font-sans transition-colors duration-300 flex flex-col">
       <Header 
+        isThemeFixed={isThemeFixed}
         isDarkMode={isDarkMode} 
         toggleTheme={toggleTheme} 
         storeName={storeName} 
@@ -37,7 +38,7 @@ function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, car
 
         <div className="bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/5 p-6 md:p-10 rounded-3xl shadow-xl dark:shadow-2xl transition-colors duration-300">
           <h2 className="text-3xl font-extrabold mb-2 text-gray-900 dark:text-white flex items-center gap-3">
-            <svg className="w-8 h-8 text-black dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <svg className="w-8 h-8 text-black dark:text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             La Tua Lista Acquisti
           </h2>
           <p className="text-gray-500 dark:text-zinc-400 mb-8 pb-6 border-b border-gray-200 dark:border-white/10 transition-colors">
@@ -103,7 +104,7 @@ function CartView({ storeCode, isDarkMode, toggleTheme, storeName, settings, car
             <div className="mt-10 pt-8 border-t border-gray-200 dark:border-white/10 transition-colors">
               <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                 <span className="text-gray-500 dark:text-zinc-400 font-medium uppercase tracking-wider">Totale stimato</span>
-                <span className="text-5xl font-black text-black dark:text-cyan-400">€{cartTotal.toFixed(2)}</span>
+                <span className="text-5xl font-black text-black dark:text-brand">€{cartTotal.toFixed(2)}</span>
               </div>
             </div>
           )}
