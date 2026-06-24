@@ -332,7 +332,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
                           <ImageIcon className="text-gray-400 dark:text-zinc-600" size={24} />
                         )}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 flex items-center gap-2">
                         <input 
                           type="file" 
                           accept="image/*"
@@ -341,6 +341,16 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
                           className="w-full text-xs text-gray-900 dark:text-white file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/20 file:text-brand dark:file:text-brand-hover hover:file:bg-brand/10 dark:hover:file:bg-blue-900/30"
                         />
                         {uploadingLogo && <span className="text-xs text-blue-500 mt-1 block">Caricamento in corso...</span>}
+                        {editableSettings.logoUrl && (
+                          <button
+                            type="button"
+                            onClick={() => setEditableSettings({ ...editableSettings, logoUrl: null })}
+                            className="p-1 rounded bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 transition-colors shrink-0"
+                            title="Rimuovi Logo"
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
