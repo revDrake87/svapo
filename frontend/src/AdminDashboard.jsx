@@ -270,18 +270,21 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-200 font-sans transition-colors duration-300">
       <header className={`${isThemeFixed ? 'bg-[#00D6EA] border-[#00b5c7]' : 'bg-white dark:bg-zinc-950 border-gray-200 dark:border-white/10'} border-b p-4 sticky top-0 z-20 transition-colors`}>
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className={`text-xl font-bold ${isThemeFixed ? 'text-gray-900' : 'text-gray-900 dark:text-white'}`}>{storeName} - Admin</h1>
-          <div className="flex gap-4 items-center">
+        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
+          <h1 className={`text-xl font-bold ${isThemeFixed ? 'text-gray-900' : 'text-gray-900 dark:text-white'} text-center sm:text-left`}>{storeName} - Admin</h1>
+          <div className="flex flex-wrap justify-center sm:justify-end gap-4 items-center">
             <button onClick={() => setIsSettingsOpen(true)} className={`text-sm font-medium transition-colors ${isThemeFixed ? 'text-gray-900 hover:text-black' : 'text-black dark:text-brand hover:text-brand-hover dark:hover:text-brand-hover'}`}>
               Impostazioni
             </button>
             <button onClick={toggleTheme} className={`p-2 rounded-full transition-colors ${isThemeFixed ? 'hover:bg-[#00b5c7]' : 'hover:bg-gray-200 dark:hover:bg-zinc-800'}`}>
               {isDarkMode ? <Sun size={20} className={isThemeFixed ? "text-gray-900" : "text-yellow-400"} /> : <Moon size={20} className={isThemeFixed ? "text-gray-900" : "text-black"} />}
             </button>
-            <Link to={`/${storeCode}`} className={`text-sm transition-colors ${isThemeFixed ? 'text-gray-800 hover:text-black' : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'}`}>Vetrina Pubblica</Link>
-            <button onClick={handleLogout} className={`flex items-center gap-2 text-sm transition-colors ${isThemeFixed ? 'text-red-800 hover:text-red-900' : 'text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'}`}>
-              <LogOut size={16} /> Esci
+            <Link to={`/${storeCode}`} className={`text-sm transition-colors ${isThemeFixed ? 'text-gray-800 hover:text-black' : 'text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white'}`}>
+              <span className="hidden sm:inline">Vetrina Pubblica</span>
+              <span className="sm:hidden">Vetrina</span>
+            </Link>
+            <button onClick={handleLogout} className={`flex items-center gap-1 text-sm transition-colors ${isThemeFixed ? 'text-red-800 hover:text-red-900' : 'text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300'}`}>
+              <LogOut size={16} /> <span className="hidden sm:inline">Esci</span>
             </button>
           </div>
         </div>
