@@ -39,7 +39,26 @@ CREATE TABLE product (
     color VARCHAR(255),
     battery_type VARCHAR(255),
     wattage INTEGER,
-    tank_capacity DOUBLE
+    tank_capacity DOUBLE,
+    store_id VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    store_id VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE store_settings (
+    id VARCHAR(255) PRIMARY KEY,
+    store_name VARCHAR(255),
+    logo_url VARCHAR(255),
+    address VARCHAR(255),
+    instagram VARCHAR(255),
+    facebook VARCHAR(255),
+    tiktok VARCHAR(255),
+    whatsapp VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 

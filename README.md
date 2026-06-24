@@ -42,7 +42,9 @@ Run `./mvnw spring-boot:run` in the `backend` directory.
 *(Il server backend è in ascolto su `http://localhost:8080`, servendo le API RESTful e i file caricati nella cartella `/uploads`).*
 
 **2. Avvio del Frontend:**
-Run `npm run dev` in the `frontend` directory.
+Run `npm run dev -- --host` in the `frontend` directory (oppure usa solo `npm run dev`, dato che il file di configurazione è già predisposto per esporre la webapp sulla rete interna).
+
+*(Nota: in questo modo puoi testare l'app da smartphone connettendoti all'indirizzo IP locale del tuo computer, es. `http://192.168.1.x:5173`).*
 
 *Naviga a:*
 - *[http://localhost:5173/PROFESSIONAL_VAPE](http://localhost:5173/PROFESSIONAL_VAPE) - Per lo store "Professional Vape"*

@@ -67,5 +67,9 @@ npm run dev
 ---
 
 🎉 **Finito!** Ora puoi aprire il tuo browser e andare su:
-* Catalogo clienti: `http://localhost:5173`
-* Pannello Admin: `http://localhost:5173/admin` (user: admin / pass: admin123)
+* Professional Vape: `http://localhost:5173/PROFESSIONAL_VAPE`
+* Puff Store: `http://localhost:5173/PUFF_STORE`
+
+Per la dashboard Admin aggiungi `/admin` (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`).
+*   **User Professional:** `admin_prof` (Password: `admin123`)
+*   **User Puff Store:** `admin_puff` (Password: `admin123`)
