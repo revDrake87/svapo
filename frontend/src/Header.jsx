@@ -24,13 +24,21 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
     <header className={`${headerBgClass} p-4 sticky top-0 z-20 transition-colors duration-300`}>
       <div className="container mx-auto flex flex-col gap-4">
         {/* Top Row: Logo, Name, Settings & Actions */}
-        <div className="flex justify-between items-start">
+        <div className="flex flex-wrap justify-between items-start gap-4">
           <div className="flex flex-col gap-3">
             <Link to={`/${storeCode}`} className="flex items-center gap-3 group">
               {settings?.logoUrl && (
-                <img src={settings.logoUrl} alt="Store Logo" className="h-12 w-auto object-contain group-hover:scale-105 transition-transform" />
+                <img 
+                  src={settings.logoUrl} 
+                  alt="Store Logo" 
+                  className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                  }}
+                />
               )}
-              <h1 className={`text-xl sm:text-2xl font-extrabold tracking-tight ${textClass}`}>
+              <h1 className={`text-xl sm:text-2xl font-extrabold tracking-tight break-words max-w-full ${textClass}`}>
                 {storeName}
               </h1>
             </Link>
