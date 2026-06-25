@@ -50,10 +50,15 @@ function Header({ isDarkMode, toggleTheme, storeName, settings, cartItemCount, h
                   {isSocialOpen && (
                     <div className={`absolute top-full mt-2 left-0 min-w-[200px] rounded-lg shadow-xl border overflow-hidden z-50 flex flex-col ${isThemeFixed ? 'bg-[#00D6EA] border-[#00b5c7]' : 'bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-700'}`}>
                       {settings?.address && (
-                        <div className={`px-4 py-3 flex items-start gap-2 border-b ${isThemeFixed ? 'border-[#00c5d9] text-gray-900' : 'border-zinc-100 dark:border-zinc-800 text-gray-800 dark:text-gray-300'}`}>
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={`px-4 py-3 flex items-start gap-2 border-b transition-colors ${isThemeFixed ? 'border-[#00c5d9] text-gray-900 hover:bg-[#00c5d9]' : 'border-zinc-100 dark:border-zinc-800 text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}
+                        >
                           <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                           <span className="leading-tight">{settings.address}</span>
-                        </div>
+                        </a>
                       )}
                       {settings?.instagram && (
                         <a href={settings.instagram} target="_blank" rel="noreferrer" className={`px-4 py-2 text-sm transition-colors ${isThemeFixed ? 'text-gray-900 hover:bg-[#00c5d9]' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800'}`}>Instagram</a>
