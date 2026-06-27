@@ -1,0 +1,180 @@
+[debug] [2026-06-27T08:33:06.101Z] ----------------------------------------------------------------------
+[debug] [2026-06-27T08:33:06.103Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\odoar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-06-27T08:33:06.104Z] CLI Version:   15.22.3
+[debug] [2026-06-27T08:33:06.104Z] Platform:      win32
+[debug] [2026-06-27T08:33:06.104Z] Node Version:  v24.16.0
+[debug] [2026-06-27T08:33:06.104Z] Detected Agent: unknown
+[debug] [2026-06-27T08:33:06.104Z] Time:          Sat Jun 27 2026 10:33:06 GMT+0200 (Ora legale dell’Europa centrale)
+[debug] [2026-06-27T08:33:06.104Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\odoar\Documents\svapo
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-06-27T08:33:18.926Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-27T08:33:18.927Z] > authorizing via signed-in user (giovanbattistaforte@gmail.com)
+[debug] [2026-06-27T08:33:38.551Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:33:38.551Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:33:38.553Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-06-27T08:33:38.553Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"catalogo_prodotti"}
+[debug] [2026-06-27T08:33:38.926Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 400
+[debug] [2026-06-27T08:33:38.927Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT"}}
+[debug] [2026-06-27T08:33:38.927Z] Couldn't check if project ID catalogo_prodotti is available. Original error: FirebaseError: Failed to check if project ID is available. See firebase-debug.log for more info.
+[debug] [2026-06-27T08:33:43.233Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:33:43.233Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:33:43.233Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-06-27T08:33:43.233Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"catalogo_prodotti","name":"catalogo_prodotti"}
+[debug] [2026-06-27T08:33:44.143Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 400
+[debug] [2026-06-27T08:33:44.144Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"error":{"code":400,"message":"Request contains an invalid argument.","status":"INVALID_ARGUMENT","details":[{"@type":"type.googleapis.com/google.rpc.BadRequest","fieldViolations":[{"field":"project_id","description":"project_id contains invalid characters"},{"field":"display_name","description":"project display name contains invalid characters"}]},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"url":"https://cloud.google.com/resource-manager/reference/rest/v1/projects"}]}]}}
+[debug] [2026-06-27T08:33:44.150Z] FirebaseError: Request to https://cloudresourcemanager.googleapis.com/v1/projects had HTTP Error: 400, Request contains an invalid argument.
+    at responseToError (C:\Users\odoar\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:53:12)
+    at RetryOperation._fn (C:\Users\odoar\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:381:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.
+[debug] [2026-06-27T08:33:56.782Z] ----------------------------------------------------------------------
+[debug] [2026-06-27T08:33:56.785Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\odoar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init hosting
+[debug] [2026-06-27T08:33:56.785Z] CLI Version:   15.22.3
+[debug] [2026-06-27T08:33:56.785Z] Platform:      win32
+[debug] [2026-06-27T08:33:56.785Z] Node Version:  v24.16.0
+[debug] [2026-06-27T08:33:56.785Z] Detected Agent: unknown
+[debug] [2026-06-27T08:33:56.785Z] Time:          Sat Jun 27 2026 10:33:56 GMT+0200 (Ora legale dell’Europa centrale)
+[debug] [2026-06-27T08:33:56.785Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\odoar\Documents\svapo
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-06-27T08:34:09.775Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-27T08:34:09.775Z] > authorizing via signed-in user (giovanbattistaforte@gmail.com)
+[debug] [2026-06-27T08:34:13.944Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:13.945Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:13.946Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-06-27T08:34:13.947Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"catalogo"}
+[debug] [2026-06-27T08:34:14.401Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-06-27T08:34:14.401Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_UNAVAILABLE","suggestedProjectId":"catalogo-1f2f2"}
+[debug] [2026-06-27T08:34:23.845Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:23.846Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:23.846Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-06-27T08:34:23.846Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"catalogo-prodotti"}
+[debug] [2026-06-27T08:34:24.305Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-06-27T08:34:24.305Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_UNAVAILABLE","suggestedProjectId":"catalogo-prodotti-5276a"}
+[debug] [2026-06-27T08:34:29.374Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:29.374Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:29.375Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-06-27T08:34:29.375Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"catalogo-prodotti-svapo"}
+[debug] [2026-06-27T08:34:29.803Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-06-27T08:34:29.803Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"catalogo-prodotti-svapo"}
+[debug] [2026-06-27T08:34:33.905Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:33.906Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:33.906Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-06-27T08:34:33.906Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"catalogo-prodotti-svapo","name":"catalogo-prodotti-svapo"}
+[debug] [2026-06-27T08:34:34.791Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-06-27T08:34:34.791Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.7066913954882848157"}
+[debug] [2026-06-27T08:34:34.792Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:34.792Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:34.792Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 [none]
+[debug] [2026-06-27T08:34:35.546Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 200
+[debug] [2026-06-27T08:34:35.546Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 {"name":"operations/create_project.global.7066913954882848157"}
+[debug] [2026-06-27T08:34:36.050Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-06-27T08:34:36.051Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:36.051Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:36.051Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 [none]
+[debug] [2026-06-27T08:34:36.241Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 200
+[debug] [2026-06-27T08:34:36.241Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 {"name":"operations/create_project.global.7066913954882848157"}
+[debug] [2026-06-27T08:34:37.249Z] [Project Creation Poller] Retrying task index 0
+[debug] [2026-06-27T08:34:37.249Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:37.249Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:37.250Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 [none]
+[debug] [2026-06-27T08:34:37.455Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 200
+[debug] [2026-06-27T08:34:37.455Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.7066913954882848157 {"name":"operations/create_project.global.7066913954882848157","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","gettable":true,"ready":true},"done":true,"response":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.Project","projectNumber":"749926399092","projectId":"catalogo-prodotti-svapo","lifecycleState":"ACTIVE","name":"catalogo-prodotti-svapo","createTime":"2026-06-27T08:34:34.469Z"}}
+[debug] [2026-06-27T08:34:37.456Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:37.456Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:37.456Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo:addFirebase [none]
+[debug] [2026-06-27T08:34:41.249Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo:addFirebase 200
+[debug] [2026-06-27T08:34:41.250Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo:addFirebase {"name":"operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj"}
+[debug] [2026-06-27T08:34:41.250Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:41.250Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:41.250Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj [none]
+[debug] [2026-06-27T08:34:44.867Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj 200
+[debug] [2026-06-27T08:34:44.867Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj {"name":"operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj"}
+[debug] [2026-06-27T08:34:45.370Z] [Add Firebase Poller] Retrying task index 0
+[debug] [2026-06-27T08:34:45.370Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:45.370Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:45.370Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj [none]
+[debug] [2026-06-27T08:34:46.243Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj 200
+[debug] [2026-06-27T08:34:46.243Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj {"name":"operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj"}
+[debug] [2026-06-27T08:34:47.253Z] [Add Firebase Poller] Retrying task index 0
+[debug] [2026-06-27T08:34:47.254Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:47.254Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:47.254Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj [none]
+[debug] [2026-06-27T08:34:48.077Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj 200
+[debug] [2026-06-27T08:34:48.078Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj {"name":"operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj"}
+[debug] [2026-06-27T08:34:50.078Z] [Add Firebase Poller] Retrying task index 0
+[debug] [2026-06-27T08:34:50.078Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:50.079Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:50.079Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj [none]
+[debug] [2026-06-27T08:34:50.750Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj 200
+[debug] [2026-06-27T08:34:50.750Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj {"name":"operations/workflows/MzA2OTI5Y2UtMzJjNy00YWIzLWJlZTUtN2NjYjA4MTI0MzBj","done":true,"response":{"@type":"type.googleapis.com/google.firebase.service.v1beta1.FirebaseProject","projectId":"catalogo-prodotti-svapo","projectNumber":"749926399092","displayName":"catalogo-prodotti-svapo","name":"projects/catalogo-prodotti-svapo","resources":{"hostingSite":"catalogo-prodotti-svapo"}}}
+[info] 
+[info] === Your Firebase project is ready! ===
+[info] 
+[info] Project information:
+[info]    - Project ID: catalogo-prodotti-svapo
+[info]    - Project Name: catalogo-prodotti-svapo
+[info] 
+[info] Firebase console is available at
+[info] https://console.firebase.google.com/project/catalogo-prodotti-svapo/overview
+[info] 
+=== Hosting Setup
+[debug] [2026-06-27T08:34:50.763Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:50.764Z] Checked if tokens are valid: true, expires at: 1782552535062
+[debug] [2026-06-27T08:34:50.764Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo [none]
+[debug] [2026-06-27T08:34:51.644Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo 200
+[debug] [2026-06-27T08:34:51.644Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/catalogo-prodotti-svapo {"projectId":"catalogo-prodotti-svapo","projectNumber":"749926399092","displayName":"catalogo-prodotti-svapo","name":"projects/catalogo-prodotti-svapo","resources":{"hostingSite":"catalogo-prodotti-svapo"},"state":"ACTIVE","etag":"1_943d968c-9af1-4ef7-9882-24b1d076528b"}
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
+[debug] [2026-06-27T08:35:40.485Z] ExitPromptError: User force closed the prompt with SIGINT
+    at Interface.sigint (C:\Users\odoar\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@inquirer\core\dist\commonjs\lib\create-prompt.js:101:37)
+    at Interface.emit (node:events:509:28)
+    at [_ttyWrite] [as _ttyWrite] (node:internal/readline/interface:1327:18)
+    at ReadStream.onkeypress (node:internal/readline/interface:284:20)
+    at ReadStream.emit (node:events:521:24)
+    at emitKeys (node:internal/readline/utils:371:14)
+    at emitKeys.next (<anonymous>)
+    at ReadStream.onData (node:internal/readline/emitKeypressEvents:64:36)
+    at ReadStream.emit (node:events:509:28)
+    at addChunk (node:internal/streams/readable:563:12)
+[error] 
+[error] Error: An unexpected error has occurred.
