@@ -12,7 +12,7 @@ jobs:
 
       - name: Install and Build Frontend
         run: npm ci && npm run build
-        working-directory: ./frontend  # <-- Se non dovesse andare, prova con ./svapo/frontend
+        working-directory: ./svapo/frontend  # <-- Se non dovesse andare, prova con ./svapo/frontend
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
