@@ -5,7 +5,7 @@ steps:
 
       - name: Install and Build Frontend
         run: npm ci && npm run build
-        working-directory: ./frontend  # <-- SOSTITUISCI CON IL NOME REALE DELLA TUA CARTELLA FRONTEND
+        working-directory: ./svapo
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
 
