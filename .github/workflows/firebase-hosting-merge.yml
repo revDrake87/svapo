@@ -12,7 +12,7 @@ jobs:
 
       - name: Install and Build Frontend
         run: npm ci && npm run build
-        working-directory: ./Frontend  # <-- Se non dovesse andare, prova con ./svapo/frontend
+        working-directory: ./frontend  # Inserisci il percorso che ha funzionato nello step precedente
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
@@ -20,3 +20,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CATALOGO_PRODOTTI_SVAPO }}
           projectId: catalogo-prodotti-svapo
           channelId: live
+          entryPoint: ./frontend  # <-- AGGIUNGI QUESTA RIGA (usa lo stesso percorso della working-directory)
