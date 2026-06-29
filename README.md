@@ -25,7 +25,7 @@ L'interfaccia utente è progettata seguendo il pattern grafico minimalista di Ve
 *   Java 21 + Spring Boot 3.2
 *   Spring Security + JWT
 *   Spring Data JPA (Hibernate)
-*   Database: H2 (sviluppo) / MySQL (produzione)
+*   Database: MySQL (sia in sviluppo che in produzione)
 
 ## 🚀 Come avviare il progetto localmente
 

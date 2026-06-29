@@ -22,7 +22,7 @@ Il backend funge da API RESTful che comunica in formato JSON con il frontend.
 *   **Framework Principale:** Java 21 con Spring Boot 3.2.x.
 *   **Data Access:** Spring Data JPA (Hibernate) per mappare gli oggetti Java (Entities) sulle tabelle del database.
 *   **Sicurezza:** Spring Security abbinato a JWT (JSON Web Tokens) per proteggere le rotte sensibili (Dashboard Admin) permettendo al contempo l'accesso pubblico alla cartella degli upload (`/uploads/**`).
-*   **Database:** H2 Database (in-memory, utilizzato per test e sviluppo veloce tramite il file `data.sql`), con predisposizione immediata per MySQL in produzione.
+*   **Database:** H2 Database (in-memory, utilizzato per test e sviluppo veloce tramite il seeder programmatico (`DatabaseSeeder.java` via `data.sql`)), con predisposizione immediata per MySQL in produzione.
 
 ---
 
@@ -66,4 +66,4 @@ L'App React è divisa in tre sezioni principali:
 *   **Accessibilità in Rete Locale (Mobile Testing):** Per permettere il collaudo dell'applicazione da smartphone tramite rete Wi-Fi (fondamentale per validare l'esperienza UI Mobile-First), Vite è stato istruito (via `vite.config.js` -> `server: { host: '0.0.0.0' }`) ad esporre l'host su tutta la LAN. 
 *   **Gestione Dinamica Endpoint API (`apiConfig.js`):** La funzione `getApiUrl()` deduce automaticamente l'indirizzo del backend basandosi su `window.location.hostname`, garantendo che l'app reagisca in modo "smart" ovunque sia ospitata.
 *   **Gestione Immagini e Security:** Il backend salva i file (loghi, foto prodotto) localmente in `backend/uploads/`. Per permettere al frontend di visualizzarli senza token (es. vetrina pubblica), `WebSecurityConfig` permette esplicitamente i comandi GET verso la rotta `/uploads/**`.
-*   **Dati di Sviluppo (`data.sql`):** Al boot, Spring Boot legge il file `data.sql` ed inietta centinaia di prodotti, gli store predefiniti e gli admin per favorire uno sviluppo rapido.
+*   **Dati di Sviluppo (`data.sql`):** Al boot, Spring Boot legge il seeder programmatico (`DatabaseSeeder.java` via `data.sql`) ed inietta centinaia di prodotti, gli store predefiniti e gli admin per favorire uno sviluppo rapido.
