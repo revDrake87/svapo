@@ -24,7 +24,6 @@ function StoreWrapper() {
     whatsapp: ''
   });
   
-  
   const [cart, setCart] = useState([]);
 
   useEffect(() => {

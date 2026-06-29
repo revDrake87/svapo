@@ -25,9 +25,35 @@ L'interfaccia utente è progettata seguendo il pattern grafico minimalista di Ve
 *   Java 21 + Spring Boot 3.2
 *   Spring Security + JWT
 *   Spring Data JPA (Hibernate)
-*   Database: H2 (sviluppo) / MySQL (produzione)
+*   Database: MySQL (sia in sviluppo che in produzione)
 
-## 🚀 Come avviare il progetto localmente
+## 🚀 Come avviare il progetto localmente (Docker)
+
+Il modo più semplice e raccomandato per avviare l'intero stack (Frontend, Backend e Database MySQL) è tramite Docker.
+
+### Avvio Rapido con Docker
+
+Assicurati di avere [Docker](https://docs.docker.com/get-docker/) e Docker Compose installati sul tuo sistema.
+
+1.  Apri il terminale nella root del progetto.
+2.  Esegui il comando:
+    ```bash
+    docker-compose up -d --build
+    ```
+    *(Questo comando scaricherà le immagini necessarie, compilerà il backend Java e il frontend React, avvierà il database MySQL, e poi avvierà l'applicazione).*
+
+3.  L'applicazione sarà accessibile all'indirizzo:
+    - [http://localhost/PROFESSIONAL_VAPE](http://localhost/PROFESSIONAL_VAPE)
+    - [http://localhost/PUFF_STORE](http://localhost/PUFF_STORE)
+
+*(Nota: su Docker il frontend è esposto sulla porta standard 80, mentre il backend comunica internamente e non espone direttamente la porta 8080)*.
+
+Per fermare l'applicazione, esegui:
+```bash
+docker-compose down
+```
+
+## 🛠️ Come avviare il progetto localmente (Sviluppo Senza Docker)
 
 Consulta le guide di setup dedicate al tuo sistema operativo:
 - [Windows Setup Guide](windows_setup_guide.md)
