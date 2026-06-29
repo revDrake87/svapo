@@ -6,64 +6,141 @@ Questa documentazione illustra l'architettura, le tecnologie scelte, la struttur
 
 ## 1. Architettura Generale e Stack Tecnologico
 
-Il progetto segue un'architettura **Client-Server** classica, separando nettamente l'interfaccia utente (Frontend) dalla logica di business e gestione dati (Backend).
+Il progetto segue un'architettura **Client-Server** classica, separando nettamente l'interfaccia utente (Frontend) dalla logica di business e gestione dati (Backend). I tre servizi — Frontend, Backend e Database — sono completamente dockerizzati e orchestrati tramite Docker Compose.
+
+```
+Browser
+  │
+  ▼
+Frontend (Nginx :80)
+  ├── /            → React SPA (file statici)
+  ├── /api/        → proxy → Backend (:8080)
+  └── /uploads/    → proxy → Backend (:8080)
+         │
+         ▼
+     Backend (Spring Boot :8080)
+         │
+         ▼
+     Database (MySQL :3306)
+```
 
 ### 1.1 Frontend (Client)
-Il frontend è progettato per essere veloce, reattivo ed esteticamente in stile Vercel (minimalista, alto contrasto, font Inter).
-*   **Libreria Principale:** React 19.
-*   **Build Tool:** Vite (per un avvio rapido dell'ambiente di sviluppo e build ottimizzate).
-*   **Styling:** Tailwind CSS (permette una rapida prototipazione stilistica tramite utility-classes e supporta variabili custom per temi specifici per negozio).
-*   **Routing:** React Router DOM v6 (gestione della navigazione "Single Page Application" tra vetrina, prodotto e admin con percorsi dinamici `/:storeCode`).
-*   **Animazioni:** GSAP (GreenSock Animation Platform) per transizioni fluide e professionali all'ingresso dei prodotti.
-*   **Icone:** Lucide React.
+
+- **Libreria Principale:** React 19
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS con CSS variables per il theming per negozio
+- **Routing:** React Router DOM v6 (SPA con percorsi dinamici `/:storeCode`)
+- **Animazioni:** GSAP per transizioni fluide all'ingresso dei prodotti
+- **Icone:** Lucide React
+- **Serving:** Nginx (in produzione/Docker) — serve i file statici e fa da reverse proxy verso il backend
 
 ### 1.2 Backend (Server)
-Il backend funge da API RESTful che comunica in formato JSON con il frontend.
-*   **Framework Principale:** Java 21 con Spring Boot 3.2.x.
-*   **Data Access:** Spring Data JPA (Hibernate) per mappare gli oggetti Java (Entities) sulle tabelle del database.
-*   **Sicurezza:** Spring Security abbinato a JWT (JSON Web Tokens) per proteggere le rotte sensibili (Dashboard Admin) permettendo al contempo l'accesso pubblico alla cartella degli upload (`/uploads/**`).
-*   **Database:** H2 Database (in-memory, utilizzato per test e sviluppo veloce tramite il seeder programmatico (`DatabaseSeeder.java` via `data.sql`)), con predisposizione immediata per MySQL in produzione.
+
+- **Framework:** Java 21 con Spring Boot 3.2.x
+- **Data Access:** Spring Data JPA (Hibernate) per il mapping ORM
+- **Sicurezza:** Spring Security + JWT per proteggere le rotte admin
+- **CORS:** Configurato tramite `CorsConfigurationSource` bean, con origini consentite iniettabili via variabile d'ambiente `ALLOWED_ORIGINS`
+- **Database:** MySQL 8.0
+
+### 1.3 Database
+
+- **MySQL 8.0** — containerizzato con volume persistente `db_data`
+- Lo schema viene gestito da Hibernate (`ddl-auto=update`) e popolato tramite `DatabaseSeeder.java`
 
 ---
 
-## 2. Struttura del Software e Funzionalità
+## 2. Configurazione Docker
 
-### 2.1 Backend: Modelli e Logica (Domain Layer)
+Il progetto è dockerizzato con tre servizi separati definiti in `docker-compose.yml`.
 
-Nel backend, il dominio applicativo è suddiviso in entità chiare:
-*   `Product`: Modello ibrido. Visto che il negozio vende sia Liquidi che Hardware, l'entità è dotata di campi specifici (es. `flavor`, `milliliters` per i liquidi e `batteryType`, `wattage` per l'hardware). Il database usa una tabella unica per massimizzare le performance di lettura, filtrando poi tramite logica o query in base alla categoria.
-*   `User`: Gestisce l'accesso alla dashboard. Cripta le password in bcrypt.
-*   `StoreSettings`: Memorizza le impostazioni globali di ogni negozio (isolate per `id` o `storeId`): Nome negozio, Logo (URL), Indirizzo, e i link ai vari canali Social/WhatsApp.
+### 2.1 Variabili d'Ambiente
 
-**Controller (Rotta API):**
-*   `ProductController` (`/api/products`): Gestisce il CRUD dei prodotti. Implementa una logica di "Shadow Sync": creando un prodotto per un negozio, esso viene clonato (con visibilità a `false`) in tutti gli altri negozi. Include anche l'endpoint `/upload` per il caricamento delle immagini.
-*   `AuthController` (`/api/auth/login`): Verifica le credenziali utente specifiche per negozio (`admin_prof`, `admin_puff`) e rilascia un Token JWT valido.
-*   `SettingsController` (`/api/settings`): Esponi e aggiorna le informazioni globali del singolo brand.
+Le credenziali e le opzioni configurabili sono gestite tramite un file `.env` (mai committato su Git). Un template è fornito in `.env.example`.
 
-### 2.2 Frontend: Componenti e Flusso Utente
+| Variabile | Servizio | Descrizione |
+|---|---|---|
+| `MYSQL_ROOT_PASSWORD` | db | Password root MySQL |
+| `MYSQL_DATABASE` | db | Nome del database (default: `vapestore`) |
+| `DB_USER` | backend | Utente DB (default: `root`) |
+| `DB_PASSWORD` | backend | Password DB |
+| `UPLOAD_DIR` | backend | Percorso interno per i file caricati (default: `/app/uploads`) |
+| `ALLOWED_ORIGINS` | backend | Origini CORS consentite, separate da virgola |
 
-L'App React è divisa in tre sezioni principali:
+### 2.2 Dockerfile Backend (Multi-stage)
 
-*   **CustomerView (Vetrina Pubblica):** 
-    *   Mostra la lista dei prodotti dotata di **Intersection Observer** per lo scorrimento infinito (Infinite Scroll) rimpiazzando la vecchia paginazione.
-    *   Offre funzionalità di ricerca (Testuale) e filtraggio avanzato (Categoria, Sotto-categoria, Gusto).
-    *   Include la "Lista Acquisto" (Cart) isolata per store tramite local storage (`vapeCart_${storeCode}`).
-    *   *Scelta implementativa: L'header è stato reso intelligente raggruppando indirizzo e social nel dropdown "Info & Social" (mobile-first) con supporto allo switch tra Light Mode e layout fissi (es. `PUFF_STORE`).*
+1. **Build stage** (`maven:3.9-eclipse-temurin-21`): compila il JAR con Maven
+2. **Run stage** (`amazoncorretto:21-alpine-jdk`): immagine leggera che esegue solo il JAR
 
-*   **ProductDetail (Dettaglio Prodotto):** 
-    *   Mostra in profondità tutte le specifiche di una singola referenza in base al suo `instoreCode`.
+### 2.3 Dockerfile Frontend (Multi-stage)
 
-*   **AdminDashboard (Pannello di Amministrazione):** 
-    *   Accessibile solo dopo aver superato un form di login. Il token JWT ricevuto dal server viene salvato nel `localStorage` del browser.
-    *   Offre una barra di ricerca reattiva per cercare rapidamente i prodotti tramite nome o codice a barre.
-    *   Supporta la creazione di sub-categorie personalizzate tramite interfaccia HTML5 `<datalist>`.
-    *   Offre un pannello dedicato alla modifica di `StoreSettings` (Nome, Logo, Indirizzo e Social).
+1. **Build stage** (`node:18-alpine`): installa dipendenze e genera i file statici con `npm run build`
+2. **Production stage** (`nginx:alpine`): serve i file statici e fa da reverse proxy
+
+### 2.4 Nginx come Reverse Proxy
+
+`nginx.conf` è configurato per:
+- Servire la SPA React (con fallback a `index.html` per il routing client-side)
+- Proxy `/api/` → `http://backend:8080/api/`
+- Proxy `/uploads/` → `http://backend:8080/uploads/`
+
+Questo permette al frontend di usare percorsi relativi (`/api`) senza hardcodare l'URL del backend.
+
+> **Nota per deploy separati:** Se frontend e backend sono su piattaforme diverse, il proxy Nginx non è applicabile. In quel caso, aggiornare `frontend/src/apiConfig.js` con l'URL assoluto del backend e impostare `ALLOWED_ORIGINS` di conseguenza.
 
 ---
 
-## 3. Scelte Architetturali Ricorrenti e Sicurezza
+## 3. Struttura del Software e Funzionalità
 
-*   **Accessibilità in Rete Locale (Mobile Testing):** Per permettere il collaudo dell'applicazione da smartphone tramite rete Wi-Fi (fondamentale per validare l'esperienza UI Mobile-First), Vite è stato istruito (via `vite.config.js` -> `server: { host: '0.0.0.0' }`) ad esporre l'host su tutta la LAN. 
-*   **Gestione Dinamica Endpoint API (`apiConfig.js`):** La funzione `getApiUrl()` utilizza un percorso relativo (`/api`). Questa scelta architettonica permette un funzionamento nativo su Docker (grazie a un reverse proxy configurato su Nginx) e in fase di sviluppo locale (tramite il proxy integrato in `vite.config.js`). In entrambi i casi il frontend e le chiamate API si interfacciano fluidamente con il backend.
-*   **Gestione Immagini e Security:** Il backend salva i file (loghi, foto prodotto) localmente in `backend/uploads/`. Per permettere al frontend di visualizzarli senza token (es. vetrina pubblica), `WebSecurityConfig` permette esplicitamente i comandi GET verso la rotta `/uploads/**`.
-*   **Dati di Sviluppo (`data.sql`):** Al boot, Spring Boot legge il seeder programmatico (`DatabaseSeeder.java` via `data.sql`) ed inietta centinaia di prodotti, gli store predefiniti e gli admin per favorire uno sviluppo rapido.
+### 3.1 Backend: Modelli e Logica
+
+- **`Product`**: Entità ibrida per Liquidi e Hardware. Usa una tabella unica con campi specifici per categoria (`flavor`, `milliliters` per liquidi; `batteryType`, `wattage` per hardware).
+- **`User`**: Gestisce gli accessi admin. Password cifrate con bcrypt.
+- **`StoreSettings`**: Impostazioni globali per negozio: nome, logo, indirizzo, social.
+
+**Controller:**
+- `ProductController` (`/api/products`): CRUD prodotti + upload immagini. Implementa il "Shadow Sync" (clonazione automatica dei prodotti negli altri negozi).
+- `AuthController` (`/api/auth/login`): Verifica credenziali e rilascia JWT.
+- `SettingsController` (`/api/settings`): Lettura e aggiornamento impostazioni negozio.
+
+### 3.2 Sicurezza
+
+- **JWT Stateless:** Nessuna sessione server-side. Il token viene salvato nel `localStorage` del browser admin.
+- **CORS esplicito:** Configurato tramite `CorsConfigurationSource` bean in `WebSecurityConfig`. Le origini consentite sono iniettabili via `ALLOWED_ORIGINS` (supporta lista separata da virgola).
+- **Rotte pubbliche:** `GET /api/products/**`, `GET /api/settings/**`, `/uploads/**`, `/api/auth/**`
+- **Rotte protette:** Tutto il resto richiede JWT valido.
+
+### 3.3 Gestione Upload
+
+I file caricati (loghi, immagini prodotto) sono salvati nella directory configurata tramite la variabile `upload.dir` (di default `/app/uploads` in Docker). Il path è esposto come risorsa statica su `/uploads/**` da `WebConfig.java`, senza richiedere autenticazione.
+
+In Docker, la directory è mappata su un volume persistente (`uploads_data`) per sopravvivere ai riavvii del container.
+
+### 3.4 Frontend: Componenti e Flusso Utente
+
+- **`CustomerView`:** Vetrina pubblica con Infinite Scroll (Intersection Observer), ricerca testuale, filtri avanzati e carrello (Cart) isolato per store via localStorage.
+- **`ProductDetail`:** Dettaglio singolo prodotto con tutte le specifiche.
+- **`AdminDashboard`:** Pannello protetto da login JWT. Gestione prodotti, ricerca, creazione sotto-categorie, modifica `StoreSettings`.
+
+---
+
+## 4. Endpoint API
+
+| Metodo | Rotta | Auth | Descrizione |
+|---|---|---|---|
+| POST | `/api/auth/login` | No | Login e rilascio JWT |
+| GET | `/api/products` | No | Lista prodotti (con filtri opzionali) |
+| GET | `/api/products/{id}` | No | Dettaglio prodotto |
+| POST | `/api/products` | ✅ JWT | Crea prodotto |
+| PUT | `/api/products/{id}` | ✅ JWT | Modifica prodotto |
+| DELETE | `/api/products/{id}` | ✅ JWT | Elimina prodotto |
+| POST | `/api/products/upload` | ✅ JWT | Upload immagine |
+| GET | `/api/settings/{storeId}` | No | Leggi impostazioni negozio |
+| PUT | `/api/settings/{storeId}` | ✅ JWT | Aggiorna impostazioni negozio |
+
+---
+
+## 5. Scelte Architetturali Ricorrenti
+
+- **`apiConfig.js` con percorso relativo:** `getApiUrl()` restituisce `/api`. Funziona nativamente sia in Docker (grazie al proxy Nginx) sia in sviluppo locale (grazie al proxy di Vite in `vite.config.js`).
+- **Dati di Sviluppo (`data.sql`):** Al boot, `DatabaseSeeder.java` inietta prodotti, store e admin per uno sviluppo rapido.
+- **LAN Testing:** `vite.config.js` ha `server: { host: '0.0.0.0' }` per esporre il dev server sulla rete locale e testare da smartphone.

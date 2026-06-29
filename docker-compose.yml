@@ -4,8 +4,8 @@ services:
     image: mysql:8.0
     container_name: vapestore-db
     environment:
-      MYSQL_DATABASE: vapestore
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-vapestore}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -21,8 +21,10 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=root
+      - DB_USER=${DB_USER:-root}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - UPLOAD_DIR=/app/uploads
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost}
     depends_on:
       db:
         condition: service_healthy

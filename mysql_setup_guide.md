@@ -1,41 +1,50 @@
 # Setup Database MySQL per VapeStore
 
-Questa guida contiene le istruzioni e lo script SQL per ricreare l'esatta struttura del database del tuo catalogo su un server MySQL reale.
+Questa guida è utile solo se stai eseguendo il progetto **senza Docker** e vuoi connettere il backend a un'istanza MySQL locale.
 
-## 1. Prerequisiti
-Assicurati di avere installato MySQL Server sul tuo computer (Fedora o Windows).
+> Se usi Docker (`docker compose up`), il database MySQL è già configurato automaticamente — puoi ignorare questa guida.
 
-## 2. Creazione del Database
-Accedi alla riga di comando di MySQL o utilizza un client visivo (come DBeaver o phpMyAdmin) ed esegui i seguenti comandi per creare il database:
+---
 
-```sql
-CREATE DATABASE IF NOT EXISTS vapestore;
-USE vapestore;
+## 1. Crea il database
+
+Accedi alla shell MySQL:
+```bash
+mysql -u root -p
 ```
 
-## 3. Creazione della Tabella (Prompt SQL)
-Esegui questo script per creare la struttura della tabella `product` con tutti i campi corretti che l'applicazione si aspetta:
+Esegui:
+```sql
+CREATE DATABASE IF NOT EXISTS vapestore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+```
+
+---
+
+## 2. Struttura delle tabelle
+
+Lo schema viene creato automaticamente da Hibernate all'avvio del backend (`ddl-auto=update`). Non è necessario eseguire manualmente gli script DDL.
+
+Se preferisci crearla manualmente, ecco la struttura:
 
 ```sql
+USE vapestore;
+
 CREATE TABLE product (
     instore_code BIGINT AUTO_INCREMENT PRIMARY KEY,
     barcode VARCHAR(255),
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    category VARCHAR(255) NOT NULL, -- "LIQUIDO" o "HARDWARE"
+    category VARCHAR(255) NOT NULL,
     sub_category VARCHAR(255),
     purchase_price DOUBLE,
     retail_price DOUBLE NOT NULL,
     image_url VARCHAR(255),
     is_available BOOLEAN DEFAULT TRUE,
-    
-    -- Specifiche Liquidi
     milliliters INTEGER,
     flavor VARCHAR(255),
     ingredients VARCHAR(255),
     nicotine_strength VARCHAR(255),
-    
-    -- Specifiche Hardware
     color VARCHAR(255),
     battery_type VARCHAR(255),
     wattage INTEGER,
@@ -62,18 +71,32 @@ CREATE TABLE store_settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
-## 4. Connessione di Spring Boot a MySQL
-Per dire al backend di usare questo nuovo database reale (invece di quello temporaneo H2), dovrai modificare il file `backend/src/main/resources/application.properties` con queste righe:
+---
+
+## 3. Connetti il backend a MySQL
+
+Modifica `backend/src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/vapestore?serverTimezone=UTC
 spring.datasource.username=root
-# Inserisci qui la tua vera password di MySQL
-spring.datasource.password=TUA_PASSWORD
+spring.datasource.password=TUA_PASSWORD_MYSQL
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-# JPA / Hibernate
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 ```
+
+> **Sicurezza:** Non committare mai password reali nel file `application.properties`. Preferisci passarle come variabili d'ambiente (`DB_PASSWORD`) che il file legge già tramite `${DB_PASSWORD:root}`.
+
+---
+
+## 4. Avvia il backend
+
+```bash
+cd backend
+./mvnw clean spring-boot:run
+```
+
+Al primo avvio, Hibernate creerà le tabelle e `DatabaseSeeder.java` le popolerà con i dati di esempio.

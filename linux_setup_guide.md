@@ -1,98 +1,153 @@
 # Guida per avviare il progetto su Linux
 
-Per far girare questo progetto su una distribuzione Linux (Debian/Ubuntu, Arch, Fedora, ecc.), è necessario installare gli strumenti di sviluppo principali: **Java (JDK) 21**, **Node.js**, **Maven** e **Git**.
-
-Di seguito trovi i comandi per installare i prerequisiti sulle principali famiglie di distribuzioni Linux, e successivamente le istruzioni per avviare il progetto.
+Questa guida copre due modalità: **Docker** (raccomandato, zero dipendenze da installare) e **sviluppo manuale** (per chi vuole modificare il codice in tempo reale).
 
 ---
 
-### Fase 1: Installazione dei Prerequisiti
+## 🐳 Modalità 1: Docker (Raccomandato)
 
-Scegli i comandi in base alla tua distribuzione Linux:
+### Prerequisiti
+Installa Docker Engine e il plugin Compose:
 
-#### 🟢 Debian / Ubuntu / Linux Mint
-Apri il terminale ed esegui:
+#### Debian / Ubuntu / Linux Mint
 ```bash
 sudo apt update
-sudo apt upgrade -y
-# Installa Git, Maven e OpenJDK 21 (o 17)
-sudo apt install -y git maven openjdk-21-jdk
-# Installa Node.js (tramite NodeSource)
+sudo apt install -y docker.io docker-compose-plugin
+sudo usermod -aG docker $USER   # permette di usare docker senza sudo
+newgrp docker                   # applica il gruppo nella sessione corrente
+```
+
+#### Fedora
+```bash
+sudo dnf install -y docker docker-compose-plugin
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+#### Arch Linux / Manjaro
+```bash
+sudo pacman -S docker docker-compose
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### Avvio
+
+1. Clona il progetto:
+   ```bash
+   git clone https://github.com/revDrake87/svapo.git
+   cd svapo
+   ```
+
+2. Configura le variabili d'ambiente:
+   ```bash
+   cp .env.example .env
+   # Apri .env con un editor e imposta password sicure
+   nano .env
+   ```
+
+3. Avvia tutti i servizi:
+   ```bash
+   docker compose up -d --build
+   ```
+
+4. Accedi all'applicazione:
+   - [http://localhost/PROFESSIONAL_VAPE](http://localhost/PROFESSIONAL_VAPE)
+   - [http://localhost/PUFF_STORE](http://localhost/PUFF_STORE)
+
+Per fermare:
+```bash
+docker compose down
+```
+
+Per vedere i log in tempo reale:
+```bash
+docker compose logs -f
+```
+
+---
+
+## 🛠️ Modalità 2: Sviluppo Manuale (senza Docker)
+
+### Prerequisiti
+
+Installa **Java JDK 21**, **Node.js**, **Maven** e **MySQL**:
+
+#### Debian / Ubuntu / Linux Mint
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y git maven openjdk-21-jdk mysql-server
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-#### 🔵 Fedora
-Apri il terminale ed esegui:
+#### Fedora
 ```bash
 sudo dnf update -y
-# Installa Git, Maven, Node.js e OpenJDK 21
-sudo dnf install -y git maven java-21-openjdk-devel nodejs
+sudo dnf install -y git maven java-21-openjdk-devel nodejs community-mysql-server
 ```
 
-#### 🟣 Arch Linux / Manjaro
-Apri il terminale ed esegui:
+#### Arch Linux / Manjaro
 ```bash
 sudo pacman -Syu
-# Installa Git, Maven, Node.js e OpenJDK 21
-sudo pacman -S git maven jdk21-openjdk nodejs npm
+sudo pacman -S git maven jdk21-openjdk nodejs npm mysql
 ```
 
----
+### Configurazione MySQL
 
-### Fase 2: Scaricare il progetto
-Scarica il progetto clonando la repository GitHub in una cartella a tua scelta (es. `~/Progetti`).
 ```bash
-mkdir -p ~/Progetti
-cd ~/Progetti
+sudo systemctl start mysql
+sudo mysql_secure_installation   # segui la procedura guidata
+sudo mysql -u root -p
+```
+
+Nel prompt MySQL:
+```sql
+CREATE DATABASE vapestore;
+EXIT;
+```
+
+### Scarica il progetto
+```bash
 git clone https://github.com/revDrake87/svapo.git
 cd svapo
 ```
 
----
+### Avvio del Backend
 
-### Fase 3: Configurare e avviare il Backend (Java)
-Il backend utilizza Spring Boot.
-
-**Avvia il Backend:**
-Nel terminale, dentro la cartella del progetto:
 ```bash
 cd backend
-# Utilizziamo il wrapper maven incluso nel progetto per massima compatibilità
-./mvnw clean spring-boot:run &
+./mvnw clean spring-boot:run
 ```
-*(Al primo avvio, Maven scaricherà tutte le dipendenze necessarie. Finito il processo, vedrai un messaggio che indica che Tomcat è stato avviato sulla porta 8080).*
 
----
+Al primo avvio Maven scaricherà le dipendenze. Il server sarà pronto quando vedrai `Tomcat started on port 8080`.
 
-### Fase 4: Configurare e avviare il Frontend (React)
-Il frontend necessita di Node.js e npm.
+### Avvio del Frontend
 
-**Avvia il Frontend:**
-Apri un *secondo* terminale (lasciando il backend in esecuzione nel primo) e vai nella cartella del progetto:
+Apri un **secondo terminale**:
+
 ```bash
 cd frontend
 npm install
-npm run dev &
+npm run dev
 ```
 
----
+### Accesso
 
-🎉 **Finito!** Ora puoi aprire il tuo browser e andare su:
-* Professional Vape: `http://localhost:5173/PROFESSIONAL_VAPE`
-* Puff Store: `http://localhost:5173/PUFF_STORE`
+- [http://localhost:5173/PROFESSIONAL_VAPE](http://localhost:5173/PROFESSIONAL_VAPE)
+- [http://localhost:5173/PUFF_STORE](http://localhost:5173/PUFF_STORE)
 
-Per la dashboard Admin aggiungi `/admin` (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`).
-*   **User Professional:** `admin_prof` (Password: `admin123`)
-*   **User Puff Store:** `admin_puff` (Password: `admin123`)
+> Puoi anche testare da smartphone connesso alla stessa rete Wi-Fi usando l'IP locale del tuo PC (es. `http://192.168.1.x:5173`).
 
 ---
 
-### 🗄️ (Opzionale) Passaggio a MySQL per la Produzione
-Se desideri installare MySQL server sulla tua distribuzione Linux anziché usare il database in memoria H2:
+## 🔐 Credenziali Admin
 
-*   **Debian/Ubuntu:** `sudo apt install mysql-server`
-*   **Fedora:** `sudo dnf install mysql-server`
-*   **Arch Linux:** `sudo pacman -S mariadb`
+Aggiungi `/admin` all'URL (es. `http://localhost:5173/PROFESSIONAL_VAPE/admin`).
 
-Dopo l'installazione, segui la guida dettagliata presente in `mysql_setup_guide.md` per configurare il database ed istruire il backend ad usarlo.
+| Store | Username | Password |
+|---|---|---|
+| Professional Vape | `admin_prof` | `admin123` |
+| Puff Store | `admin_puff` | `admin123` |
