@@ -7,6 +7,8 @@ import ProductDetail from './ProductDetail';
 import CartView from './CartView';
 import './index.css';
 
+
+// deploy backend railway
 function StoreWrapper() {
   const { storeCode } = useParams();
   const isThemeFixed = storeCode === 'PUFF_STORE';
