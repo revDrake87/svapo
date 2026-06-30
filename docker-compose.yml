@@ -23,6 +23,7 @@ services:
       - DB_PORT=3306
       - DB_USER=${DB_USER:-root}
       - DB_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-vapestore}
       - UPLOAD_DIR=/app/uploads
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost}
     depends_on:
