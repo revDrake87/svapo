@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class StoreSettings {
 
     @Id
-    private String id; // Codice del negozio
+    private Long id = 1L; // C'è solo una riga di impostazioni
 
     private String storeName;
     private String logoUrl;

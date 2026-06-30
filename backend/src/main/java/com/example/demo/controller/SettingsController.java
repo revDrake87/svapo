@@ -14,14 +14,14 @@ public class SettingsController {
     @Autowired
     private StoreSettingsRepository storeSettingsRepository;
 
-    @GetMapping("/{storeId}")
-    public StoreSettings getSettings(@PathVariable String storeId) {
-        return storeSettingsRepository.findById(storeId).orElse(new StoreSettings(storeId, "VapeStore", null, null, null, null, null, null));
+    @GetMapping
+    public StoreSettings getSettings() {
+        return storeSettingsRepository.findById(1L).orElse(new StoreSettings(1L, "VapeStore", null, null, null, null, null, null));
     }
 
-    @PutMapping("/{storeId}")
-    public ResponseEntity<StoreSettings> updateSettings(@PathVariable String storeId, @RequestBody StoreSettings newSettings) {
-        return storeSettingsRepository.findById(storeId).map(settings -> {
+    @PutMapping
+    public ResponseEntity<StoreSettings> updateSettings(@RequestBody StoreSettings newSettings) {
+        return storeSettingsRepository.findById(1L).map(settings -> {
             settings.setStoreName(newSettings.getStoreName());
             settings.setLogoUrl(newSettings.getLogoUrl());
             settings.setAddress(newSettings.getAddress());
@@ -31,7 +31,7 @@ public class SettingsController {
             settings.setWhatsapp(newSettings.getWhatsapp());
             return ResponseEntity.ok(storeSettingsRepository.save(settings));
         }).orElseGet(() -> {
-            newSettings.setId(storeId);
+            newSettings.setId(1L);
             return ResponseEntity.ok(storeSettingsRepository.save(newSettings));
         });
     }

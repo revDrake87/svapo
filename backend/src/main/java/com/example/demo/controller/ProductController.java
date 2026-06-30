@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Product;
-import com.example.demo.model.StoreSettings;
 import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.StoreSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,58 +23,21 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private StoreSettingsRepository storeSettingsRepository;
-
     private static final String UPLOAD_DIR = "uploads/";
 
     @GetMapping
-    public List<Product> getAllProducts(@RequestParam(required = false) String storeId) {
-        if (storeId != null && !storeId.isEmpty()) {
-            return productRepository.findByStoreId(storeId);
-        }
+    public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        Product originalProduct = productRepository.save(product);
-        String creatorStoreId = product.getStoreId();
-
-        List<StoreSettings> allStores = storeSettingsRepository.findAll();
-        for (StoreSettings store : allStores) {
-            if (!store.getId().equals(creatorStoreId)) {
-                Product clonedProduct = new Product();
-                clonedProduct.setStoreId(store.getId());
-                clonedProduct.setBarcode(originalProduct.getBarcode());
-                clonedProduct.setName(originalProduct.getName());
-                clonedProduct.setMilliliters(originalProduct.getMilliliters());
-                clonedProduct.setCategory(originalProduct.getCategory());
-                clonedProduct.setSubCategory(originalProduct.getSubCategory());
-                clonedProduct.setPurchasePrice(originalProduct.getPurchasePrice());
-                clonedProduct.setRetailPrice(originalProduct.getRetailPrice());
-                clonedProduct.setDescription(originalProduct.getDescription());
-                clonedProduct.setImageUrl(originalProduct.getImageUrl());
-                clonedProduct.setFlavor(originalProduct.getFlavor());
-                clonedProduct.setIngredients(originalProduct.getIngredients());
-                clonedProduct.setNicotineStrength(originalProduct.getNicotineStrength());
-                clonedProduct.setColor(originalProduct.getColor());
-                clonedProduct.setBatteryType(originalProduct.getBatteryType());
-                clonedProduct.setWattage(originalProduct.getWattage());
-                clonedProduct.setTankCapacity(originalProduct.getTankCapacity());
-                clonedProduct.setIsAvailable(false);
-
-                productRepository.save(clonedProduct);
-            }
-        }
-
-        return originalProduct;
+        return productRepository.save(product);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         return productRepository.findById(id).map(product -> {
-            product.setStoreId(productDetails.getStoreId());
             product.setBarcode(productDetails.getBarcode());
             product.setName(productDetails.getName());
             product.setMilliliters(productDetails.getMilliliters());

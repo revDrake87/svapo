@@ -1,3 +1,3 @@
 export const getApiUrl = () => {
-  return `/api`;
+  return `${window.location.protocol}//${window.location.hostname}:8080/api`;
 };

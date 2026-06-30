@@ -18,8 +18,6 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long instoreCode; // Codice instore, chiave primaria autogenerata progressiva
 
-    private String storeId;
-
     private String barcode; // Codice a barre
     private String name;
     private Integer milliliters; // Millilitri (es. 10, 20, 60)

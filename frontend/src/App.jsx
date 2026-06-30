@@ -1,18 +1,14 @@
 import { getApiUrl } from "./apiConfig";
 import { useState, useEffect } from 'react';
-import { Routes, Route, useParams, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import CustomerView from './CustomerView';
 import AdminDashboard from './AdminDashboard';
 import ProductDetail from './ProductDetail';
 import CartView from './CartView';
 import './index.css';
 
-function StoreWrapper() {
-  const { storeCode } = useParams();
-  const isThemeFixed = storeCode === 'PUFF_STORE';
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem('theme') !== 'light';
-  });
+function App() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [storeName, setStoreName] = useState('VapeStore');
   const [settings, setSettings] = useState({
     storeName: 'VapeStore',
@@ -28,19 +24,17 @@ function StoreWrapper() {
 
   useEffect(() => {
     // Load cart from local storage if available
-    const savedCart = localStorage.getItem(`vapeCart_${storeCode}`);
+    const savedCart = localStorage.getItem('vapeCart');
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart));
       } catch (e) {
         console.error("Could not parse saved cart", e);
       }
-    } else {
-        setCart([]);
     }
 
-    // Fetch store settings using url param
-    fetch(`${getApiUrl()}/settings/${storeCode}`)
+    // Fetch store settings
+    fetch(`${getApiUrl()}/settings`)
       .then(res => res.json())
       .then(data => {
         setStoreName(data.storeName);
@@ -56,13 +50,7 @@ function StoreWrapper() {
       })
       .catch(err => console.error("Failed to load store settings", err));
 
-    // Handle theme logic including fixed themes for specific stores
-    if (isThemeFixed) {
-      document.documentElement.classList.add('theme-puff');
-    } else {
-      document.documentElement.classList.remove('theme-puff');
-    }
-
+    // Check local storage for theme preference
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme === 'light') {
       setIsDarkMode(false);
@@ -71,7 +59,7 @@ function StoreWrapper() {
       setIsDarkMode(true);
       document.documentElement.classList.add('dark');
     }
-  }, [storeCode, isThemeFixed]);
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode ? 'dark' : 'light';
@@ -87,27 +75,16 @@ function StoreWrapper() {
   };
 
   useEffect(() => {
-    // Save cart to local storage whenever it changes, keeping it store specific
-    if (storeCode) {
-      localStorage.setItem(`vapeCart_${storeCode}`, JSON.stringify(cart));
-    }
-  }, [cart, storeCode]);
+    // Save cart to local storage whenever it changes
+    localStorage.setItem('vapeCart', JSON.stringify(cart));
+  }, [cart]);
 
   return (
     <Routes>
-      <Route path="/" element={<CustomerView storeCode={storeCode} isThemeFixed={isThemeFixed} isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="cart" element={<CartView storeCode={storeCode} isThemeFixed={isThemeFixed} isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="product/:id" element={<ProductDetail storeCode={storeCode} isThemeFixed={isThemeFixed} isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
-      <Route path="admin" element={<AdminDashboard storeCode={storeCode} isThemeFixed={isThemeFixed} isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} settings={settings} setSettings={setSettings} />} />
-    </Routes>
-  );
-}
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/:storeCode/*" element={<StoreWrapper />} />
-      <Route path="/" element={<Navigate to="/PROFESSIONAL_VAPE" />} />
+      <Route path="/" element={<CustomerView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
+      <Route path="/cart" element={<CartView isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
+      <Route path="/product/:id" element={<ProductDetail isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} settings={settings} cart={cart} setCart={setCart} />} />
+      <Route path="/admin" element={<AdminDashboard isDarkMode={isDarkMode} toggleTheme={toggleTheme} storeName={storeName} setStoreName={setStoreName} settings={settings} setSettings={setSettings} />} />
     </Routes>
   );
 }
