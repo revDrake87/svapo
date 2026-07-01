@@ -1,5 +1,5 @@
 export const getApiUrl = () => {
-  // Se siamo in locale (sviluppo o test LAN), usiamo il percorso relativo
+  // Se siamo in locale (sviluppo o test LAN), usiamo il percorso relativo standard
   if (
     window.location.hostname === "localhost" || 
     window.location.hostname === "127.0.0.1" || 
@@ -8,6 +8,6 @@ export const getApiUrl = () => {
     return "/api"; 
   }
 
-  // IN PRODUZIONE: Forza l'URL assoluto del tuo backend su Railway
-  return "https://svapo-production.up.railway.app/api";
+  // IN PRODUZIONE: Punta direttamente all'URL di Railway, senza aggiungere un secondo "/api" alla fine
+  return "https://svapo-production.up.railway.app";
 };
