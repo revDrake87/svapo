@@ -31,7 +31,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
 
   const fetchProducts = () => {
     const storeId = localStorage.getItem('storeId') || storeCode;
-    fetch(`${getApiUrl()}/products?storeId=${storeId}`)
+    fetch(`${getApiUrl()}/api/products?storeId=${storeId}`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -47,7 +47,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
     e.preventDefault();
     
     try {
-      const res = await fetch(`${getApiUrl()}/auth/login`, {
+      const res = await fetch(`${getApiUrl()}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username, password: password })
@@ -76,7 +76,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
   const handleDelete = (id) => {
     if (window.confirm('Sei sicuro di voler eliminare questo prodotto?')) {
       const token = localStorage.getItem('adminToken');
-      fetch(`${getApiUrl()}/products/${id}`, { 
+      fetch(`${getApiUrl()}/api/products/${id}`, { 
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -121,7 +121,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
     formData.append('file', file);
 
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/products/upload`, {
+    fetch(`${getApiUrl()}/api/products/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
@@ -147,7 +147,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
     formData.append('file', file);
 
     const token = localStorage.getItem('adminToken');
-    fetch(`${getApiUrl()}/products/upload`, {
+    fetch(`${getApiUrl()}/api/products/upload`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` },
       body: formData,
@@ -168,7 +168,7 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
     e.preventDefault();
     const token = localStorage.getItem('adminToken');
     const storeId = localStorage.getItem('storeId') || storeCode;
-    fetch(`${getApiUrl()}/settings/${storeId}`, {
+    fetch(`${getApiUrl()}/api/settings/${storeId}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -205,8 +205,8 @@ function AdminDashboard({ storeCode, isThemeFixed, isDarkMode, toggleTheme, stor
     currentProduct.storeId = localStorage.getItem('storeId') || storeCode;
     const method = currentProduct.instoreCode ? 'PUT' : 'POST';
     const url = currentProduct.instoreCode 
-      ? `${getApiUrl()}/products/${currentProduct.instoreCode}`
-      : `${getApiUrl()}/products`;
+      ? `${getApiUrl()}/api/products/${currentProduct.instoreCode}`
+      : `${getApiUrl()}/api/products`;
 
     const token = localStorage.getItem('adminToken');
     fetch(url, {
