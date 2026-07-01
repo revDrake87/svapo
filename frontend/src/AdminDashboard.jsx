@@ -60,6 +60,29 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
     }
   };
 
+  const handleClearDatabase = async () => {
+    if (window.confirm('Sei SICURO di voler svuotare l\'intero catalogo prodotti? Questa operazione è IRREVERSIBILE e cancellerà i prodotti di TUTTI gli store.')) {
+      try {
+        const response = await fetch(`${getApiUrl()}/admin/clear-database`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+          }
+        });
+        if (response.ok) {
+          alert('Database svuotato con successo.');
+          fetchProducts();
+        } else {
+          const errorMsg = await response.text();
+          alert(`Errore: ${errorMsg}`);
+        }
+      } catch (error) {
+        console.error("Errore durante lo svuotamento del database:", error);
+        alert('Errore di rete durante lo svuotamento del database.');
+      }
+    }
+  };
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     setPassword('');
@@ -553,11 +576,16 @@ function AdminDashboard({ isDarkMode, toggleTheme, storeName, setStoreName, sett
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center mb-6">
+                        <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Prodotti a Catalogo</h2>
-              <button onClick={handleAddNew} className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
-                <Plus size={18} /> Aggiungi Nuovo
-              </button>
+              <div className="flex gap-4">
+                <button onClick={handleClearDatabase} className="bg-red-600 dark:bg-red-500 text-white font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-700 dark:hover:bg-red-600 transition-colors">
+                  <Trash2 size={18} /> Svuota Database
+                </button>
+                <button onClick={handleAddNew} className="bg-black dark:bg-white text-white dark:text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 dark:hover:bg-cyan-400 transition-colors">
+                  <Plus size={18} /> Aggiungi Nuovo
+                </button>
+              </div>
             </div>
 
             {loading ? (
