@@ -1,3 +1,3 @@
 export const getApiUrl = () => {
-  return import.meta.env.VITE_API_URL || '/api';
+  return `${window.location.protocol}//${window.location.hostname}:8080/api`;
 };

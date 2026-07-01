@@ -74,12 +74,3 @@ In risposta alle più recenti richieste di estensione dell'applicazione:
 1.  Il database è stato esteso introducendo il tracciamento dei Social e del Logo.
 2.  L'UI è stata adattata per iniettare l'header personalizzato e generare dinamicamente il Footer di ogni pagina con tali informazioni.
 3.  L'uso di una combinazione Regex in JavaScript (`replace(/[^0-9]/g, '')`) permette all'amministratore di incollare i numeri di telefono con spazi e prefissi, e al software di creare un link WhatsApp API sempre perfettamente valido.
-
-
-## 5. Deployment in Produzione
-
-L'applicazione è progettata per poter essere ospitata facilmente su piattaforme cloud moderne:
-
-*   **Frontend (React/Vite):** Il frontend statico può essere hostato gratuitamente su servizi come **Firebase Hosting** o Vercel. Una volta compilato (`npm run build`), i file generati nella cartella `dist` sono pronti per essere serviti su una CDN globale, garantendo velocità e scalabilità.
-*   **Backend (Spring Boot):** L'API Java può essere distribuita su piattaforme PaaS come **Railway**, Render o Heroku. Railway, in particolare, supporta l'avvio nativo di progetti Spring Boot tramite Nixpacks o Dockerfile, offrendo deployment continui (CI/CD) e fornitura automatica di certificati SSL.
-*   **Database (MySQL):** Per la persistenza dei dati, servizi di cloud database gestiti come **Aiven** permettono di istanziare e far scalare rapidamente cluster MySQL. Una volta ottenuto l'URI di connessione da Aiven, è sufficiente configurarlo nelle variabili d'ambiente (`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`) sul provider del backend (es. Railway) per consentire all'applicazione di connettersi in totale sicurezza.

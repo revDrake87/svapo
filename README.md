@@ -61,19 +61,3 @@ Per accedere alla dashboard di amministrazione, naviga su `http://localhost:5173
 
 ## 🗄️ Passaggio a MySQL (Produzione)
 Il progetto è già predisposto per l'uso di un vero database MySQL. Consulta il file `mysql_setup_guide.md` presente nella root di questa repository per le istruzioni dettagliate su come configurare la connessione al tuo database server su Fedora.
-
-## 🌐 Deploy in Produzione
-
-Per portare l'applicazione live su internet, si consiglia la seguente architettura Cloud-Native:
-
-1.  **Frontend su Firebase Hosting:**
-    - Compila l'app con `npm run build`.
-    - Inizializza il progetto con `firebase init hosting` e fai deploy della cartella `dist` con `firebase deploy`.
-2.  **Backend su Railway:**
-    - Collega il repository GitHub a [Railway.app](https://railway.app/).
-    - Railway rileverà automaticamente l'applicazione Java/Maven (o utilizzerà il `Dockerfile`) ed avvierà l'API esponendola pubblicamente su HTTPS.
-3.  **Database MySQL su Aiven:**
-    - Crea un servizio MySQL gestito su [Aiven.io](https://aiven.io/).
-    - Copia i parametri di connessione e inseriscili come variabili d'ambiente (Environment Variables) sul pannello di controllo di Railway (`DB_HOST`, `DB_PORT`, ecc.).
-
-*(Assicurati di aggiornare `apiConfig.js` sul frontend affinché punti al dominio di Railway prima di effettuare la build per Firebase).*
