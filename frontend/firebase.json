@@ -9,11 +9,11 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "destination": "https://svapo-production.up.railway.app/api/**"
+        "destination": "https://svapo-production.up.railway.app"
       },
       {
         "source": "/uploads/**",
-        "destination": "https://svapo-production.up.railway.app/uploads/**"
+        "destination": "https://svapo-production.up.railway.app"
       },
       {
         "source": "**",
