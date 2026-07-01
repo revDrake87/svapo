@@ -34,12 +34,14 @@ function AdminDashboard({ storeCode }) {
 
   const fetchProducts = () => {
     const storeId = getCleanStoreId();
-    // Aggiunto il prefisso /api mancante
     fetch(`${getApiUrl()}/api/products?storeId=${storeId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => {
-        if (res.status === 401 || res.status === 403) handleLogout();
+        if (res.status === 401 || res.status === 403) {
+          handleLogout();
+          throw new Error('Sessione scaduta o non autorizzata');
+        }
         return res.json();
       })
       .then(data => setProducts(data))
@@ -50,7 +52,6 @@ function AdminDashboard({ storeCode }) {
     e.preventDefault();
     setError('');
     try {
-      // Aggiunto il prefisso /api alla rotta di autenticazione
       const res = await fetch(`${getApiUrl()}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -60,7 +61,7 @@ function AdminDashboard({ storeCode }) {
       const data = await res.json();
       
       localStorage.setItem('token', data.token);
-      // Protezione immediata al login: evita di salvare stringhe nulle o ID parziali
+      
       const finalStoreId = (!data.storeId || data.storeId === "null" || data.storeId === "1") 
         ? (storeCode || "PROFESSIONAL_VAPE") 
         : data.storeId;
@@ -80,13 +81,14 @@ function AdminDashboard({ storeCode }) {
 
   const handleDelete = (id) => {
     if (window.confirm('Vuoi davvero eliminare questo prodotto?')) {
-      // Aggiunto il prefisso /api alla rotta DELETE
       fetch(`${getApiUrl()}/api/products/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       }).then(res => {
-        if (res.ok) fetchProducts();
-      });
+        if (res.ok) {
+          fetchProducts();
+        }
+      }).catch(err => console.error("Error deleting product:", err));
     }
   };
 
@@ -96,14 +98,13 @@ function AdminDashboard({ storeCode }) {
     formData.append('file', imageFile);
 
     try {
-      // Aggiunto il prefisso /api alla rotta di Upload
       const res = await fetch(`${getApiUrl()}/api/products/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
       });
       if (!res.ok) throw new Error('Upload fallito');
-      return await res.text(); // Il backend restituisce il percorso relativo "/uploads/nomefile.png"
+      return await res.text(); // Legge come testo puro (/uploads/nomefile.png)
     } catch (err) {
       console.error(err);
       alert('Errore caricamento immagine');
@@ -123,11 +124,10 @@ function AdminDashboard({ storeCode }) {
     const productToSend = {
       ...currentProduct,
       imageUrl: uploadedImageUrl,
-      storeId: getCleanStoreId() // Controllo e iniezione a monte dello storeId corretto
+      storeId: getCleanStoreId()
     };
 
     const method = isEditing ? 'PUT' : 'POST';
-    // Aggiunto il prefisso /api su rotte PUT e POST
     const url = isEditing 
       ? `${getApiUrl()}/api/products/${currentProduct.instoreCode}`
       : `${getApiUrl()}/api/products`;
@@ -144,7 +144,7 @@ function AdminDashboard({ storeCode }) {
         fetchProducts();
         resetForm();
       }
-    });
+    }).catch(err => console.error("Error saving product:", err));
   };
 
   const resetForm = () => {
@@ -163,11 +163,10 @@ function AdminDashboard({ storeCode }) {
     setIsEditing(true);
   };
 
-  // Funzione helper per comporre graficamente l'URL dell'anteprima immagine nell'Admin
   const renderProductImage = (path) => {
     if (!path) return null;
-    if (path.startsWith('http')) return path; // Vecchi record
-    return `${getApiUrl()}${path}`; // Nuovi record con percorso relativo /uploads/...
+    if (path.startsWith('http')) return path; 
+    return `${getApiUrl()}${path}`; 
   };
 
   if (!token) {
@@ -266,7 +265,6 @@ function AdminDashboard({ storeCode }) {
             </div>
           </div>
 
-          {/* Form condizionale basato sulla Categoria */}
           {currentProduct.category === 'LIQUIDO' ? (
             <div className="bg-zinc-950 p-3 rounded-xl border border-white/5 space-y-3">
               <div className="grid grid-cols-2 gap-3">
