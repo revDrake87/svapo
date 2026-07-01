@@ -22,7 +22,7 @@ function CustomerView({ storeCode, isThemeFixed, isDarkMode, toggleTheme, storeN
   const observerTarget = useRef(null);
 
   useEffect(() => {
-    fetch(`${getApiUrl()}/products?storeId=${storeCode}`)
+    fetch(`${getApiUrl()}/api/products?storeId=${storeCode}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
